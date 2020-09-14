@@ -1,120 +1,142 @@
-
+.INCLUDE "HEADER.ASM"
+.INCLUDE "ENUMS.ASM"
+.INCLUDE "STRUCTS.ASM"
+.INCLUDE "MACROS.ASM"
 .INCLUDE "NES_SYMBOLS.ASM"
 .INCLUDE "GAME_SYMBOLS.ASM"
+.INCLUDE "BUFFERS.ASM"
 .INCLUDE "IO.ASM"
-.INCLUDE "HEADER.ASM"
 .INCLUDE "RESET.ASM"
 .INCLUDE "INTERRUPTS.ASM"
+.INCLUDE "ACTORS.ASM"
+.INCLUDE "CAMERA.ASM"
+
 .SEGMENT "CODE"
 
 MAIN:
-    LDX #$FF        ; INITIALIZE IO BUFFER POINTERS
-    STX WR_PTR
-    STX RD_PTR
+    LDX #$FF        ; INITIALIZE BUFFER POINTERS
+    STX CMD_RPTR
+    STX CMD_WPTR
+    STX ACTOR_RPTR
+    STX ACTOR_WPTR
+
+LOAD_PALETTES:      ; UPDATE BACKGROUND AND SPRITE PALETTE DATA
+    ;LDA #$20        ; NUMBER OF PALETTE DATA BYTES
+    ;JSR WR_BUF 
+    LDA #$3F        ; MSB PALETTE VRAM ADDRESS
+    STA PPUADDR
+    LDA #$00        ; LSB PALETTE VRAM ADDRESS
+    STA PPUADDR
+    LDX #$00  
+LOOP_PALETTE_DATA:      
+    LDA PALETTE, X  ; WITH THE PALETTE DATA STORED IN ROM
+    STA PPUDATA
+    INX
+    CPX #$20
+    BNE LOOP_PALETTE_DATA
+    ;JSR CMD_SET
+LOAD_BACKGROUND:
+    ;LDA #$40
+    ;JSR WR_BUF
+    LDA #$20        ;
+    STA PPUADDR
+    LDA #$00        ; THE ADDRESS LATCH SHOULD ALREADY BE CLEARED 
+    STA PPUADDR
+    LDA #$04
+    LDY #$40
+LOOP_BACKGROUND_DATA:
+    STA PPUDATA
+    DEY
+    BNE LOOP_BACKGROUND_DATA
+    ;JSR CMD_SET
+LOAD_ATTRIBUTES:
+    ;LDA #$01
+    ;JSR WR_BUF
+    LDA #$23        ;
+    STA PPUADDR
+    LDA #$C0        ; THE ADDRESS LATCH SHOULD ALREADY BE CLEARED 
+    STA PPUADDR
+    LDA #(3 << 6) | (3 << 4) | (3 << 2) | (3 << 0)
+    STA PPUDATA
+    ;JSR CMD_SET
 
     LDA #(PPUCTRL::NMI_ENABLE | PPUCTRL::PT_ADDR_BG) ; INITIAL PPUCTRL WRITE HAS TO ENABLE NMI INTERRUPTS; SUBSEQUENT WRITES TO PPUCTRL WILL BE BUFFERED AND TAKE PLACE IN NMI
     STA PPUCTRL
+    STA PPUCTRLBUF
 
     LDA #(PPUMASK::SHOW_BG | PPUMASK::SHOW_SPR | PPUMASK::SHOW_BG_8 | PPUMASK::SHOW_SPR_8) ; SUBSEQUENT WRITES TO PPUMASK WILL BE BUFFERED AND TAKE PLACE IN NMI
     STA PPUMASK
 
     CLI             ; RESPOND TO INTERRUPTS
 
-LOAD_PALETTES:      ; UPDATE BACKGROUND AND SPRITE PALETTE DATA
-    LDA #$20        ; NUMBER OF PALETTE DATA BYTES
-    JSR WR_BUF 
-    LDA #$3F        ; MSB PALETTE VRAM ADDRESS
-    JSR WR_BUF
-    LDA #$00        ; LSB PALETTE VRAM ADDRESS
-    JSR WR_BUF 
-    LDX #$00  
-LOOP_PALETTE_DATA:      
-    LDA PALETTE, X  ; WITH THE PALETTE DATA STORED IN ROM
-    JSR WR_BUF
-    INX
-    CPX #$20
-    BNE LOOP_PALETTE_DATA
-    JSR CMD_SET
-LOAD_BACKGROUND:
-    LDA #$40
-    JSR WR_BUF
-    LDA #$20        ;
-    JSR WR_BUF      ; POINT THE PPU TO THE PALLET VRAM ADDRESS 
-    LDA #$00        ; THE ADDRESS LATCH SHOULD ALREADY BE CLEARED 
-    STA WR_BUF     ; BY READING PPUSTATUS IN THE RESET ROUTINE
-    LDA #$04
-    LDY #$40
-LOOP_BACKGROUND_DATA:
-    JSR WR_BUF
-    DEY
-    BNE LOOP_BACKGROUND_DATA
-    JSR CMD_SET
+    ;
+    ;    Type                .BYTE               ; Type of object
+    ;    Attributes          .BYTE               ; (7: Active)
+    ;    Movement            .BYTE               ; Movement to process for actor this frame
+    ;    XPos                .TAG Position       ; Actors horizontal position in level coordinates
+    ;    YPos                .TAG Position       ; TODO: FIND USE FOR UNUSED HIGH BYTE
+    ;    Velocity            .BYTE               ; How fast does this object move in a given direction? 
+    ;    Const_Acc           .BYTE               ; What rate does velocity change for this actor?
+    ;    Acceleration        .WORD  
+    ;
 
-LOAD_ATTRIBUTES:
-    LDA #$01
-    JSR WR_BUF
-    LDA #$23        ;
-    JSR WR_BUF     ; POINT THE PPU TO THE PALLET VRAM ADDRESS 
-    LDA #$C0        ; THE ADDRESS LATCH SHOULD ALREADY BE CLEARED 
-    JSR WR_BUF     ; BY READING PPUSTATUS IN THE RESET ROUTINE
-    LDA #(3 << 6) | (3 << 4) | (3 << 2) | (3 << 0)
-    JSR WR_BUF
-    JSR CMD_SET
+    LDA #$00
+    JSR WR_ACTOR_BUF                ; Write Actor Index          
+    JSR WR_ACTOR_BUF                ; Write Data Index
+    LDA #.SIZEOF(Actor)
+    JSR WR_ACTOR_BUF                ; Write Packet Size
+    LDA #ACTOR_TYPES::PLAYER        
+    JSR WR_ACTOR_BUF                ; Actor Type
+    LDA #ACTOR_ATTRIBUTES::Active
+    JSR WR_ACTOR_BUF                ; Actor Active
+    LDA #$00
+    JSR WR_ACTOR_BUF                ; Movement
+    JSR WR_ACTOR_BUF                ; XPos LSB
+    JSR WR_ACTOR_BUF                ; XPos MSB 
+    LDA #$36
+    JSR WR_ACTOR_BUF                ; YPos LSB
+    LDA #$00
+    JSR WR_ACTOR_BUF                ; YPos MSB 
+    LDA #$02
+    JSR WR_ACTOR_BUF                ; Velocity
+    LDA #$30                        ; Const_Acc
+    JSR WR_ACTOR_BUF
+    LDA #$00                        ; Acceleration
+    JSR WR_ACTOR_BUF
+    JSR WR_ACTOR_BUF
 
-    LDA #25
-    STA OAM
-    LDA #%00000001
-    STA OAM+1
-    LDA #%00000001
-    STA OAM+2
-    LDA #25
-    STA OAM+3
-    JSR OAM_SET
-
+;---------------------------------------
+; Main Game Loop
+;---------------------------------------
 GAME_LOOP:
     JSR NMI_WAIT
-    JSR READJOY
-    LDA JOYPAD1
-    BEQ GAME_LOOP
-CHECK_RIGHT:
-    LSR A
-    BCC CHECK_LEFT
-    JSR MOVE_RIGHT
-CHECK_LEFT:
-    LSR A
-    BCC CHECK_DOWN
-    JSR MOVE_LEFT
-CHECK_DOWN:
-    LSR A
-    BCC CHECK_UP
-    JSR MOVE_DOWN
-CHECK_UP:
-    LSR A 
-    BCS MOVE_UP
+    JSR ACTORS_TO_SCREEN
+    ;JSR CAMERA_TO_SCREEN
+    JSR READ_JOYPADS
+    JSR UPDATE_ACTORS
     JMP GAME_LOOP
-MOVE_RIGHT:
-    INC OAM+3
-    JSR OAM_SET
-    JMP GAME_LOOP
-    RTS
-MOVE_LEFT:
-    DEC OAM+3
-    JSR OAM_SET
-    JMP GAME_LOOP
-    RTS
-MOVE_UP:
-    DEC OAM
-    JSR OAM_SET
-    JMP GAME_LOOP
-    RTS
-MOVE_DOWN:
-    INC OAM
-    JSR OAM_SET
-    JMP GAME_LOOP
+
+;---------------------------------------
+;
+; This routine will loop through the actor
+; buffer and perform updates on the actors
+;
+;---------------------------------------
+UPDATE_ACTORS: 
+    JSR ACTOR_BUF_DIF
+    BEQ UPDATE_ACTORS_EXIT 
+    JSR RD_ACTOR_BUF        ; Actor Index
+    JSR POINT_TO_ACTOR      ; Actor to OBJ_PTR
+    JSR UPDATE_ACTOR_DATA
+    JSR UPDATE_POSITION
+    JMP UPDATE_ACTORS
+UPDATE_ACTORS_EXIT:
     RTS
 
 ;---------------------------------------
-; Subroutine will signal when NMI handler is done
+; Subroutine will signal when NMI 
+; is complete
+;---------------------------------------
 NMI_WAIT:
     LDA #BITS::BIT_7
     STA NMI_DONE
@@ -122,27 +144,56 @@ NMI_WAIT_LOOP:
     LDA NMI_DONE
     BMI NMI_WAIT_LOOP
     RTS
+
 ;---------------------------------------
-
+; Subroutine sets a flag to let the NMI
+; handler know that OAM Data needs to 
+; be refreshed
+;---------------------------------------
 OAM_SET:
-LDA #BITS::BIT_7
-STA OAMFLAG
-RTS
+    LDA #BITS::BIT_7
+    STA OAMFLAG
+    RTS
 
+;---------------------------------------
+; Subroutine sets a flag to let the NMI
+; handler know that PPUData needs to 
+; be refreshed
+;---------------------------------------
 CMD_SET:
-LDA #BITS::BIT_7
-STA PPUCMDFLAG
-RTS
+    LDA #BITS::BIT_7
+    STA PPUCMDFLAG
+    RTS
 
+;---------------------------------------
+; Subroutine sets a flag to let the NMI
+; handler know that PPUMASK needs to 
+; be refreshed
+;---------------------------------------
 PPUMASK_SET:
-LDA #BITS::BIT_7
-STA PPUMASKFLAG
-RTS
+    LDA #BITS::BIT_7
+    STA PPUMASKFLAG
+    RTS
 
+;---------------------------------------
+; Subroutine sets a flag to let the NMI
+; handler know that PPUCTRL needs to 
+; be refreshed
+;---------------------------------------
 PPUCTRL_SET:
-LDA #BITS::BIT_7
-STA PPUCTRLFLAG
-RTS
+    LDA #BITS::BIT_7
+    STA PPUCTRLFLAG
+    RTS
+
+;---------------------------------------
+; Subroutine sets a flag to let the NMI
+; handler know that PPUSCROLL needs to 
+; be refreshed
+;---------------------------------------
+SCROLLFLAG_SET:
+    LDA #BITS::BIT_7
+    STA SCROLLFLAG
+    RTS
 
 .SEGMENT "RODATA"
 PALETTE: 
