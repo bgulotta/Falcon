@@ -17,8 +17,6 @@ MAIN:
     LDX #$FF        ; INITIALIZE BUFFER POINTERS
     STX CMD_RPTR
     STX CMD_WPTR
-    STX ACTOR_RPTR
-    STX ACTOR_WPTR
 
 LOAD_PALETTES:      ; UPDATE BACKGROUND AND SPRITE PALETTE DATA
     ;LDA #$20        ; NUMBER OF PALETTE DATA BYTES
@@ -69,51 +67,17 @@ LOAD_ATTRIBUTES:
 
     CLI             ; RESPOND TO INTERRUPTS
 
-    ;
-    ;    Type                .BYTE               ; Type of object
-    ;    Attributes          .BYTE               ; (7: Active)
-    ;    Movement            .BYTE               ; Movement to process for actor this frame
-    ;    XPos                .TAG Position       ; Actors horizontal position in level coordinates
-    ;    YPos                .TAG Position       ; TODO: FIND USE FOR UNUSED HIGH BYTE
-    ;    Velocity            .BYTE               ; How fast does this object move in a given direction? 
-    ;    Const_Acc           .BYTE               ; What rate does velocity change for this actor?
-    ;    Acceleration        .WORD  
-    ;
-
-    LDA #$00
-    JSR WR_ACTOR_BUF                ; Write Actor Index          
-    JSR WR_ACTOR_BUF                ; Write Data Index
-    LDA #.SIZEOF(Actor)
-    JSR WR_ACTOR_BUF                ; Write Packet Size
-    LDA #ACTOR_TYPES::PLAYER        
-    JSR WR_ACTOR_BUF                ; Actor Type
-    LDA #ACTOR_ATTRIBUTES::Active
-    JSR WR_ACTOR_BUF                ; Actor Active
-    LDA #$00
-    JSR WR_ACTOR_BUF                ; Movement
-    JSR WR_ACTOR_BUF                ; XPos LSB
-    JSR WR_ACTOR_BUF                ; XPos MSB 
-    LDA #$36
-    JSR WR_ACTOR_BUF                ; YPos LSB
-    LDA #$00
-    JSR WR_ACTOR_BUF                ; YPos MSB 
-    LDA #$02
-    JSR WR_ACTOR_BUF                ; Velocity
-    LDA #$30                        ; Const_Acc
-    JSR WR_ACTOR_BUF
-    LDA #$00                        ; Acceleration
-    JSR WR_ACTOR_BUF
-    JSR WR_ACTOR_BUF
+    ACTOR_INIT  $00, $00, $40, $20
 
 ;---------------------------------------
 ; Main Game Loop
 ;---------------------------------------
 GAME_LOOP:
     JSR NMI_WAIT
-    JSR ACTORS_TO_SCREEN
-    ;JSR CAMERA_TO_SCREEN
     JSR READ_JOYPADS
     JSR UPDATE_ACTORS
+    JSR UPDATE_CAMERA
+    ;JSR CAMERA_TO_SCREEN
     JMP GAME_LOOP
 
 ;---------------------------------------
@@ -122,15 +86,28 @@ GAME_LOOP:
 ; buffer and perform updates on the actors
 ;
 ;---------------------------------------
-UPDATE_ACTORS: 
-    JSR ACTOR_BUF_DIF
-    BEQ UPDATE_ACTORS_EXIT 
-    JSR RD_ACTOR_BUF        ; Actor Index
-    JSR POINT_TO_ACTOR      ; Actor to OBJ_PTR
+UPDATE_ACTORS:  
+    LDA #$00
+    STA OamIndex
+    LDX ACTOR_CNT
+UPDATE_ACTORS_LOOP:
+    DEX
+    BMI UPDATE_ACTORS_EXIT
+    JSR POINT_TO_ACTOR
     JSR UPDATE_ACTOR_DATA
     JSR UPDATE_POSITION
-    JMP UPDATE_ACTORS
+    TXA
+    PHA
+    JSR ACTOR_TO_OAM
+    PLA
+    TAX
+    JMP UPDATE_ACTORS_LOOP
 UPDATE_ACTORS_EXIT:
+    JSR OAM_SET
+    RTS
+
+UPDATE_CAMERA:
+
     RTS
 
 ;---------------------------------------

@@ -58,20 +58,27 @@
 .ENDSCOPE 
 
 .SCOPE ACTOR_TYPES
-        PLAYER = BITS::BIT_0
+        PLAYER        = 0
 .ENDSCOPE
 
 .SCOPE ACTOR_INDEX
-        Type         = 0       
-        Attributes   = 1
-        Movement     = 2 
-        XPos         = 3
-        YPos         = 5
-        Velocity     = 7
-        Const_Acc    = 8
-        Acceleration = 9 
+        MetaData      = 0
+        XPos          = 2
+        YPos          = 4
+        Movement      = 6
+        MovementPrev  = 7
+        Acceleration  = 8
+        Attributes    = 10
+.ENDSCOPE
+
+.SCOPE META_INDEX
+        Type          = 0
+        Attributes    = 1 ; Default Attributes
+        Sprites       = 2
+        Speed         = 4
+        AccelConst    = 5
 .ENDSCOPE
 
 .SCOPE ACTOR_ATTRIBUTES
-        Active = BITS::BIT_7
+        Active = BITS::BIT_7       ; Is Actor active on screen?
 .ENDSCOPE

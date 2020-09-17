@@ -1,21 +1,35 @@
 .SEGMENT "CODE"
 
+.STRUCT Velocity
+    Speed        .BYTE
+    AccelConst .BYTE    
+.ENDSTRUCT
+
+.STRUCT Tile
+    Index      .BYTE
+    Attributes .BYTE
+    XOffset    .BYTE
+    YOffset    .BYTE  ; Tile offset relative to the actor's coordinates
+.ENDSTRUCT
+
+.STRUCT Movement
+    Current    .BYTE
+    Previous   .BYTE
+.ENDSTRUCT 
+
 .STRUCT Position
-    Position   .WORD
+    XPos                .WORD       
+    YPos                .WORD  
 .ENDSTRUCT
 
 .STRUCT Camera
-    XPos   .TAG Position ; The camera's position in level coordinates
+    Coordinates   .TAG Position ; The camera's position in world coordinates
 .ENDSTRUCT
 
 .STRUCT Actor
-    Type                .BYTE               ; Type of object
-    Attributes          .BYTE               ; (7: Active)
-    Movement            .BYTE               ; Movement to process for actor this frame
-    XPos                .TAG Position       ; Actors horizontal position in level coordinates
-    YPos                .TAG Position       ; TODO: FIND USE FOR UNUSED HIGH BYTE
-    Velocity            .BYTE               ; How fast does this object move in a given direction? 
-    Const_Acc           .BYTE               ; What rate does velocity change for this actor?
-    Acceleration        .WORD               ; How fast is the actor currently accelerating? (LSB: Fraction, MSB: Whole)   
-    
+    MetaData            .WORD ; Pointer to this Actor's static meta data     
+    Coordinates         .TAG  Position       ; Actor's world coordinates
+    Movement            .TAG  Movement       ; Actor's movement actions
+    Acceleration        .WORD ; Players current acceleration
+    Attributes          .BYTE ; Player attributes (Active, Initialized, Health .ETC)
  .ENDSTRUCT

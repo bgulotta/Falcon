@@ -2,7 +2,9 @@
 .DEFINE _GAME_SYMBOLS_
 
 .SEGMENT "ZEROPAGE"
-OBJ_PTR: .RES 2
+ACTOR_PTR:      .RES 2
+META_PTR:       .RES 2
+SPRITE_PTR:     .RES 2
 .ENDIF
 
 .SEGMENT "OAM"
@@ -22,21 +24,26 @@ SCROLLY:     .RES 1
 CMD_RPTR:    .RES 1
 CMD_WPTR:    .RES 1
 CMDBUF:      .RES 256
-ACTOR_RPTR:  .RES 1
-ACTOR_WPTR:  .RES 1
-ACTORBUF:    .RES 256
 JOYPAD1:     .RES 1
 JOYPAD2:     .RES 1
 JOYPAD3:     .RES 1
 JOYPAD4:     .RES 1
+Actor_XPos:  .RES 2
+Actor_YPos:  .RES 2
+NumTiles:    .RES 1
+OamIndex:    .RES 1
 
-Cam: .TAG Camera
+Cam: 
+    .TAG Camera
 Actors: 
-    .TAG Actor
-    .TAG Actor
-    .TAG Actor
     .TAG Actor
 
 .SEGMENT "CODE"
-NUM_ACTORS: .BYTE $04
+ACTOR_CNT: .BYTE $01
 
+ActorMeta:
+    ; Type, Attributes, Sprites, Velocity (Speed, Acceleration Const)
+    .BYTE $01, $80, .LOBYTE(ActorTiles), .HIBYTE(ActorTiles), $01, $80 
+ActorTiles:
+    ; Num tiles, [YOffset, Tile Index, Attributes, XOffset] 
+    .BYTE $04, $00, $01, $01, $00, $00, $01, $40, $08, $08, $01, $80, $00, $08, $01, $C0, $08     

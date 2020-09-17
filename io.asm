@@ -11,16 +11,5 @@ LOOP:
     LSR A                  ; SHIFT BITS RIGHT; LSB(1|0) -> C;
     ROL JOYPAD1            ; SHIFT BITS LEFT; C -> BIT0 ; BIT7 -> C
     BCC LOOP               ; WHILE C(0)
-    LDA JOYPAD1
-    ;BEQ READ_JOYPADS_EXIT
-UPDATE_P1_MOVEMENT:
-    LDA #$00
-    JSR WR_ACTOR_BUF            ; Write Actor Index
-    LDA #ACTOR_INDEX::Movement  
-    JSR WR_ACTOR_BUF            ; Write Data Index
-    LDA #$01
-    JSR WR_ACTOR_BUF            ; Write Packet Size
-    LDA JOYPAD1
-    JSR WR_ACTOR_BUF            ; Write Data
 READ_JOYPADS_EXIT:
     RTS
