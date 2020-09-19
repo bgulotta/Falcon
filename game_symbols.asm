@@ -11,6 +11,10 @@ SPRITE_PTR:     .RES 2
 OAM: .RES 256
 
 .SEGMENT "RAM"
+SCROLLX:     .RES 2
+SCROLLY:     .RES 2
+PrevX:       .RES 2
+PrevY:       .RES 2
 NMI_DONE:    .RES 1
 PPUCMDFLAG:  .RES 1
 PPUMASKFLAG: .RES 1
@@ -19,11 +23,8 @@ OAMFLAG:     .RES 1
 SCROLLFLAG:  .RES 1
 PPUMASKBUF:  .RES 1
 PPUCTRLBUF:  .RES 1
-SCROLLX:     .RES 1
-SCROLLY:     .RES 1
 CMD_RPTR:    .RES 1
 CMD_WPTR:    .RES 1
-CMDBUF:      .RES 256
 JOYPAD1:     .RES 1
 JOYPAD2:     .RES 1
 JOYPAD3:     .RES 1
@@ -32,18 +33,36 @@ Actor_XPos:  .RES 2
 Actor_YPos:  .RES 2
 NumTiles:    .RES 1
 OamIndex:    .RES 1
+CMDBUF:      .RES 128
 
+.SEGMENT "CAMERA"
 Cam: 
     .TAG Camera
+.SEGMENT "ACTORS"
 Actors: 
+    .TAG Actor
+    .TAG Actor
+    .TAG Actor
+    .TAG Actor
+    .TAG Actor
+    .TAG Actor
+    .TAG Actor
+    .TAG Actor
+    .TAG Actor
+    .TAG Actor
+    .TAG Actor
+    .TAG Actor
+    .TAG Actor
+    .TAG Actor
+    .TAG Actor
     .TAG Actor
 
 .SEGMENT "CODE"
-ACTOR_CNT: .BYTE $01
+ActorCount = $10
 
 ActorMeta:
     ; Type, Attributes, Sprites, Velocity (Speed, Acceleration Const)
-    .BYTE $01, $80, .LOBYTE(ActorTiles), .HIBYTE(ActorTiles), $01, $80 
+    .BYTE $00, $80, .LOBYTE(ActorTiles), .HIBYTE(ActorTiles), $01, $80 
 ActorTiles:
     ; Num tiles, [YOffset, Tile Index, Attributes, XOffset] 
     .BYTE $04, $00, $01, $01, $00, $00, $01, $40, $08, $08, $01, $80, $00, $08, $01, $C0, $08     

@@ -61,7 +61,7 @@
         PLAYER        = 0
 .ENDSCOPE
 
-.SCOPE ACTOR_INDEX
+.SCOPE ACTOR_DATA
         MetaData      = 0
         XPos          = 2
         YPos          = 4
@@ -69,9 +69,11 @@
         MovementPrev  = 7
         Acceleration  = 8
         Attributes    = 10
+        NextActor     = 11
+        Index         = 13
 .ENDSCOPE
 
-.SCOPE META_INDEX
+.SCOPE META_DATA
         Type          = 0
         Attributes    = 1 ; Default Attributes
         Sprites       = 2

@@ -9,10 +9,17 @@
 ; the player. Camera boundary checking
 ; should take place here as well.
 ;---------------------------------------
-MOVE_CAMERA: ; TODO: Loop all active players
-    ;SEC 
-    ;LDA #$20 ; 32 pixel window
-    ;SBC P1+Player::
+UPDATE_CAMERA_POSITION: 
+    LDY #META_DATA::Type
+    LDA (META_PTR), Y                   ; Only player types affect the position of the camera
+    BNE  UPDATE_CAMERA_POSITION_EXIT    
+    LDY #ACTOR_DATA::XPos              ; Update Cam X LSB
+    LDA (ACTOR_PTR), Y
+    STA Cam
+    LDY #ACTOR_DATA::XPos + 1          ; Update Cam X MSB
+    LDA (ACTOR_PTR), Y
+    STA Cam + 1
+UPDATE_CAMERA_POSITION_EXIT:
     RTS
 
 ;---------------------------------------
@@ -21,6 +28,10 @@ MOVE_CAMERA: ; TODO: Loop all active players
 ; PPU. If the camera moved then scrolling 
 ; should take place.
 ;---------------------------------------
-CAMERA_TO_SCREEN:
-
+CAMERA_TO_SCROLL:
+    LDA Cam 
+    STA SCROLLX
+    LDA Cam + 2
+    STA SCROLLY
+    JSR SCROLLFLAG_SET
     RTS
