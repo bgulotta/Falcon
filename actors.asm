@@ -251,16 +251,16 @@ MOVE_LEFT:
     PHA
     JSR ACTOR_ACCELERATE
     SEC
-    LDY #ACTOR_DATA::XPos            ; We need to load the current  
-    LDA (ACTOR_PTR), Y                  
+    LDY #ACTOR_DATA::XPos              
+    LDA (ACTOR_PTR), Y                  ; Load the XPos   
     LDY #ACTOR_DATA::Acceleration + 1         
-    SBC (ACTOR_PTR), Y    ; XPos and subtract the appropriate
-    LDY #ACTOR_DATA::XPos            ; We need to load the current  
-    STA (ACTOR_PTR), Y    ; and store the result.
+    SBC (ACTOR_PTR), Y                  ; Subtract Acceleration
+    LDY #ACTOR_DATA::XPos              
+    STA (ACTOR_PTR), Y                  ; Update XPos.
     LDY #ACTOR_DATA::XPos + 1
-    LDA (ACTOR_PTR), Y    ; If carry flag is clear then 
-    SBC #$00            ; subtract 1 from the XPos MSB
-    STA (ACTOR_PTR), Y    ; and store the result
+    LDA (ACTOR_PTR), Y                  ; If carry flag is clear then 
+    SBC #$00                            ; subtract 1 from the XPos MSB
+    STA (ACTOR_PTR), Y
     BCS EXIT_MOVE_LEFT
 RESET_ACTOR_POSITION:
     LDA PrevX
@@ -344,21 +344,17 @@ CONTINUE_ACCELERATION:
 EXIT_ACTOR_ACCELERATE:
     RTS
 
-ACTOR_TO_SCREEN_COORD:
-    
+ACTOR_TO_SCREEN_COORD: 
     SEC
-    LDA Cam 
-    LDY #ACTOR_DATA::XPos          ; Subtract the players X Pos
-    SBC (ACTOR_PTR), Y 
-    STA Actor_XPos                  ; for incrementing
+    LDY #ACTOR_DATA::XPos           ; Subtract the actor's
+    LDA (ACTOR_PTR), Y              ; XPos with the camera's
+    SBC Cam                         ; XPos and store in 
+    STA ScreenX                     ; ScreenX
     SEC
-    LDA #$80 ; Camera is centered
-    SBC Actor_XPos
-    STA Actor_XPos
-    LDY #ACTOR_DATA::YPos          ; the tile position
-    LDA (ACTOR_PTR), Y 
-    STA Actor_YPos
-   
+    LDY #ACTOR_DATA::YPos           ; Subtract the actor's
+    LDA (ACTOR_PTR), Y              ; YPos with the camera's 
+    SBC Cam +1                      ; YPos and store in
+    STA ScreenY                     ; ScreenY
     RTS
 
 ACTOR_TO_OAM:
@@ -372,7 +368,7 @@ TILE_LOOP:
     SEC 
     CLC             
     LDA (SPRITE_PTR), Y ; Y Offset
-    ADC Actor_YPos
+    ADC ScreenY
     STA OAM, X
     INX
     INY 
@@ -386,7 +382,7 @@ TILE_LOOP:
     INY 
     CLC             
     LDA (SPRITE_PTR), Y ; X Offset
-    ADC Actor_XPos
+    ADC ScreenX
     STA OAM, X
     INX
     STX OamIndex

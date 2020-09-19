@@ -23,16 +23,16 @@ OAMFLAG:     .RES 1
 SCROLLFLAG:  .RES 1
 PPUMASKBUF:  .RES 1
 PPUCTRLBUF:  .RES 1
-CMD_RPTR:    .RES 1
-CMD_WPTR:    .RES 1
 JOYPAD1:     .RES 1
 JOYPAD2:     .RES 1
 JOYPAD3:     .RES 1
 JOYPAD4:     .RES 1
-Actor_XPos:  .RES 2
-Actor_YPos:  .RES 2
+ScreenX:     .RES 2
+ScreenY:     .RES 2
 NumTiles:    .RES 1
 OamIndex:    .RES 1
+CMD_RPTR:    .RES 1
+CMD_WPTR:    .RES 1
 CMDBUF:      .RES 128
 
 .SEGMENT "CAMERA"
