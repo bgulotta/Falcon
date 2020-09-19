@@ -3,10 +3,10 @@
 .MACRO      ACTOR_INIT Type, Index, XCoord, YCoord
             LDA #Index
             JSR POINT_TO_ACTOR
-            LDY #ACTOR_DATA::Attributes ; We could be re-using
             LDA #$00                     ; an actor slot. initially 
+            LDY #ACTOR_DATA::Attributes ; We could be re-using
             STA (ACTOR_PTR), Y           ; zero out the attributes
-            LDY #Type
+            LDA #Type
             JSR POINT_TO_META
             LDY #ACTOR_DATA::MetaData
             LDA META_PTR

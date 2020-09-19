@@ -1,5 +1,9 @@
 .SEGMENT "CODE"
 
+UPDATE_CAMERA:
+
+RTS
+
 ;---------------------------------------
 ; Routine checks to see if the player is 
 ; in the camera's window. If not it will

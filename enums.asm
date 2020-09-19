@@ -58,27 +58,29 @@
 .ENDSCOPE 
 
 .SCOPE ACTOR_TYPES
-        PLAYER        = 0
+        Player   = 0
+        Camera   = 1
 .ENDSCOPE
 
 .SCOPE ACTOR_DATA
-        MetaData      = 0
-        XPos          = 2
-        YPos          = 4
-        Movement      = 6
-        MovementPrev  = 7
-        Acceleration  = 8
-        Attributes    = 10
-        NextActor     = 11
-        Index         = 13
+        Index         = 0
+        MetaData      = 1
+        XPos          = 3
+        YPos          = 5
+        Movement      = 7
+        MovementPrev  = 8
+        Acceleration  = 9
+        Attributes    = 11
+        NextActor     = 12
 .ENDSCOPE
 
 .SCOPE META_DATA
         Type          = 0
         Attributes    = 1 ; Default Attributes
-        Sprites       = 2
-        Speed         = 4
-        AccelConst    = 5
+        Speed         = 2
+        AccelConst    = 3
+        Sprites       = 4
+        UpdateFunc    = 6
 .ENDSCOPE
 
 .SCOPE ACTOR_ATTRIBUTES

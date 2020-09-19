@@ -135,9 +135,9 @@ SET_SPRITE_ZP_EXIT:
 
 POINT_TO_META:
     TAY                     ; Transfer Actor Type to Y
-    LDA #.LOBYTE(ActorMeta) ; Store start of actor's metadata 
+    LDA #.LOBYTE(Meta) ; Store start of actor's metadata 
     STA META_PTR      ; In zero page
-    LDA #.HIBYTE(ActorMeta)
+    LDA #.HIBYTE(Meta)
     STA META_PTR + 1
     TYA                     ; Restore Actor Index to A
 POINT_TO_META_LOOP:
@@ -145,7 +145,7 @@ POINT_TO_META_LOOP:
 NEXT_META:
     CLC                     ; Otherwise loop through the actor's meta one at a time
     LDA META_PTR       ; Incrementing the ACTOR_META_PTR by
-    ADC #$06                ; the size of the meta data
+    ADC #$08                ; the size of the meta data
     STA META_PTR           ; If carry is clear after add then no need to 
     BCC POINT_TO_META_NEXT     ; increment the high byte of the address
     INC META_PTR + 1       ; Otherwise increment high byte of addresss
@@ -156,13 +156,13 @@ POINT_TO_META_EXIT:
     RTS
 
 UPDATE_ACTOR_DATA:
-    LDY #ACTOR_DATA::Index
-    LDA (ACTOR_PTR), Y   
-    BNE UPDATE_ACTOR_DATA_EXIT
-    LDY #ACTOR_DATA::Movement
-    LDA JOYPAD1
-    STA (ACTOR_PTR), Y    
-UPDATE_ACTOR_DATA_EXIT:
+    LDY #META_DATA::UpdateFunc
+    LDA (META_PTR), Y
+    STA JmpPtr
+    LDY #META_DATA::UpdateFunc + 1
+    LDA (META_PTR), Y
+    STA JmpPtr + 1
+    JMP (JmpPtr)
     RTS
 
 SAVE_ACTOR_POSITION:

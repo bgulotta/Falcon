@@ -1,0 +1,5 @@
+UPDATE_PLAYER:
+    LDA JOYPAD1
+    LDY #ACTOR_DATA::Movement
+    STA (ACTOR_PTR), Y    
+    RTS
