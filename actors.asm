@@ -169,16 +169,16 @@ SAVE_ACTOR_POSITION:
     PHA
     LDY #ACTOR_DATA::XPos
     LDA (ACTOR_PTR), Y
-    STA PrevX
+    STA WorldX
     LDY #ACTOR_DATA::XPos + 1
     LDA (ACTOR_PTR), Y
-    STA PrevX + 1
+    STA WorldX + 1
     LDY #ACTOR_DATA::YPos
     LDA (ACTOR_PTR), Y
-    STA PrevY
+    STA WorldY
     LDY #ACTOR_DATA::YPos + 1
     LDA (ACTOR_PTR), Y
-    STA PrevY + 1
+    STA WorldY + 1
     PLA 
     RTS
 
@@ -263,13 +263,13 @@ MOVE_LEFT:
     STA (ACTOR_PTR), Y
     BCS EXIT_MOVE_LEFT
 RESET_ACTOR_POSITION:
-    LDA PrevX
+    LDA WorldX
     LDY #ACTOR_DATA::XPos
     STA (ACTOR_PTR), Y
-    LDA PrevX + 1
+    LDA WorldX + 1
     LDY #ACTOR_DATA::XPos + 1
     STA (ACTOR_PTR), Y
-    LDA PrevX
+    LDA WorldX
 EXIT_MOVE_LEFT:
     PLA
     RTS

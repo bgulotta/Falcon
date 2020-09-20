@@ -13,8 +13,8 @@ OAM: .RES 256
 .SEGMENT "RAM"
 SCROLLX:     .RES 2
 SCROLLY:     .RES 2
-PrevX:       .RES 2
-PrevY:       .RES 2
+WorldX:      .RES 2
+WorldY:      .RES 2
 NMI_DONE:    .RES 1
 PPUCMDFLAG:  .RES 1
 PPUMASKFLAG: .RES 1
@@ -71,6 +71,6 @@ CameraMeta:
 Tiles:
     ; Num tiles, [YOffset, Tile Index, Attributes, XOffset] 
 PlayerTiles:
-    .BYTE $04, $00, $01, $01, $00, $00, $01, $40, $08, $08, $01, $80, $00, $08, $01, $C0, $08     
+    .BYTE $04, $00, $01, $01, $00, $00, $01, $40, $06, $06, $01, $80, $00, $06, $01, $C0, $06     
 CameraTiles:
     .BYTE $01, $00, $01, $00, $00     

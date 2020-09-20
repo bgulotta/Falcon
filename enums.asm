@@ -46,15 +46,15 @@
         VBLANK_START = BITS::BIT_7 ; VERTICAL BLANK HAS STARTED (0: NOT IN VBLANK; 1: IN VBLANK). SET AT DOT 1 OF LINE 241 (THE LINE *AFTER* THE POST-RENDER LINE); CLEARED AFTER READING PPUSTATUS AND AT DOT 1 OF THE PRE-RENDER LINE.
 .ENDSCOPE
 
-.SCOPE JOYPAD 
-        BUTTON_A = BITS::BIT_7
-        BUTTON_B = BITS::BIT_6
-        SELECT   = BITS::BIT_5
-        START    = BITS::BIT_4
-        UP       = BITS::BIT_3
-        DOWN     = BITS::BIT_2
-        LEFT     = BITS::BIT_1
-        RIGHT    = BITS::BIT_0
+.SCOPE JOYPAD
+        ButtonA  = BITS::BIT_7
+        ButtonB  = BITS::BIT_6
+        Select   = BITS::BIT_5
+        Start    = BITS::BIT_4
+        Up       = BITS::BIT_3
+        Down     = BITS::BIT_2
+        Left     = BITS::BIT_1
+        Right    = BITS::BIT_0
 .ENDSCOPE 
 
 .SCOPE ACTOR_TYPES

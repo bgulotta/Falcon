@@ -1,7 +1,9 @@
 .SEGMENT "CODE"
 
 UPDATE_CAMERA:
-
+    LDA #JOYPAD::Left
+    LDY #ACTOR_DATA::Movement
+    STA (ACTOR_PTR), Y    
 RTS
 
 ;---------------------------------------

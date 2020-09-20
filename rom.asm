@@ -70,10 +70,10 @@ LOAD_ATTRIBUTES:
     CLI             ; RESPOND TO INTERRUPTS
 
     JSR INITIALIZE_ACTORS
-    ;ACTOR_INIT  $01, ActorCount - 1, $60, $60
     ;ACTOR_INIT  $00, $00, $40, $20
-    ACTOR_INIT  $00, $01, $80, $40
-
+    ACTOR_INIT  $00, $01, $F8, $20
+    ACTOR_INIT  $01, ActorCount - 1, $60, $60
+    
 ;---------------------------------------
 ; Main Game Loop
 ;---------------------------------------
