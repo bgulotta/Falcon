@@ -56,7 +56,7 @@ LOAD_ATTRIBUTES:
     LDA #$C0        ; THE ADDRESS LATCH SHOULD ALREADY BE CLEARED 
     STA PPUADDR
     LDA #(3 << 6) | (3 << 4) | (3 << 2) | (3 << 0)
-    STA PPUDATA
+    STA PPUDATA 
     ;JSR CMD_SET
 
     LDA #(PPUCTRL::NMI_ENABLE | PPUCTRL::PT_ADDR_BG) ; INITIAL PPUCTRL WRITE HAS TO ENABLE NMI INTERRUPTS; SUBSEQUENT WRITES TO PPUCTRL WILL BE BUFFERED AND TAKE PLACE IN NMI
@@ -69,10 +69,11 @@ LOAD_ATTRIBUTES:
 
     CLI             ; RESPOND TO INTERRUPTS
 
+ 
     JSR ACTORS_INIT
 
-    ACTOR_INIT  $01, $00, $60, $60
-    ACTOR_INIT  $00, $01, $F8, $20
+    ACTOR_INIT  $01, $00, $60, $20
+    ACTOR_INIT  $00, $01, $20, $40
     
 ;---------------------------------------
 ; Main Game Loop
@@ -95,11 +96,11 @@ UPDATE_ACTORS:
     LDA #$01
     JSR POINT_TO_ACTOR
 UPDATE_ACTORS_LOOP:
-    LDY #ACTOR_DATA::Attributes     ; If the actor is not active 
-    LDA (ACTOR_PTR), Y              ; initialized then check the
-    BPL UPDATE_ACTOR_NEXT           ; next actor
+    LDA #ACTOR_ATTRIBUTES::Initialized
+    LDY #ACTOR_DATA::Attributes     ; If the actor is not initialized then  
+    AND (ACTOR_PTR), Y              ; move on to the next actor slot
+    BEQ UPDATE_ACTOR_NEXT 
     JSR UPDATE_ACTOR_DATA
-    JSR UPDATE_ACTOR_POSITION
     JSR ACTOR_TO_OAM
 UPDATE_ACTOR_NEXT:
     JSR NEXT_ACTOR

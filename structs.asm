@@ -22,6 +22,11 @@
     YPos        .WORD  
 .ENDSTRUCT
 
+.STRUCT ViewPort
+    Begin .TAG Position
+    End   .TAG Position
+.ENDSTRUCT
+
 .STRUCT Actor
     Index               .BYTE ; The index of this actor
     MetaData            .WORD ; Pointer to this Actor's static meta data     

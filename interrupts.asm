@@ -53,9 +53,9 @@ UPDATE_PPUMASK:
     JMP PPUSCROLL_CHK
 UPDATE_PPUSCROLL:
     BIT PPUSTATUS   ; RESET ADDRESS
-    LDA ScrollX
+    LDA ViewPort + ViewPort::Begin
     STA PPUSCROLL
-    LDA ScrollY
+    LDA ViewPort + ViewPort::Begin + 2
     STA PPUSCROLL
     LDA PPUCTRLBUF
     STA PPUCTRL

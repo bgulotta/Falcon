@@ -80,9 +80,11 @@
         Speed         = 2
         AccelConst    = 3
         Sprites       = 4
-        UpdateFunc    = 6
+        UpdateData    = 6
 .ENDSCOPE
 
 .SCOPE ACTOR_ATTRIBUTES
-        Active = BITS::BIT_7       ; Is Actor active on screen?
+        Active = BITS::BIT_7       ; Is on screen?
+        Initialized = BITS::BIT_6  ; Is initialized?
+        Direction = BITS::BIT_0    ; Is Actor facing left or right? 0 left 1 right
 .ENDSCOPE

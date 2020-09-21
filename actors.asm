@@ -160,30 +160,77 @@ POINT_TO_META_EXIT:
     RTS
 
 UPDATE_ACTOR_DATA:
-    LDY #META_DATA::UpdateFunc
+    JSR CHECK_ACTOR_ACTIVE
+    LDY #ACTOR_DATA::Attributes     ; If the actor is not active on screen 
+    LDA (ACTOR_PTR), Y              ; then don't attempt to render them
+    BPL UPDATE_ACTOR_DATA_EXIT 
+    LDY #META_DATA::UpdateData
     LDA (META_PTR), Y
     STA JmpPtr
-    LDY #META_DATA::UpdateFunc + 1
+    LDY #META_DATA::UpdateData + 1
     LDA (META_PTR), Y
     STA JmpPtr + 1
+    JSR JUMP_TO_FUNC
+    JSR UPDATE_ACTOR_POSITION
+UPDATE_ACTOR_DATA_EXIT:
+    RTS
+
+JUMP_TO_FUNC:
     JMP (JmpPtr)
     RTS
 
-SAVE_ACTOR_POSITION:
-    PHA
+CHECK_ACTOR_ACTIVE:
+    LDA #ACTOR_TYPES::Camera 
+    LDY #META_DATA::Type
+    CMP (META_PTR), Y
+    BEQ SET_ACTOR_ACTIVE
+    SEC                                 ; Is the actor's x-pos less than  
+    LDA ViewPort + ViewPort::End        ; the end of the view port?
+    LDY #ACTOR_DATA::XPos
+    SBC (ACTOR_PTR), Y
+    LDA ViewPort + ViewPort::End + 1    
+    LDY #ACTOR_DATA::XPos + 1
+    SBC (ACTOR_PTR), Y
+    BCC SET_ACTOR_INACTIVE
+    SEC                                 ; Is the actor's x-pos less than  
     LDY #ACTOR_DATA::XPos
     LDA (ACTOR_PTR), Y
-    STA WorldX
+    SBC ViewPort + ViewPort::Begin      ; the end of the view port?
     LDY #ACTOR_DATA::XPos + 1
     LDA (ACTOR_PTR), Y
-    STA WorldX + 1
-    LDY #ACTOR_DATA::YPos
+    SBC ViewPort + ViewPort::Begin + 1      ; the end of the view port?
+    BCC SET_ACTOR_INACTIVE
+SET_ACTOR_ACTIVE:
+    LDA #ACTOR_ATTRIBUTES::Active
+    LDY #ACTOR_DATA::Attributes
+    ORA (ACTOR_PTR), Y
+    STA (ACTOR_PTR), Y
+    JMP CHECK_ACTOR_ACTIVE_EXIT
+SET_ACTOR_INACTIVE:
+    LDA #$7F
+    LDY #ACTOR_DATA::Attributes
+    AND (ACTOR_PTR), Y
+    STA (ACTOR_PTR), Y
+CHECK_ACTOR_ACTIVE_EXIT:
+    RTS
+
+UPDATE_ACTOR_DIRECTION:
+    AND #JOYPAD::Left | JOYPAD::Right  ; If we are not moving left or right just exit
+    BNE UPDATE_DIRECTION
+    JMP UPDATE_ACTOR_DIRECTION_EXIT
+UPDATE_DIRECTION:
+    LDY #ACTOR_DATA::Attributes
+    AND #JOYPAD::Right                 ; Otherwise update the direction 
+    BNE UPDATE_DIRECTION_RIGHT
+UPDATE_DIRECTION_LEFT:
     LDA (ACTOR_PTR), Y
-    STA WorldY
-    LDY #ACTOR_DATA::YPos + 1
-    LDA (ACTOR_PTR), Y
-    STA WorldY + 1
-    PLA 
+    AND #$FE       
+    JMP UPDATE_DIRECTION_SET
+UPDATE_DIRECTION_RIGHT:
+    ORA (ACTOR_PTR), Y
+UPDATE_DIRECTION_SET:
+    STA (ACTOR_PTR), Y
+UPDATE_ACTOR_DIRECTION_EXIT:
     RTS
 
 UPDATE_ACTOR_POSITION:
@@ -223,6 +270,33 @@ UPDATE_POSITION_EXIT:
     LDA (ACTOR_PTR), Y
     LDY #ACTOR_DATA::MovementPrev
     STA (ACTOR_PTR), Y
+    RTS
+
+SAVE_ACTOR_POSITION:
+    PHA
+    LDY #ACTOR_DATA::XPos
+    LDA (ACTOR_PTR), Y
+    STA TempX
+    LDY #ACTOR_DATA::XPos + 1
+    LDA (ACTOR_PTR), Y
+    STA TempX + 1
+    LDY #ACTOR_DATA::YPos
+    LDA (ACTOR_PTR), Y
+    STA TempY
+    LDY #ACTOR_DATA::YPos + 1
+    LDA (ACTOR_PTR), Y
+    STA TempY + 1
+    PLA 
+    RTS
+
+RESTORE_ACTOR_POSITION:
+    LDA TempX
+    LDY #ACTOR_DATA::XPos
+    STA (ACTOR_PTR), Y
+    LDA TempX + 1
+    LDY #ACTOR_DATA::XPos + 1
+    STA (ACTOR_PTR), Y
+    LDA TempX
     RTS
 
 ;-----------------------------------------------
@@ -266,14 +340,7 @@ MOVE_LEFT:
     SBC #$00                            ; subtract 1 from the XPos MSB
     STA (ACTOR_PTR), Y
     BCS EXIT_MOVE_LEFT
-RESET_ACTOR_POSITION:
-    LDA WorldX
-    LDY #ACTOR_DATA::XPos
-    STA (ACTOR_PTR), Y
-    LDA WorldX + 1
-    LDY #ACTOR_DATA::XPos + 1
-    STA (ACTOR_PTR), Y
-    LDA WorldX
+    JSR RESTORE_ACTOR_POSITION
 EXIT_MOVE_LEFT:
     PLA
     RTS
@@ -350,18 +417,30 @@ EXIT_ACTOR_ACCELERATE:
 
 ACTOR_TO_SCREEN_COORD: 
     SEC
-    LDY #ACTOR_DATA::XPos           ; Subtract the actor's
-    LDA (ACTOR_PTR), Y              ; XPos with the camera's
-    SBC Camera, Y                   ; XPos with the camera's    
+    LDY #ACTOR_DATA::XPos                   ; Subtract the actor's
+    LDA (ACTOR_PTR), Y                      ; XPos with start of the viewport
+    SBC ViewPort + ViewPort::Begin          ; the end of the view port?
     STA ScreenX                     ; ScreenX
-    SEC
-    LDY #ACTOR_DATA::YPos           ; Subtract the actor's
-    LDA (ACTOR_PTR), Y              ; YPos with the camera's 
-    SBC Camera, Y                   ; XPos with the camera's    
-    STA ScreenY                     ; ScreenY
+    LDY #ACTOR_DATA::XPos + 1               ; Subtract the actor's
+    LDA (ACTOR_PTR), Y                      ; XPos with start of the viewport
+    SBC ViewPort + ViewPort::Begin + 1      ; the end of the view port?
+    STA ScreenX + 1                     ; ScreenX
+
+    LDY #ACTOR_DATA::YPos                   ; Subtract the actor's
+    LDA (ACTOR_PTR), Y                      ; XPos with start of the viewport
+    SBC ViewPort + ViewPort::Begin + 2          ; the end of the view port?
+    STA ScreenY                     ; ScreenX
+    LDY #ACTOR_DATA::YPos + 1               ; Subtract the actor's
+    LDA (ACTOR_PTR), Y                      ; XPos with start of the viewport
+    SBC ViewPort + ViewPort::Begin + 3      ; the end of the view port?
+    STA ScreenY + 1                     ; ScreenX
+
     RTS
 
 ACTOR_TO_OAM:
+    LDY #ACTOR_DATA::Attributes     ; If the actor is not active on screen 
+    LDA (ACTOR_PTR), Y              ; then don't attempt to render them
+    BPL ACTOR_TO_OAM_EXIT
     JSR ACTOR_TO_SCREEN_COORD
     LDY #$00
     LDA (SPRITE_PTR), Y ; Get the # of Tiles that make up this actor

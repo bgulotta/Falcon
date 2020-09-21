@@ -30,8 +30,8 @@
             LDY #ACTOR_DATA::Acceleration + 1
             STA (ACTOR_PTR), Y
             LDY #META_DATA::Attributes
-            LDA (META_PTR), Y
+            LDA (META_PTR), Y            
+            ORA #ACTOR_ATTRIBUTES::Initialized
             LDY #ACTOR_DATA::Attributes
-            ORA #ACTOR_ATTRIBUTES::Active
             STA (ACTOR_PTR), Y
 .ENDMACRO

@@ -11,8 +11,8 @@ SPRITE_PTR:     .RES 2
 OAM: .RES 256
 
 .SEGMENT "RAM"
-WorldX:      .RES 2
-WorldY:      .RES 2
+TempX:       .RES 2
+TempY:       .RES 2
 NMI_DONE:    .RES 1
 PPUCMDFLAG:  .RES 1
 PPUMASKFLAG: .RES 1
@@ -32,9 +32,12 @@ OamIndex:    .RES 1
 CMD_RPTR:    .RES 1
 CMD_WPTR:    .RES 1
 JmpPtr:      .RES 2
-ScrollX:     .RES 1
-ScrollY:     .RES 1
+CamDestX:    .RES 2         ; Camera's X Destination
+CamDestY:    .RES 2         ; Camera's Y Destination
 CMDBUF:      .RES 128
+
+.SEGMENT "VIEWPORT"
+ViewPort: .TAG ViewPort
 
 .SEGMENT "ACTORS"
 Actors: 
@@ -63,9 +66,9 @@ ActorCount = $10
 Meta:
     ; Type, Attributes, Velocity, Tiles, Update Routine
 PlayerMeta:
-    .BYTE $00, $80, $01, $80, .LOBYTE(PlayerTiles), .HIBYTE(PlayerTiles), .LOBYTE(UPDATE_PLAYER), .HIBYTE(UPDATE_PLAYER) 
+    .BYTE $00, $01, $01, $80, .LOBYTE(PlayerTiles), .HIBYTE(PlayerTiles), .LOBYTE(UPDATE_PLAYER), .HIBYTE(UPDATE_PLAYER) 
 CameraMeta:
-    .BYTE $01, $80, $01, $80, .LOBYTE(CameraTiles), .HIBYTE(CameraTiles), .LOBYTE(UPDATE_CAMERA), .HIBYTE(UPDATE_CAMERA)
+    .BYTE $01, $00, $01, $80, .LOBYTE(CameraTiles), .HIBYTE(CameraTiles), .LOBYTE(UPDATE_CAMERA), .HIBYTE(UPDATE_CAMERA)
     
 Tiles:
     ; Num tiles, [YOffset, Tile Index, Attributes, XOffset] 
