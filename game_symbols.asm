@@ -11,8 +11,6 @@ SPRITE_PTR:     .RES 2
 OAM: .RES 256
 
 .SEGMENT "RAM"
-SCROLLX:     .RES 2
-SCROLLY:     .RES 2
 WorldX:      .RES 2
 WorldY:      .RES 2
 NMI_DONE:    .RES 1
@@ -34,13 +32,13 @@ OamIndex:    .RES 1
 CMD_RPTR:    .RES 1
 CMD_WPTR:    .RES 1
 JmpPtr:      .RES 2
+ScrollX:     .RES 1
+ScrollY:     .RES 1
 CMDBUF:      .RES 128
 
-.SEGMENT "CAMERA"
-Cam: 
-    .TAG Camera
 .SEGMENT "ACTORS"
 Actors: 
+Camera:
     .TAG Actor
     .TAG Actor
     .TAG Actor
@@ -56,6 +54,7 @@ Actors:
     .TAG Actor
     .TAG Actor
     .TAG Actor
+LastActor:
     .TAG Actor
 
 .SEGMENT "CODE"

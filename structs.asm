@@ -1,7 +1,7 @@
 .SEGMENT "CODE"
 
 .STRUCT Velocity
-    Speed        .BYTE
+    Speed      .BYTE
     AccelConst .BYTE    
 .ENDSTRUCT
 
@@ -18,12 +18,8 @@
 .ENDSTRUCT 
 
 .STRUCT Position
-    XPos                .WORD       
-    YPos                .WORD  
-.ENDSTRUCT
-
-.STRUCT Camera
-    Coordinates   .TAG Position ; The camera's position in world coordinates
+    XPos        .WORD       
+    YPos        .WORD  
 .ENDSTRUCT
 
 .STRUCT Actor

@@ -1,6 +1,6 @@
 .SEGMENT "CODE"
 
-INITIALIZE_ACTORS:
+ACTORS_INIT:
     LDA #.LOBYTE(Actors)    ; Store start of actor 
     STA ACTOR_PTR           ; In zero page
     LDA #.HIBYTE(Actors)
@@ -44,14 +44,27 @@ INTIALIZE_ACTORS_EXIT:
     RTS
 
 FIRST_ACTOR:
+    PHA 
     LDA #.LOBYTE(Actors)    ; Store start of actor 
     STA ACTOR_PTR           ; In zero page
     LDA #.HIBYTE(Actors)
     STA ACTOR_PTR + 1
     JSR SET_META_ZP
+    PLA
+    RTS
+
+LAST_ACTOR:
+    PHA 
+    LDA #.LOBYTE(LastActor)    ; Store start of actor 
+    STA ACTOR_PTR           ; In zero page
+    LDA #.HIBYTE(LastActor)
+    STA ACTOR_PTR + 1
+    JSR SET_META_ZP
+    PLA
     RTS
 
 NEXT_ACTOR:
+    PHA
     LDY #ACTOR_DATA::NextActor
     LDA (ACTOR_PTR), Y
     PHA 
@@ -61,6 +74,7 @@ NEXT_ACTOR:
     PLA
     STA ACTOR_PTR
     JSR SET_META_ZP
+    PLA
     RTS
 
 PREV_ACTOR:
@@ -85,25 +99,15 @@ PREV_ACTOR_EXIT:
 ; actor index in A
 ;
 POINT_TO_ACTOR:
-    TAY                     ; Transfer Actor Index to Y
-    LDA #.LOBYTE(Actors)    ; Store start of actor 
-    STA ACTOR_PTR           ; In zero page
-    LDA #.HIBYTE(Actors)
-    STA ACTOR_PTR + 1
-    TYA                     ; Restore Actor Index to A
+    JSR FIRST_ACTOR
 POINT_TO_ACTOR_LOOP:
-    BEQ POINT_TO_ACTOR_EXIT ; Are we done iterating through the actors?
-    CLC                     ; Otherwise loop through the actors one at a time
-    LDA ACTOR_PTR           ; Incrementing the ACTOR_PTR by
-    ADC #.SIZEOF(Actor)     ; the size of the Actor object
-    STA ACTOR_PTR           ; If carry is clear after add then no need to 
-    BCC POINT_TO_ACTOR_NEXT     ; increment the high byte of the address
-    INC ACTOR_PTR + 1       ; Otherwise increment high byte of address
+    LDY #ACTOR_DATA::Index
+    CMP (ACTOR_PTR), Y
+    BEQ POINT_TO_ACTOR_EXIT ; If we are wanting the first actor then exit
 POINT_TO_ACTOR_NEXT:
-    DEY
+    JSR NEXT_ACTOR
     JMP POINT_TO_ACTOR_LOOP
 POINT_TO_ACTOR_EXIT:
-    JSR SET_META_ZP
     RTS
 
 SET_META_ZP:
@@ -348,12 +352,12 @@ ACTOR_TO_SCREEN_COORD:
     SEC
     LDY #ACTOR_DATA::XPos           ; Subtract the actor's
     LDA (ACTOR_PTR), Y              ; XPos with the camera's
-    SBC Cam                         ; XPos and store in 
+    SBC Camera, Y                   ; XPos with the camera's    
     STA ScreenX                     ; ScreenX
     SEC
     LDY #ACTOR_DATA::YPos           ; Subtract the actor's
     LDA (ACTOR_PTR), Y              ; YPos with the camera's 
-    SBC Cam +1                      ; YPos and store in
+    SBC Camera, Y                   ; XPos with the camera's    
     STA ScreenY                     ; ScreenY
     RTS
 

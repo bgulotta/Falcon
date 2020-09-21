@@ -69,10 +69,10 @@ LOAD_ATTRIBUTES:
 
     CLI             ; RESPOND TO INTERRUPTS
 
-    JSR INITIALIZE_ACTORS
-    ;ACTOR_INIT  $00, $00, $40, $20
+    JSR ACTORS_INIT
+
+    ACTOR_INIT  $01, $00, $60, $60
     ACTOR_INIT  $00, $01, $F8, $20
-    ACTOR_INIT  $01, ActorCount - 1, $60, $60
     
 ;---------------------------------------
 ; Main Game Loop
@@ -81,7 +81,6 @@ GAME_LOOP:
     JSR NMI_WAIT
     JSR READ_JOYPADS
     JSR UPDATE_ACTORS
-    ;JSR UPDATE_CAMERA_DATA
     JMP GAME_LOOP
 
 ;---------------------------------------
@@ -93,9 +92,10 @@ GAME_LOOP:
 UPDATE_ACTORS:  
     LDA #$00
     STA OamIndex
-    JSR FIRST_ACTOR
+    LDA #$01
+    JSR POINT_TO_ACTOR
 UPDATE_ACTORS_LOOP:
-    LDY #ACTOR_DATA::Attributes    ; If the actor is not active 
+    LDY #ACTOR_DATA::Attributes     ; If the actor is not active 
     LDA (ACTOR_PTR), Y              ; initialized then check the
     BPL UPDATE_ACTOR_NEXT           ; next actor
     JSR UPDATE_ACTOR_DATA
@@ -105,25 +105,10 @@ UPDATE_ACTOR_NEXT:
     JSR NEXT_ACTOR
     LDY #ACTOR_DATA::Index
     LDA (ACTOR_PTR), Y
+    CMP #$01
     BNE UPDATE_ACTORS_LOOP
 UPDATE_ACTORS_EXIT:
     JSR OAM_SET
-    RTS
-
-UPDATE_CAMERA_DATA:
-    JSR FIRST_ACTOR
-UPDATE_CAMERA_LOOP:
-    LDY #ACTOR_DATA::Attributes    ; If the actor is not active 
-    LDA (ACTOR_PTR), Y              ; initialized then check the
-    BPL UPDATE_CAMERA_NEXT           ; next actor
-    JSR UPDATE_CAMERA_POSITION
-UPDATE_CAMERA_NEXT:
-    JSR NEXT_ACTOR
-    LDY #ACTOR_DATA::Index
-    LDA (ACTOR_PTR), Y
-    BNE UPDATE_CAMERA_LOOP
-UPDATE_CAMERA_EXIT:
-    JSR CAMERA_TO_SCROLL
     RTS
 
 ;---------------------------------------
