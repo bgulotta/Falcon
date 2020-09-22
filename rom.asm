@@ -93,8 +93,7 @@ GAME_LOOP:
 UPDATE_ACTORS:  
     LDA #$00
     STA OamIndex
-    LDA #$01
-    JSR POINT_TO_ACTOR
+    JSR FIRST_ACTOR
 UPDATE_ACTORS_LOOP:
     LDA #ACTOR_ATTRIBUTES::Initialized
     LDY #ACTOR_DATA::Attributes     ; If the actor is not initialized then  
@@ -106,7 +105,6 @@ UPDATE_ACTOR_NEXT:
     JSR NEXT_ACTOR
     LDY #ACTOR_DATA::Index
     LDA (ACTOR_PTR), Y
-    CMP #$01
     BNE UPDATE_ACTORS_LOOP
 UPDATE_ACTORS_EXIT:
     JSR OAM_SET
