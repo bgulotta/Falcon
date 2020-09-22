@@ -160,10 +160,8 @@ POINT_TO_META_EXIT:
     RTS
 
 UPDATE_ACTOR_DATA:
-    JSR CHECK_ACTOR_ACTIVE
-    LDY #ACTOR_DATA::Attributes     ; If the actor is not active on screen 
-    LDA (ACTOR_PTR), Y              ; then don't attempt to render them
-    BPL UPDATE_ACTOR_DATA_EXIT 
+    JSR ACTOR_ACTIVE
+    BEQ UPDATE_ACTOR_DATA_EXIT
     LDY #META_DATA::UpdateData
     LDA (META_PTR), Y
     STA JmpPtr
@@ -179,39 +177,71 @@ JUMP_TO_FUNC:
     JMP (JmpPtr)
     RTS
 
-CHECK_ACTOR_ACTIVE:
+ACTOR_ACTIVE:
+    LDA #$01
     LDA #ACTOR_TYPES::Camera 
     LDY #META_DATA::Type
     CMP (META_PTR), Y
     BEQ SET_ACTOR_ACTIVE
-    SEC                                 ; Is the actor's x-pos less than  
+    JSR ACTOR_IN_VIEWPORT
+    BNE SET_ACTOR_ACTIVE
+    JMP SET_ACTOR_INACTIVE
+
+ACTOR_IN_VIEWPORT:
+    ; Check X
+    SEC                                 ; Is the actor's xpos less than  
     LDA ViewPort + ViewPort::End        ; the end of the view port?
     LDY #ACTOR_DATA::XPos
     SBC (ACTOR_PTR), Y
     LDA ViewPort + ViewPort::End + 1    
     LDY #ACTOR_DATA::XPos + 1
     SBC (ACTOR_PTR), Y
-    BCC SET_ACTOR_INACTIVE
-    SEC                                 ; Is the actor's x-pos less than  
-    LDY #ACTOR_DATA::XPos
+    BCC SET_ACTOR_OUT_VIEWPORT
+    SEC                                 ; Is the actor's xpos greater than  
+    LDY #ACTOR_DATA::XPos               ; or equal the viewport beginning?
     LDA (ACTOR_PTR), Y
-    SBC ViewPort + ViewPort::Begin      ; the end of the view port?
+    SBC ViewPort + ViewPort::Begin      
     LDY #ACTOR_DATA::XPos + 1
     LDA (ACTOR_PTR), Y
-    SBC ViewPort + ViewPort::Begin + 1      ; the end of the view port?
-    BCC SET_ACTOR_INACTIVE
+    SBC ViewPort + ViewPort::Begin + 1  
+    BCC SET_ACTOR_OUT_VIEWPORT
+    ; Check Y
+    SEC                                 ; Is the actor's ypos greater than  
+    LDA ViewPort + ViewPort::End + 2    ; or equal to the end of the view port?
+    LDY #ACTOR_DATA::YPos
+    SBC (ACTOR_PTR), Y
+    LDA ViewPort + ViewPort::End + 3    
+    LDY #ACTOR_DATA::YPos + 1
+    SBC (ACTOR_PTR), Y
+    BCC SET_ACTOR_OUT_VIEWPORT
+    SEC                                 ; Is the actor's ypos less than  
+    LDY #ACTOR_DATA::YPos               ; the start of the view port?
+    LDA (ACTOR_PTR), Y
+    SBC ViewPort + ViewPort::Begin + 2    
+    LDY #ACTOR_DATA::YPos + 1
+    LDA (ACTOR_PTR), Y
+    SBC ViewPort + ViewPort::Begin + 3  
+    BCC SET_ACTOR_OUT_VIEWPORT
+SET_ACTOR_IN_VIEWPORT:
+    LDA #$01
+    JMP ACTOR_IN_VIEWPORT_EXIT
+SET_ACTOR_OUT_VIEWPORT:
+    LDA #$00
+ACTOR_IN_VIEWPORT_EXIT:
+    RTS
+ 
 SET_ACTOR_ACTIVE:
     LDA #ACTOR_ATTRIBUTES::Active
     LDY #ACTOR_DATA::Attributes
     ORA (ACTOR_PTR), Y
     STA (ACTOR_PTR), Y
-    JMP CHECK_ACTOR_ACTIVE_EXIT
+    RTS
+
 SET_ACTOR_INACTIVE:
     LDA #$7F
     LDY #ACTOR_DATA::Attributes
     AND (ACTOR_PTR), Y
     STA (ACTOR_PTR), Y
-CHECK_ACTOR_ACTIVE_EXIT:
     RTS
 
 UPDATE_ACTOR_DIRECTION:
@@ -270,6 +300,8 @@ UPDATE_POSITION_EXIT:
     LDA (ACTOR_PTR), Y
     LDY #ACTOR_DATA::MovementPrev
     STA (ACTOR_PTR), Y
+    JSR ACTOR_IN_VIEWPORT
+    BEQ RESTORE_ACTOR_POSITION
     RTS
 
 SAVE_ACTOR_POSITION:
@@ -296,7 +328,12 @@ RESTORE_ACTOR_POSITION:
     LDA TempX + 1
     LDY #ACTOR_DATA::XPos + 1
     STA (ACTOR_PTR), Y
-    LDA TempX
+    LDA TempY
+    LDY #ACTOR_DATA::YPos
+    STA (ACTOR_PTR), Y
+    LDA TempY + 1
+    LDY #ACTOR_DATA::YPos + 1
+    STA (ACTOR_PTR), Y
     RTS
 
 ;-----------------------------------------------
@@ -339,8 +376,6 @@ MOVE_LEFT:
     LDA (ACTOR_PTR), Y                  ; If carry flag is clear then 
     SBC #$00                            ; subtract 1 from the XPos MSB
     STA (ACTOR_PTR), Y
-    BCS EXIT_MOVE_LEFT
-    JSR RESTORE_ACTOR_POSITION
 EXIT_MOVE_LEFT:
     PLA
     RTS
