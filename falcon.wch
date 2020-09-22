@@ -1,55 +1,60 @@
 
-53
+58
 00000	0000	w	h	0	ACTOR_PTR
 00001	0002	w	h	0	META_PTR
 00002	0004	w	h	0	SPRITE_PTR
-00003	0300	w	u	0	TempX
-00004	0302	w	u	0	TempY
-00005	0304	b	u	0	NMI_DONE
-00006	0305	b	u	0	PPUCMDFLAG
-00007	0306	b	u	0	PPUMASKFLAG
-00008	0307	b	u	0	PPUCTRLFLAG
-00009	0308	b	u	0	OAMFLAG
-00010	0309	b	u	0	SCROLLFLAG
-00011	030A	b	u	0	PPUMASKBUF
-00012	030B	b	u	0	PPUCTRLBUF
-00013	030C	b	u	0	JOYPAD1
-00014	030D	b	u	0	JOYPAD2
-00015	030E	b	u	0	JOYPAD3
-00016	030F	b	u	0	JOYPAD4
-00017	0310	w	u	0	ScreenX
-00018	0312	w	u	0	ScreenY
-00019	0314	b	u	0	NumTiles
-00020	0315	b	u	0	OamIndex
-00021	0316	b	u	0	CMD_RPTR
-00022	0317	b	u	0	CMD_WPTR
-00023	0318	w	h	0	JmpPtr
-00024	031C	w	u	0	CamDestY
-00025	031A	w	u	0	CamDestX
-00026	0000	S	S	0	----------------------------
-00027	06FE	w	u	0	ViewPort Begin X
-00028	0700	w	u	0	ViewPort Begin Y
-00029	0702	w	u	0	ViewPort End X
-00030	0704	w	u	0	ViewPort End Y
+00003	0006	w	h	0	LEVEL_PTR
+00004	0008	w	h	0	SCREEN_PTR
+00005	000A	w	h	0	METAMETA_TILE_PTR
+00006	000C	w	h	0	META_TILE_PTR
+00007	0000	S	S	0	----------------------------
+00008	0300	w	u	0	TempX
+00009	0302	w	u	0	TempY
+00010	0304	b	u	0	NMI_DONE
+00011	0305	b	u	0	PPUCMDFLAG
+00012	0306	b	u	0	PPUMASKFLAG
+00013	0307	b	u	0	PPUCTRLFLAG
+00014	0308	b	u	0	OAMFLAG
+00015	0309	b	u	0	SCROLLFLAG
+00016	030A	b	u	0	PPUMASKBUF
+00017	030B	b	u	0	PPUCTRLBUF
+00018	030C	b	u	0	JOYPAD1
+00019	030D	b	u	0	JOYPAD2
+00020	030E	b	u	0	JOYPAD3
+00021	030F	b	u	0	JOYPAD4
+00022	0310	w	u	0	ScreenX
+00023	0312	w	u	0	ScreenY
+00024	0314	b	u	0	NumTiles
+00025	0315	b	u	0	OamIndex
+00026	0316	b	u	0	CMD_RPTR
+00027	0317	b	u	0	CMD_WPTR
+00028	0318	w	h	0	JmpPtr
+00029	031C	w	u	0	CamDestY
+00030	031A	w	u	0	CamDestX
 00031	0000	S	S	0	----------------------------
-00032	0706	b	u	0	A0 Index
-00033	0707	w	h	0	A0 Meta Pointer
-00034	0709	w	u	0	A0 XPos
-00035	070B	w	u	0	A0 YPos
-00036	070D	b	u	0	A0 Movement
-00037	070E	b	u	0	A0 Prev Movement
-00038	070F	b	u	0	A0 Acceleration Frac
-00039	0710	b	u	0	A0 Acceleration
-00040	0711	b	u	0	A0 Attributes
-00041	0712	w	h	0	A0 Next Actor
-00042	0000	S	S	0	----------------------------
-00043	0714	b	u	0	A1 Index
-00044	0715	w	h	0	A1 Meta Pointer
-00045	0717	w	u	0	A1 XPos
-00046	0719	w	u	0	A1 YPos
-00047	071B	b	u	0	A1 Movement
-00048	071C	b	u	0	A1 Prev Movement
-00049	071D	b	u	0	A1 Acceleration Frac
-00050	071E	b	u	0	A1 Acceleration
-00051	071F	b	u	0	A1 Attributes
-00052	0720	w	h	0	A1 Next Actor
+00032	06FE	w	u	0	ViewPort Begin X
+00033	0700	w	u	0	ViewPort Begin Y
+00034	0702	w	u	0	ViewPort End X
+00035	0704	w	u	0	ViewPort End Y
+00036	0000	S	S	0	----------------------------
+00037	0706	b	u	0	A0 Index
+00038	0707	w	h	0	A0 Meta Pointer
+00039	0709	w	u	0	A0 XPos
+00040	070B	w	u	0	A0 YPos
+00041	070D	b	u	0	A0 Movement
+00042	070E	b	u	0	A0 Prev Movement
+00043	070F	b	u	0	A0 Acceleration Frac
+00044	0710	b	u	0	A0 Acceleration
+00045	0711	b	u	0	A0 Attributes
+00046	0712	w	h	0	A0 Next Actor
+00047	0000	S	S	0	----------------------------
+00048	0714	b	u	0	A1 Index
+00049	0715	w	h	0	A1 Meta Pointer
+00050	0717	w	u	0	A1 XPos
+00051	0719	w	u	0	A1 YPos
+00052	071B	b	u	0	A1 Movement
+00053	071C	b	u	0	A1 Prev Movement
+00054	071D	b	u	0	A1 Acceleration Frac
+00055	071E	b	u	0	A1 Acceleration
+00056	071F	b	u	0	A1 Attributes
+00057	0720	w	h	0	A1 Next Actor

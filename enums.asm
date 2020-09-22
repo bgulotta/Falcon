@@ -88,3 +88,23 @@
         Initialized = BITS::BIT_6  ; Is initialized?
         Direction = BITS::BIT_0    ; Is Actor facing left or right? 0 left 1 right
 .ENDSCOPE
+
+;---------------------------------------
+; Level enums
+; 
+;---------------------------------------
+.SCOPE LEVEL_DATA
+        NumScreens    = 0
+        MetaTileSet   = 1
+        Screens       = 3
+.ENDSCOPE
+
+.SCOPE SCREEN_DATA
+        Index         = 0
+        PrevScreen    = 1
+        NextScreen    = 3
+        MetaMetaTiles = 5
+.ENDSCOPE
+
+; METAMETA_TILE_PTR: .RES 2
+; META_TILE_PTR:     .RES 2

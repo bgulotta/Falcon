@@ -111,9 +111,6 @@ POINT_TO_ACTOR_EXIT:
     RTS
 
 SET_META_ZP:
-    ;LDY #ACTOR_DATA::Attributes        ; If the actor has not been 
-    ;LDA (ACTOR_PTR), Y                  ; initialized then we 
-    ;BPL SET_META_ZP_EXIT
     LDY #ACTOR_DATA::MetaData
     LDA (ACTOR_PTR), Y
     STA META_PTR
@@ -125,9 +122,6 @@ SET_META_ZP_EXIT:
     RTS
 
 SET_SPRITE_ZP:
-    ;LDY #ACTOR_DATA::Attributes        ; If the actor has not been 
-    ;LDA (ACTOR_PTR), Y                  ; initialized then we 
-    ;BPL SET_SPRITE_ZP_EXIT
     LDY #META_DATA::Sprites
     LDA (META_PTR), Y
     STA SPRITE_PTR

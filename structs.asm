@@ -5,11 +5,11 @@
     AccelConst .BYTE    
 .ENDSTRUCT
 
-.STRUCT Tile
+.STRUCT Sprite
     Index      .BYTE
     Attributes .BYTE
     XOffset    .BYTE
-    YOffset    .BYTE  ; Tile offset relative to the actor's coordinates
+    YOffset    .BYTE  ; Sprite offset relative to the actor's coordinates
 .ENDSTRUCT
 
 .STRUCT Movement
@@ -35,4 +35,10 @@
     Acceleration        .WORD ; Players current acceleration
     Attributes          .BYTE ; Player attributes (Active, Initialized, Health .ETC)
     NextActor           .WORD ; Pointer to the next actor
+ .ENDSTRUCT
+
+ .STRUCT Level
+    NumScreens          .BYTE
+    MetaTileSet         .WORD
+    Screens             .WORD
  .ENDSTRUCT

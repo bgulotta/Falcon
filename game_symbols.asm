@@ -2,9 +2,13 @@
 .DEFINE _GAME_SYMBOLS_
 
 .SEGMENT "ZEROPAGE"
-ACTOR_PTR:      .RES 2
-META_PTR:       .RES 2
-SPRITE_PTR:     .RES 2
+ACTOR_PTR:         .RES 2
+META_PTR:          .RES 2
+SPRITE_PTR:        .RES 2
+LEVEL_PTR:         .RES 2
+SCREEN_PTR:        .RES 2
+META_TILE_PTR:     .RES 2
+METAMETA_TILE_PTR: .RES 2
 .ENDIF
 
 .SEGMENT "OAM"
@@ -59,20 +63,3 @@ Camera:
     .TAG Actor
 LastActor:
     .TAG Actor
-
-.SEGMENT "CODE"
-ActorCount = $10
-
-Meta:
-    ; Type, Attributes, Velocity, Tiles, Update Routine
-PlayerMeta:
-    .BYTE $00, $01, $01, $80, .LOBYTE(PlayerTiles), .HIBYTE(PlayerTiles), .LOBYTE(UPDATE_PLAYER), .HIBYTE(UPDATE_PLAYER) 
-CameraMeta:
-    .BYTE $01, $00, $01, $80, .LOBYTE(CameraTiles), .HIBYTE(CameraTiles), .LOBYTE(UPDATE_CAMERA), .HIBYTE(UPDATE_CAMERA)
-    
-Tiles:
-    ; Num tiles, [YOffset, Tile Index, Attributes, XOffset] 
-PlayerTiles:
-    .BYTE $04, $00, $01, $01, $00, $00, $01, $40, $06, $06, $01, $80, $00, $06, $01, $C0, $06     
-CameraTiles:
-    .BYTE $01, $00, $01, $00, $00     
