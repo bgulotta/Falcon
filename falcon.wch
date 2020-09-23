@@ -1,12 +1,12 @@
 
-58
+69
 00000	0000	w	h	0	ACTOR_PTR
 00001	0002	w	h	0	META_PTR
 00002	0004	w	h	0	SPRITE_PTR
 00003	0006	w	h	0	LEVEL_PTR
 00004	0008	w	h	0	SCREEN_PTR
-00005	000A	w	h	0	METAMETA_TILE_PTR
-00006	000C	w	h	0	META_TILE_PTR
+00005	000A	w	h	0	META_TILE_PTR
+00006	000C	w	h	0	METAMETA_TILE_PTR
 00007	0000	S	S	0	----------------------------
 00008	0300	w	u	0	TempX
 00009	0302	w	u	0	TempY
@@ -29,32 +29,43 @@
 00026	0316	b	u	0	CMD_RPTR
 00027	0317	b	u	0	CMD_WPTR
 00028	0318	w	h	0	JmpPtr
-00029	031C	w	u	0	CamDestY
-00030	031A	w	u	0	CamDestX
-00031	0000	S	S	0	----------------------------
-00032	06FE	w	u	0	ViewPort Begin X
-00033	0700	w	u	0	ViewPort Begin Y
-00034	0702	w	u	0	ViewPort End X
-00035	0704	w	u	0	ViewPort End Y
-00036	0000	S	S	0	----------------------------
-00037	0706	b	u	0	A0 Index
-00038	0707	w	h	0	A0 Meta Pointer
-00039	0709	w	u	0	A0 XPos
-00040	070B	w	u	0	A0 YPos
-00041	070D	b	u	0	A0 Movement
-00042	070E	b	u	0	A0 Prev Movement
-00043	070F	b	u	0	A0 Acceleration Frac
-00044	0710	b	u	0	A0 Acceleration
-00045	0711	b	u	0	A0 Attributes
-00046	0712	w	h	0	A0 Next Actor
+00029	031A	w	u	0	CamDestX
+00030	031C	w	u	0	CamDestY
+00031	031E	w	u	0	Temp
+00032	0320	b	u	0	Iterations
+00033	0321	w	u	0	MetaMetaTileX
+00034	0323	w	u	0	MetaMetaTileY
+00035	0325	w	u	0	MetaMetaTileIndex
+00036	0327	w	u	0	MetaTileX
+00037	0329	w	u	0	MetaTileY
+00038	032B	b	u	0	MetaTileIndex
+00039	032D	w	u	0	TileX
+00040	032F	w	u	0	TileY
+00041	0331	w	u	0	TileIndex
+00042	0000	S	S	0	----------------------------
+00043	06FE	w	u	0	ViewPort Begin X
+00044	0700	w	u	0	ViewPort Begin Y
+00045	0702	w	u	0	ViewPort End X
+00046	0704	w	u	0	ViewPort End Y
 00047	0000	S	S	0	----------------------------
-00048	0714	b	u	0	A1 Index
-00049	0715	w	h	0	A1 Meta Pointer
-00050	0717	w	u	0	A1 XPos
-00051	0719	w	u	0	A1 YPos
-00052	071B	b	u	0	A1 Movement
-00053	071C	b	u	0	A1 Prev Movement
-00054	071D	b	u	0	A1 Acceleration Frac
-00055	071E	b	u	0	A1 Acceleration
-00056	071F	b	u	0	A1 Attributes
-00057	0720	w	h	0	A1 Next Actor
+00048	0706	b	u	0	A0 Index
+00049	0707	w	h	0	A0 Meta Pointer
+00050	0709	w	u	0	A0 XPos
+00051	070B	w	u	0	A0 YPos
+00052	070D	b	u	0	A0 Movement
+00053	070E	b	u	0	A0 Prev Movement
+00054	070F	b	u	0	A0 Acceleration Frac
+00055	0710	b	u	0	A0 Acceleration
+00056	0711	b	u	0	A0 Attributes
+00057	0712	w	h	0	A0 Next Actor
+00058	0000	S	S	0	----------------------------
+00059	0714	b	u	0	A1 Index
+00060	0715	w	h	0	A1 Meta Pointer
+00061	0717	w	u	0	A1 XPos
+00062	0719	w	u	0	A1 YPos
+00063	071B	b	u	0	A1 Movement
+00064	071C	b	u	0	A1 Prev Movement
+00065	071D	b	u	0	A1 Acceleration Frac
+00066	071E	b	u	0	A1 Acceleration
+00067	071F	b	u	0	A1 Attributes
+00068	0720	w	h	0	A1 Next Actor

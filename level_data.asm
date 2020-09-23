@@ -27,7 +27,7 @@ L1Screen1MetaMeta:
 L1Screen2MetaMeta:
 L1Screen3MetaMeta:
 L1Screen4MetaMeta:
-L1Screen5MetaMeta:
+L1Screen5MetaMeta: ; 0-27; 28 - 55: (55 - X)
     .BYTE $01, $01, $01, $01, $01, $01, $01, $01
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00

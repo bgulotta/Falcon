@@ -38,7 +38,18 @@ CMD_WPTR:    .RES 1
 JmpPtr:      .RES 2
 CamDestX:    .RES 2         ; Camera's X Destination
 CamDestY:    .RES 2         ; Camera's Y Destination
-CMDBUF:      .RES 128
+Temp:        .RES 2  
+Iterations:  .RES 1
+MetaMetaTileX: .RES 2
+MetaMetaTileY: .RES 2
+MetaMetaTileIndex: .RES 2
+MetaTileX:     .RES 2
+MetaTileY:     .RES 2
+MetaTileIndex: .RES 2
+TileX:         .RES 2
+TileY:         .RES 2
+TileIndex:     .RES 2
+CMDBUF:       .RES 128
 
 .SEGMENT "VIEWPORT"
 ViewPort: .TAG ViewPort

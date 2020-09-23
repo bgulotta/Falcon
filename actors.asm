@@ -164,6 +164,7 @@ UPDATE_ACTOR_DATA:
     STA JmpPtr + 1
     JSR JUMP_TO_FUNC
     JSR UPDATE_ACTOR_POSITION
+    JSR ACTOR_TO_INDICES
 UPDATE_ACTOR_DATA_EXIT:
     RTS
 
@@ -236,6 +237,28 @@ SET_ACTOR_INACTIVE:
     LDY #ACTOR_DATA::Attributes
     AND (ACTOR_PTR), Y
     STA (ACTOR_PTR), Y
+    RTS
+
+ACTOR_TO_INDICES:
+    LDA #$01
+    LDA #ACTOR_TYPES::Camera 
+    LDY #META_DATA::Type
+    CMP (META_PTR), Y
+    BEQ ACTOR_TO_INDICES_EXIT
+    LDY #ACTOR_DATA::XPos               ; or equal the viewport beginning?
+    LDA (ACTOR_PTR), Y
+    STA TempX
+    LDY #ACTOR_DATA::XPos + 1               ; or equal the viewport beginning?
+    LDA (ACTOR_PTR), Y
+    STA TempX + 1
+    LDY #ACTOR_DATA::YPos               ; or equal the viewport beginning?
+    LDA (ACTOR_PTR), Y
+    STA TempY
+    LDY #ACTOR_DATA::YPos + 1               ; or equal the viewport beginning?
+    LDA (ACTOR_PTR), Y
+    STA TempY + 1
+    JSR COORDINATES_TO_INDICES
+ACTOR_TO_INDICES_EXIT:
     RTS
 
 UPDATE_ACTOR_DIRECTION:

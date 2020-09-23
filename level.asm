@@ -17,6 +17,7 @@ LEVEL_INIT_LOOP:
 LEVEL_INIT_EXIT:
     JSR SET_META_TILE_ZP
     JSR SET_SCREEN_ZP
+    JSR SCREEN_TO_PPU
     RTS
 
 SET_META_TILE_ZP:
@@ -50,7 +51,30 @@ SET_METAMETA_TILE_ZP:
 SET_METAMETA_TILE_ZP_EXIT:
     RTS
 
+; Loop through all the metameta tiles rendering them to the ppu
 SCREEN_TO_PPU:
+    LDA #$38
+METAMETA_TILE_LOOP:
+    STA MetaMetaTileIndex                 
+    JSR METAMETA_TILE_TO_PPU
+    DEC MetaMetaTileIndex
+    BPL METAMETA_TILE_LOOP 
+    RTS
+
+; This subroutine will take a metametatile index
+; in A and render it to the screen
+METAMETA_TILE_TO_PPU:
+    CMP #$1C ; Are we pulling back a mirrored metameta tile?
+    BCC GRAB_METAMETA_TILE_INDEX
+TRANSLATE_INTO_MIRRORED_INDEX:
+    SEC 
+    LDA #$37 
+    SBC MetaMetaTileIndex
+GRAB_METAMETA_TILE_INDEX:
+    TAY 
+    LDA (METAMETA_TILE_PTR), Y ; A is our index into the meta tile 
+    TAY
+    LDA (META_TILE_PTR), Y ; We are pointing at our meta tile now we are ready to send to PPU
     
     RTS
 
