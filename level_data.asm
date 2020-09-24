@@ -28,16 +28,17 @@ L1Screen2MetaMeta:
 L1Screen3MetaMeta:
 L1Screen4MetaMeta:
 L1Screen5MetaMeta: ; 0-27; 28 - 55: (55 - X)
-    .BYTE $01, $01, $01, $01, $01, $01, $01, $01
+    .BYTE $00, $00, $00, $00, $00, $00, $00, $00
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00
     .BYTE $00, $00, $00, $00
 
-; Level 32 x 32 MetaMetaTileSet
+; Level 32 x 32 MetaMetaTileSet ; Left Top/Right Top/Left Bottom/Right Bottom
 L1MetaMetaTileSet:
-    .BYTE $00, $04
+    .BYTE $00, $00, $00, $00
+    .BYTE $00, $00, $00, $00
 
-; Level 16x16 MetaTileSet
+; Level 16x16 MetaTileSet ; Left Top/Right Top/Left Bottom/Right Bottom
 L1MetaTileSet:
-    .BYTE $00, $00, $00, $00 
-    .BYTE $00, $00, $05, $05
+    .BYTE $00, $00, $00, $05 
+    .BYTE $00, $00, $00, $00

@@ -105,6 +105,3 @@
         NextScreen    = 3
         MetaMetaTiles = 5
 .ENDSCOPE
-
-; METAMETA_TILE_PTR: .RES 2
-; META_TILE_PTR:     .RES 2

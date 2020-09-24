@@ -54,29 +54,69 @@ SET_METAMETA_TILE_ZP_EXIT:
 ; Loop through all the metameta tiles rendering them to the ppu
 SCREEN_TO_PPU:
     LDA #$38
-METAMETA_TILE_LOOP:
     STA MetaMetaTileIndex                 
+METAMETA_TILE_LOOP:
+    LDA MetaMetaTileIndex                 
     JSR METAMETA_TILE_TO_PPU
     DEC MetaMetaTileIndex
     BPL METAMETA_TILE_LOOP 
     RTS
 
-; This subroutine will take a metametatile index
+; This subroutine will take a metameta tile index
 ; in A and render it to the screen
 METAMETA_TILE_TO_PPU:
-    CMP #$1C ; Are we pulling back a mirrored metameta tile?
-    BCC GRAB_METAMETA_TILE_INDEX
-TRANSLATE_INTO_MIRRORED_INDEX:
+    CMP #$1C ; Are we pulling back a mirrored metameta tile (Indexes 28-56)?
+    BCC METAMETA_TILESET_INDEX
+TRANSLATE_METAMETA_TILESET_INDEX:
     SEC 
-    LDA #$37 
-    SBC MetaMetaTileIndex
-GRAB_METAMETA_TILE_INDEX:
-    TAY 
-    LDA (METAMETA_TILE_PTR), Y ; A is our index into the meta tile 
-    TAY
-    LDA (META_TILE_PTR), Y ; We are pointing at our meta tile now we are ready to send to PPU
-    
+    SBC #$1D
+    BCS METAMETA_TILESET_INDEX
+    LDA #$00
+METAMETA_TILESET_INDEX:
+    STA MetaMetaTileSetIndex
+    LDA #$03 
+    STA RowIndex
+METAMETA_TILESET_LOOP:
+    LDY MetaMetaTileSetIndex        ; move on to the next metameta tileset index
+    LDA (METAMETA_TILE_PTR), Y      ; A is our meta tileset index 
+    JSR META_TILE_TO_PPU            
+    INC MetaMetaTileSetIndex
+    DEC RowIndex                        ; have we finished 4 iterations?
+    BPL METAMETA_TILESET_LOOP
+METAMETA_TILE_TO_PPU_EXIT:
     RTS
+
+META_TILE_TO_PPU:
+    TAY                             ; A is our meta tileset index 
+    LDA #$03
+    STA ColumnIndex   
+META_TILESET_LOOP:
+    LDA (META_TILE_PTR), Y  
+    JSR TILE_TO_PPU
+    INY 
+    DEC ColumnIndex
+    BPL META_TILESET_LOOP
+    RTS
+
+TILE_TO_PPU:
+    PHA     ; A contains the tile 
+    JSR TILE_TO_PPU_ADDRESS 
+    LDA #$01
+    JSR WR_BUF
+    LDA #$0B
+    ;LDA PPUAddress + 1
+    JSR WR_BUF
+    LDA #$5A
+    ;LDA PPUAddress 
+    JSR WR_BUF
+    LDA #$05
+    ;PLA 
+    JSR WR_BUF
+    
+    JSR CMD_SET
+    RTS
+
+
 
 ; POINT_TO_META:
 ;     TAY                     ; Transfer Actor Type to Y
