@@ -257,7 +257,7 @@ ACTOR_TO_INDICES:
     LDY #ACTOR_DATA::YPos + 1               ; or equal the viewport beginning?
     LDA (ACTOR_PTR), Y
     STA TempY + 1
-    JSR COORDINATES_TO_INDICES
+    JSR WORLD_COORDINATES_TO_TILE_INDICES
 ACTOR_TO_INDICES_EXIT:
     RTS
 

@@ -51,68 +51,52 @@ SET_METAMETA_TILE_ZP:
 SET_METAMETA_TILE_ZP_EXIT:
     RTS
 
-; Loop through all the metameta tiles rendering them to the ppu
-SCREEN_TO_PPU:
-    LDA #$38
-    STA MetaMetaTileIndex                 
-METAMETA_TILE_LOOP:
-    LDA MetaMetaTileIndex                 
-    JSR METAMETA_TILE_TO_PPU
-    DEC MetaMetaTileIndex
-    BPL METAMETA_TILE_LOOP 
-    RTS
-
-; This subroutine will take a metameta tile index
-; in A and render it to the screen
-METAMETA_TILE_TO_PPU:
-    CMP #$1C ; Are we pulling back a mirrored metameta tile (Indexes 28-56)?
-    BCC METAMETA_TILESET_INDEX
-TRANSLATE_METAMETA_TILESET_INDEX:
-    SEC 
-    SBC #$1D
-    BCS METAMETA_TILESET_INDEX
+SCREEN_TO_PPU:    
     LDA #$00
-METAMETA_TILESET_INDEX:
-    STA MetaMetaTileSetIndex
-    LDA #$03 
-    STA RowIndex
-METAMETA_TILESET_LOOP:
-    LDY MetaMetaTileSetIndex        ; move on to the next metameta tileset index
-    LDA (METAMETA_TILE_PTR), Y      ; A is our meta tileset index 
-    JSR META_TILE_TO_PPU            
-    INC MetaMetaTileSetIndex
-    DEC RowIndex                        ; have we finished 4 iterations?
-    BPL METAMETA_TILESET_LOOP
-METAMETA_TILE_TO_PPU_EXIT:
-    RTS
+    STA PPUAddress
+    LDA #$20
+    STA PPUAddress + 1
+NEXT_PPUADDRESS:
+    SEC 
+    LDA #$C0
+    SBC PPUAddress
+    LDA #$23
+    SBC PPUAddress + 1
+    BCC TEST_ROUTINE_EXIT
+    ; TODO PROCESS ATTRIBUTES
+NEXT_BG_TILE:
+    JSR PPUADDRESS_TO_TILE_INDICES
+       
+    INC PPUAddress
+    BNE NEXT_PPUADDRESS
+    INC PPUAddress + 1
 
-META_TILE_TO_PPU:
-    TAY                             ; A is our meta tileset index 
-    LDA #$03
-    STA ColumnIndex   
-META_TILESET_LOOP:
-    LDA (META_TILE_PTR), Y  
-    JSR TILE_TO_PPU
-    INY 
-    DEC ColumnIndex
-    BPL META_TILESET_LOOP
+    JMP NEXT_PPUADDRESS
+TEST_ROUTINE_EXIT:
     RTS
 
 TILE_TO_PPU:
-    PHA     ; A contains the tile 
-    JSR TILE_TO_PPU_ADDRESS 
+
+    LDA #$09
+    CMP NumCommands
+    BCC TILE_TO_PPU ; make sure we aren't overloading the NMI
+    JSR BUF_DIF
+    CMP #$7D        ; make sure we have enough bytes free in the buffer
+    BCS TILE_TO_PPU
+    
+    ;PHA     ; A contains the tile 
+    ;JSR TILE_TO_PPU_ADDRESS 
     LDA #$01
     JSR WR_BUF
-    LDA #$0B
-    ;LDA PPUAddress + 1
+    ;LDA #$0B
+    LDA PPUAddress + 1
     JSR WR_BUF
-    LDA #$5A
-    ;LDA PPUAddress 
+    ;LDA #$5A
+    LDA PPUAddress  
     JSR WR_BUF
     LDA #$05
     ;PLA 
     JSR WR_BUF
-    
     JSR CMD_SET
     RTS
 

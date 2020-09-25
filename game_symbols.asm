@@ -54,6 +54,7 @@ MetaTileSetIndex: .RES 1
 RowIndex:      .RES 1
 ColumnIndex:   .RES 1
 PPUAddress:    .RES 2
+NumCommands:    .RES 1
 Temp:          .RES 2
 Temp2:          .RES 2
 Temp3:          .RES 2

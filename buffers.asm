@@ -11,4 +11,9 @@ RD_BUF:
     LDA  CMDBUF,X   ; Get the pointer value and read the data it points to.
     INC  CMD_RPTR     ; Then increment the pointer for the next read.
     RTS
-;------------------------------------------------------------------------------------------------     
+;------------------------------------------------------------------------------------------------   
+BUF_DIF: LDA  CMD_WPTR     ; Find difference between number of bytes written
+         SEC               ; and how many read.
+         SBC  CMD_RPTR     ; Ends with A showing the number of bytes left to read.
+         RTS
+ ;-------------  
