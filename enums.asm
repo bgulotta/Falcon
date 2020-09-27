@@ -67,11 +67,13 @@
         MetaData      = 1
         XPos          = 3
         YPos          = 5
-        Movement      = 7
-        MovementPrev  = 8
-        Acceleration  = 9
-        Attributes    = 11
-        NextActor     = 12
+        TileX         = 7
+        TileY         = 9
+        Movement      = 11
+        MovementPrev  = 12
+        Acceleration  = 13
+        Attributes    = 15
+        NextActor     = 16
 .ENDSCOPE
 
 .SCOPE META_DATA

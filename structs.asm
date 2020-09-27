@@ -18,8 +18,13 @@
 .ENDSTRUCT 
 
 .STRUCT Position
-    XPos        .WORD       
-    YPos        .WORD  
+    XPos          .WORD       
+    YPos          .WORD  
+.ENDSTRUCT 
+
+.STRUCT Coordinates
+    World      .TAG Position  
+    Tile       .TAG Position 
 .ENDSTRUCT
 
 .STRUCT ViewPort
@@ -30,7 +35,7 @@
 .STRUCT Actor
     Index               .BYTE ; The index of this actor
     MetaData            .WORD ; Pointer to this Actor's static meta data     
-    Coordinates         .TAG  Position ; Actor's world coordinates
+    Coordinates         .TAG  Coordinates ; Actor's world and tile coordinates
     Movement            .TAG  Movement ; Actor's movement actions
     Acceleration        .WORD ; Players current acceleration
     Attributes          .BYTE ; Player attributes (Active, Initialized, Health .ETC)

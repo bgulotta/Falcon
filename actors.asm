@@ -163,8 +163,8 @@ UPDATE_ACTOR_DATA:
     LDA (META_PTR), Y
     STA JmpPtr + 1
     JSR JUMP_TO_FUNC
-    JSR UPDATE_ACTOR_POSITION
-    JSR ACTOR_TO_INDICES
+    JSR UPDATE_WORLD_COORDINATES
+    JSR UPDATE_TILE_COORDINATES
 UPDATE_ACTOR_DATA_EXIT:
     RTS
 
@@ -239,26 +239,44 @@ SET_ACTOR_INACTIVE:
     STA (ACTOR_PTR), Y
     RTS
 
-ACTOR_TO_INDICES:
-    LDA #$01
-    LDA #ACTOR_TYPES::Camera 
-    LDY #META_DATA::Type
-    CMP (META_PTR), Y
-    BEQ ACTOR_TO_INDICES_EXIT
-    LDY #ACTOR_DATA::XPos               ; or equal the viewport beginning?
+UPDATE_TILE_COORDINATES:
+
+    LDY #ACTOR_DATA::XPos               
     LDA (ACTOR_PTR), Y
-    STA TempX
-    LDY #ACTOR_DATA::XPos + 1               ; or equal the viewport beginning?
+    STA Temp
+    LDY #ACTOR_DATA::XPos + 1      
     LDA (ACTOR_PTR), Y
-    STA TempX + 1
-    LDY #ACTOR_DATA::YPos               ; or equal the viewport beginning?
+    STA Temp + 1
+
+    LDA #$03        ; Divide x coordinates by 8
+    STA NumIterations
+    JSR DIVIDE
+
+    LDA Temp 
+    LDY #ACTOR_DATA::TileX             
+    STA (ACTOR_PTR), Y
+    LDA Temp + 1
+    LDY #ACTOR_DATA::TileX + 1             
+    STA (ACTOR_PTR), Y
+
+    LDY #ACTOR_DATA::YPos               
     LDA (ACTOR_PTR), Y
-    STA TempY
-    LDY #ACTOR_DATA::YPos + 1               ; or equal the viewport beginning?
+    STA Temp
+    LDY #ACTOR_DATA::YPos + 1      
     LDA (ACTOR_PTR), Y
-    STA TempY + 1
-    JSR WORLD_COORDINATES_TO_TILE_INDICES
-ACTOR_TO_INDICES_EXIT:
+    STA Temp + 1
+
+    LDA #$03        ; Divide x coordinates by 8
+    STA NumIterations
+    JSR DIVIDE
+
+    LDA Temp 
+    LDY #ACTOR_DATA::TileY             
+    STA (ACTOR_PTR), Y
+    LDA Temp + 1
+    LDY #ACTOR_DATA::TileY + 1             
+    STA (ACTOR_PTR), Y
+
     RTS
 
 UPDATE_ACTOR_DIRECTION:
@@ -280,7 +298,7 @@ UPDATE_DIRECTION_SET:
 UPDATE_ACTOR_DIRECTION_EXIT:
     RTS
 
-UPDATE_ACTOR_POSITION:
+UPDATE_WORLD_COORDINATES:
     LDY #ACTOR_DATA::Movement       ; otherwise we need to process
     LDA (ACTOR_PTR), Y                ; any movement for the player 
     BEQ CHECK_ACTOR_DECELERATE
@@ -325,30 +343,30 @@ SAVE_ACTOR_POSITION:
     PHA
     LDY #ACTOR_DATA::XPos
     LDA (ACTOR_PTR), Y
-    STA TempX
+    STA Temp
     LDY #ACTOR_DATA::XPos + 1
     LDA (ACTOR_PTR), Y
-    STA TempX + 1
+    STA Temp + 1
     LDY #ACTOR_DATA::YPos
     LDA (ACTOR_PTR), Y
-    STA TempY
+    STA Temp2
     LDY #ACTOR_DATA::YPos + 1
     LDA (ACTOR_PTR), Y
-    STA TempY + 1
+    STA Temp2 + 1
     PLA 
     RTS
 
 RESTORE_ACTOR_POSITION:
-    LDA TempX
+    LDA Temp
     LDY #ACTOR_DATA::XPos
     STA (ACTOR_PTR), Y
-    LDA TempX + 1
+    LDA Temp + 1
     LDY #ACTOR_DATA::XPos + 1
     STA (ACTOR_PTR), Y
-    LDA TempY
+    LDA Temp2
     LDY #ACTOR_DATA::YPos
     STA (ACTOR_PTR), Y
-    LDA TempY + 1
+    LDA Temp2 + 1
     LDY #ACTOR_DATA::YPos + 1
     STA (ACTOR_PTR), Y
     RTS
@@ -472,20 +490,20 @@ ACTOR_TO_SCREEN_COORD:
     LDY #ACTOR_DATA::XPos                   ; Subtract the actor's
     LDA (ACTOR_PTR), Y                      ; XPos with start of the viewport
     SBC ViewPort + ViewPort::Begin          ; the end of the view port?
-    STA ScreenX                     ; ScreenX
+    STA Temp                     ; ScreenX
     LDY #ACTOR_DATA::XPos + 1               ; Subtract the actor's
     LDA (ACTOR_PTR), Y                      ; XPos with start of the viewport
     SBC ViewPort + ViewPort::Begin + 1      ; the end of the view port?
-    STA ScreenX + 1                     ; ScreenX
+    STA Temp + 1                     ; ScreenX
 
     LDY #ACTOR_DATA::YPos                   ; Subtract the actor's
     LDA (ACTOR_PTR), Y                      ; XPos with start of the viewport
     SBC ViewPort + ViewPort::Begin + 2          ; the end of the view port?
-    STA ScreenY                     ; ScreenX
+    STA Temp2                     ; ScreenX
     LDY #ACTOR_DATA::YPos + 1               ; Subtract the actor's
     LDA (ACTOR_PTR), Y                      ; XPos with start of the viewport
     SBC ViewPort + ViewPort::Begin + 3      ; the end of the view port?
-    STA ScreenY + 1                     ; ScreenX
+    STA Temp2 + 1                     ; ScreenX
 
     RTS
 
@@ -503,7 +521,7 @@ TILE_LOOP:
     SEC 
     CLC             
     LDA (SPRITE_PTR), Y ; Y Offset
-    ADC ScreenY
+    ADC Temp2
     STA OAM, X
     INX
     INY 
@@ -517,7 +535,7 @@ TILE_LOOP:
     INY 
     CLC             
     LDA (SPRITE_PTR), Y ; X Offset
-    ADC ScreenX
+    ADC Temp
     STA OAM, X
     INX
     STX OamIndex

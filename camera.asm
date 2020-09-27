@@ -115,23 +115,23 @@ UPDATE_CAMERA_DEST:
 
 SAVE_CAMERA_DEST:
     LDA CamDestX
-    STA TempX
+    STA Temp
     LDA CamDestX + 1
-    STA TempX + 1
+    STA Temp + 1
     LDA CamDestY
-    STA TempY
+    STA Temp2
     LDA CamDestY + 1
-    STA TempY + 1
+    STA Temp2 + 1
     RTS
 
 RESTORE_CAMERA_DEST:
-    LDA TempX
+    LDA Temp
     STA CamDestX
-    LDA TempX + 1
+    LDA Temp + 1
     STA CamDestX + 1
-    LDA TempY
+    LDA Temp2
     STA CamDestY
-    LDA TempY + 1
+    LDA Temp2 + 1
     STA CamDestY + 1
     RTS
 

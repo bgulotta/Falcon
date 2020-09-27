@@ -15,50 +15,37 @@ METAMETA_TILE_PTR: .RES 2
 OAM: .RES 256
 
 .SEGMENT "RAM"
-TempX:       .RES 2
-TempY:       .RES 2
+;----- Flags --------;
 NMI_DONE:    .RES 1
-PPUCMDFLAG:  .RES 1
 PPUMASKFLAG: .RES 1
 PPUCTRLFLAG: .RES 1
 OAMFLAG:     .RES 1
 SCROLLFLAG:  .RES 1
-PPUMASKBUF:  .RES 1
-PPUCTRLBUF:  .RES 1
+;--- Controller IO ---;
 JOYPAD1:     .RES 1
 JOYPAD2:     .RES 1
 JOYPAD3:     .RES 1
 JOYPAD4:     .RES 1
-ScreenX:     .RES 2
-ScreenY:     .RES 2
-NumTiles:    .RES 1
-OamIndex:    .RES 1
+;--- Pointers ----;
 CMD_RPTR:    .RES 1
 CMD_WPTR:    .RES 1
 JmpPtr:      .RES 2
+;-- Sprite Vars --;
+OamIndex:    .RES 1
+NumTiles:    .RES 1
+;--- Work Vars ---;
+Temp:        .RES 2
+Temp2:       .RES 2
+Temp3:       .RES 2
+NumCommands: .RES 1
+NumIterations: .RES 1
 CamDestX:    .RES 2         ; Camera's X Destination
 CamDestY:    .RES 2         ; Camera's Y Destination
-Loop:        .RES 1
-MetaMetaTileX: .RES 2
-MetaMetaTileY: .RES 2
-MetaMetaTileIndex: .RES 2
-MetaTileX:     .RES 2
-MetaTileY:     .RES 2
-MetaTileIndex: .RES 2
-TileX:         .RES 2
-TileY:         .RES 2
-TileIndex:     .RES 2
-ScreenIndex:   .RES 1
-MetaMetaTileSetIndex: .RES 1
-MetaTileSetIndex: .RES 1
-RowIndex:      .RES 1
-ColumnIndex:   .RES 1
-PPUAddress:    .RES 2
-NumCommands:    .RES 1
-Temp:          .RES 2
-Temp2:          .RES 2
-Temp3:          .RES 2
-CMDBUF:        .RES 128
+PPUAddress:  .RES 2
+;---- Buffers ----;
+PPUMASKBUF:  .RES 1
+PPUCTRLBUF:  .RES 1
+CMDBUF:      .RES 128
 
 .SEGMENT "VIEWPORT"
 ViewPort: .TAG ViewPort

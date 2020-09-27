@@ -73,7 +73,7 @@ LOOP_PALETTE_DATA:
     CLI             ; RESPOND TO INTERRUPTS
 
     LDA #$00
-    JSR LEVEL_INIT
+    ;JSR LEVEL_INIT
     JSR ACTORS_INIT
 
     ACTOR_INIT  $01, $00, $60, $20
@@ -143,8 +143,6 @@ OAM_SET:
 ;---------------------------------------
 CMD_SET:
     INC NumCommands
-    ;LDA #BITS::BIT_7
-    ;STA PPUCMDFLAG
     RTS
 
 ;---------------------------------------
