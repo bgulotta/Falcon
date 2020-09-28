@@ -1,5 +1,5 @@
 
-59
+63
 00000	0000	w	h	0	ACTOR_PTR
 00001	0002	w	h	0	META_PTR
 00002	0004	w	h	0	SPRITE_PTR
@@ -24,38 +24,42 @@
 00021	030F	w	u	0	Temp
 00022	0311	w	u	0	Temp2
 00023	0313	w	u	0	Temp3
-00024	0315    b   u   0   NumCommands
-00025	0316	b	u	0	NumIterations
-00026	0317	w	u	0	CamDestX
-00027	0319	w	u	0	CamDestY
-00028	031B	w	h	0	PPUAddress
-00029	031D	b	u	0	PPUMASKBUF
-00030	031E	b	u	0	PPUCTRLBUF
-00031	04F8	w	u	0	ViewPort Begin X
-00032	04FA	w	u	0	ViewPort Begin Y
-00033	04FC	w	u	0	ViewPort End X
-00034	04FE	w	u	0	ViewPort End Y
-00035	0500	b	u	0	A0 Index
-00036	0501	w	h	0	A0 Meta Pointer
-00037	0503	w	u	0	A0 World XPos
-00038	0505	w	u	0	A0 World YPos
-00039	0507	w	u	0	A0 Tile X
-00040	0509	w	u	0	A0 Tile Y
-00041	050B	b	u	0	A0 Movement
-00042	050C	b	u	0	A0 Prev Movement
-00043	050D	b	u	0	A0 Acceleration Frac
-00044	050E	b	u	0	A0 Acceleration
-00045	050F	b	u	0	A0 Attributes
-00046	0510	w	h	0	A0 Next Actor
-00047	0512	b	u	0	A1 Index
-00048	0513	w	h	0	A1 Meta Pointer
-00049	0515	w	u	0	A1 World XPos
-00050	0517	w	u	0	A1 World YPos
-00051	0519	w	u	0	A1 Tile X
-00052	051B	w	u	0	A1 Tile Y
-00053	051D	b	u	0	A1 Movement
-00054	051E	b	u	0	A1 Prev Movement
-00055	051F	b	u	0	A1 Acceleration Frac
-00056	0520	b	u	0	A1 Acceleration
-00057	0521	b	u	0	A1 Attributes
-00058	0522	w	h	0	A1 Next Actor
+00024	0315	w	u	0	Temp4
+00025	0317	w	u	0	Temp5
+00026	0319	w	u	0	Temp6
+00027	031B    b   u   0   NumCommands
+00028	031C	b	u	0	NumIterations
+00029	031D	w	u	0	CamDestX
+00030	031F	w	u	0	CamDestY
+00031	0321	w	h	0	PPUAddress
+00032	0323	w	h	0	Nametable
+00033	0325	b	u	0	PPUMASKBUF
+00034	0326	b	u	0	PPUCTRLBUF
+00035	04F8	w	u	0	ViewPort Begin X
+00036	04FA	w	u	0	ViewPort Begin Y
+00037	04FC	w	u	0	ViewPort End X
+00038	04FE	w	u	0	ViewPort End Y
+00039	0500	b	u	0	A0 Index
+00040	0501	w	h	0	A0 Meta Pointer
+00041	0503	w	u	0	A0 World XPos
+00042	0505	w	u	0	A0 World YPos
+00043	0507	w	u	0	A0 Tile X
+00044	0509	w	u	0	A0 Tile Y
+00045	050B	b	u	0	A0 Movement
+00046	050C	b	u	0	A0 Prev Movement
+00047	050D	b	u	0	A0 Acceleration Frac
+00048	050E	b	u	0	A0 Acceleration
+00049	050F	b	u	0	A0 Attributes
+00050	0510	w	h	0	A0 Next Actor
+00051	0512	b	u	0	A1 Index
+00052	0513	w	h	0	A1 Meta Pointer
+00053	0515	w	u	0	A1 World XPos
+00054	0517	w	u	0	A1 World YPos
+00055	0519	w	u	0	A1 Tile X
+00056	051B	w	u	0	A1 Tile Y
+00057	051D	b	u	0	A1 Movement
+00058	051E	b	u	0	A1 Prev Movement
+00059	051F	b	u	0	A1 Acceleration Frac
+00060	0520	b	u	0	A1 Acceleration
+00061	0521	b	u	0	A1 Attributes
+00062	0522	w	h	0	A1 Next Actor

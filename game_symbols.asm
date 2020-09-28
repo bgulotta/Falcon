@@ -2,13 +2,15 @@
 .DEFINE _GAME_SYMBOLS_
 
 .SEGMENT "ZEROPAGE"
-ACTOR_PTR:         .RES 2
-META_PTR:          .RES 2
-SPRITE_PTR:        .RES 2
-LEVEL_PTR:         .RES 2
-SCREEN_PTR:        .RES 2
-META_TILE_PTR:     .RES 2
-METAMETA_TILE_PTR: .RES 2
+ACTOR_PTR:             .RES 2
+META_PTR:              .RES 2
+SPRITE_PTR:            .RES 2
+LEVEL_PTR:             .RES 2
+SCREEN_PTR:            .RES 2
+META_TILESET_PTR:      .RES 2
+META_META_TILESET_PTR: .RES 2
+MMT_INDEX_PTR:         .RES 2
+META_META_TILE_PTR:    .RES 2
 .ENDIF
 
 .SEGMENT "OAM"
@@ -37,11 +39,15 @@ NumTiles:    .RES 1
 Temp:        .RES 2
 Temp2:       .RES 2
 Temp3:       .RES 2
+Temp4:       .RES 2
+Temp5:       .RES 2
+Temp6:       .RES 2
 NumCommands: .RES 1
 NumIterations: .RES 1
 CamDestX:    .RES 2         ; Camera's X Destination
 CamDestY:    .RES 2         ; Camera's Y Destination
 PPUAddress:  .RES 2
+Nametable:   .RES 2         ; Hibyte Begin and End; (IE: 2023 and 2427) 
 ;---- Buffers ----;
 PPUMASKBUF:  .RES 1
 PPUCTRLBUF:  .RES 1

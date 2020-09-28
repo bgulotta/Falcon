@@ -67,8 +67,8 @@
         MetaData      = 1
         XPos          = 3
         YPos          = 5
-        TileX         = 7
-        TileY         = 9
+        TileX         = 7    ; TODO: Use second byte here for something
+        TileY         = 9    ; TODO: Use second byte here for something 
         Movement      = 11
         MovementPrev  = 12
         Acceleration  = 13
@@ -96,14 +96,15 @@
 ; 
 ;---------------------------------------
 .SCOPE LEVEL_DATA
-        NumScreens    = 0
-        MetaTileSet   = 1
-        Screens       = 3
+        NumScreens        = 0
+        MetaMetaTileSet   = 1
+        MetaTileSet       = 3
+        Screens           = 5
 .ENDSCOPE
 
 .SCOPE SCREEN_DATA
-        Index         = 0
-        PrevScreen    = 1
-        NextScreen    = 3
-        MetaMetaTiles = 5
+        Index               = 0
+        PrevScreen          = 1
+        NextScreen          = 3
+        MetaMetaTileIndex   = 5
 .ENDSCOPE

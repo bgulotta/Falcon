@@ -44,6 +44,7 @@
 
  .STRUCT Level
     NumScreens          .BYTE
+    MetaMetaTileSet     .WORD
     MetaTileSet         .WORD
     Screens             .WORD
  .ENDSTRUCT

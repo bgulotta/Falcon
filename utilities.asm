@@ -150,6 +150,12 @@ DIVIDE_BY_32:
     JSR DIVIDE
     RTS 
 
+DIVIDE_BY_128:
+    LDA #$07        ; Divide by 128
+    STA NumIterations
+    JSR DIVIDE
+    RTS 
+
 MULTIPLY:
 MULTIPLY_LOOP:
     ASL Temp
@@ -175,3 +181,13 @@ MULTIPLY_BY_8:
     STA NumIterations
     JSR MULTIPLY    
     RTS     
+
+SUBTRACT_32:
+    SEC
+    LDA Temp 
+    SBC #$20
+    STA Temp 
+    LDA Temp + 1
+    SBC #$00
+    STA Temp + 1        
+    RTS 

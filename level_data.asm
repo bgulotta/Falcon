@@ -1,11 +1,12 @@
 .SEGMENT "RODATA"
 
 ; NumScreens  .BYTE       ; How many screens make up this level
-; MetaTileSet .WORD       ; Pointer to the level's 16x16 metatile set
+; MetaMetaTileSet .WORD   . Pointer to the level's 32x32 metameta tile set
+; MetaTileSet .WORD       ; Pointer to the level's 16x16 meta tile set
 ; Screens     .WORD       ; Pointer to the level's screens  
 Levels: 
 L1: 
-    .BYTE $05, .LOBYTE(L1MetaTileSet), .HIBYTE(L1MetaTileSet), .LOBYTE(L1Screen1), .HIBYTE(L1Screen1)
+    .BYTE $05, .LOBYTE(L1MetaMetaTileSet), .HIBYTE(L1MetaMetaTileSet), .LOBYTE(L1MetaTileSet), .HIBYTE(L1MetaTileSet), .LOBYTE(L1Screen1), .HIBYTE(L1Screen1)
 
 ; Index       .BYTE 
 ; PrevScreen  .WORD       ; Pointer to the previous screen
@@ -27,7 +28,7 @@ L1Screen1MetaMeta:
 L1Screen2MetaMeta:
 L1Screen3MetaMeta:
 L1Screen4MetaMeta:
-L1Screen5MetaMeta: ; 0-29; 29 - 59: (60 - X)
+L1Screen5MetaMeta: ; 0-29; 30 - 59: (60 - X)
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00, $00, $00

@@ -15,19 +15,25 @@ LEVEL_INIT_LOOP:
     ADC #$00
     JMP LEVEL_INIT_LOOP
 LEVEL_INIT_EXIT:
-    JSR SET_META_TILE_ZP
+    JSR SET_TILESET_ZP
     JSR SET_SCREEN_ZP
     JSR SCREEN_TO_PPU
     RTS
 
-SET_META_TILE_ZP:
+SET_TILESET_ZP:
     LDY #LEVEL_DATA::MetaTileSet
     LDA (LEVEL_PTR), Y
-    STA META_TILE_PTR
+    STA META_TILESET_PTR
     LDY #LEVEL_DATA::MetaTileSet + 1
     LDA (LEVEL_PTR), Y
-    STA META_TILE_PTR + 1
-SET_META_TILE_ZP_EXIT:
+    STA META_TILESET_PTR + 1
+    LDY #LEVEL_DATA::MetaMetaTileSet
+    LDA (LEVEL_PTR), Y
+    STA META_META_TILESET_PTR
+    LDY #LEVEL_DATA::MetaMetaTileSet + 1
+    LDA (LEVEL_PTR), Y
+    STA META_META_TILESET_PTR + 1
+SET_TILESET_ZP_EXIT:
     RTS
 
 SET_SCREEN_ZP:
@@ -37,69 +43,122 @@ SET_SCREEN_ZP:
     LDY #LEVEL_DATA::Screens + 1
     LDA (LEVEL_PTR), Y
     STA SCREEN_PTR + 1
-SET_SCREEN_ZP_EXIT:
-    JSR SET_METAMETA_TILE_ZP
-    RTS
-
-SET_METAMETA_TILE_ZP:
-    LDY #SCREEN_DATA::MetaMetaTiles
-    LDA (SCREEN_PTR), Y
-    STA METAMETA_TILE_PTR
-    LDY #SCREEN_DATA::MetaMetaTiles + 1
-    LDA (SCREEN_PTR), Y
-    STA METAMETA_TILE_PTR + 1
-SET_METAMETA_TILE_ZP_EXIT:
-    RTS
-
-SCREEN_TO_PPU:    
+    ; Set Nametable and PPUAddress
     LDA #$00
     STA PPUAddress
+    LDY #SCREEN_DATA::Index
+    LDA (SCREEN_PTR), Y
+    AND #$01
+    BNE NEXT_NAMETABLE 
     LDA #$20
+    JMP SET_SCREEN_ZP_EXIT
+NEXT_NAMETABLE:
+    LDA #$24
+SET_SCREEN_ZP_EXIT:
+    STA Nametable
     STA PPUAddress + 1
-NEXT_PPUADDRESS:
+    CLC
+    ADC #$03
+    STA Nametable + 1
+    JSR SET_MMT_INDEX_PTR_ZP
+    RTS
+
+SET_MMT_INDEX_PTR_ZP:
+    LDY #SCREEN_DATA::MetaMetaTileIndex
+    LDA (SCREEN_PTR), Y
+    STA MMT_INDEX_PTR
+    LDY #SCREEN_DATA::MetaMetaTileIndex + 1
+    LDA (SCREEN_PTR), Y
+    STA MMT_INDEX_PTR + 1
+SET_MMT_INDEX_PTR_ZP_EXIT:
+    RTS
+
+SCREEN_TO_PPU: 
+    LDA #$3B  ; 60 meta meta tiles make up a screen
+    STA Temp6 ; MetaMetaTile Index
+METAMETA_TILE_LOOP:
+    LDA Temp6 
+    CMP #$1E
+    BCC SELECT_METAMETA_TILE
+SELECT_MIRRORED_TILE:
     SEC 
-    LDA #$C0
-    SBC PPUAddress
-    LDA #$23
-    SBC PPUAddress + 1
-    BCC TEST_ROUTINE_EXIT
-    ; TODO PROCESS ATTRIBUTES
-NEXT_BG_TILE:
-       
-    INC PPUAddress
-    BNE NEXT_PPUADDRESS
-    INC PPUAddress + 1
+    LDA Temp6 
+    SBC #$1E
+SELECT_METAMETA_TILE:
+    TAY ; MetaMetaTile Index
+    LDA (MMT_INDEX_PTR), Y
+    TAY ; MetaMetaTileset Index
+    LDA (META_META_TILESET_PTR), Y
+    JSR 
+    ; Calculate TileX, TileY, and PPUAddress
+    ; of MetaMetaTileIndex = Temp6
+    ; Loop 16 times writing each tile in 
+    ; the meta meta tile to the PPU Buffer
+    DEC Temp6
+    BNE METAMETA_TILE_LOOP
 
-    JMP NEXT_PPUADDRESS
-TEST_ROUTINE_EXIT:
     RTS
 
-TILE_TO_PPU:
+META_META_TILE_INDEX_TO_TILEXY:
 
-    LDA #$09
-    CMP NumCommands
-    BCC TILE_TO_PPU ; make sure we aren't overloading the NMI
-    JSR BUF_DIF
-    CMP #$7D        ; make sure we have enough bytes free in the buffer
-    BCS TILE_TO_PPU
+    RTS 
+
+TILEXY_TO_PPUADDRESS:
+
+    RTS
+
+; PPUADDRESS_TO_TILE:
+;     LDA PPUAddress       
+;     STA Temp            ; Get the Tile Number 
+;     STA Temp2           ; From the PPUAddress
+;     LDA PPUAddress + 1  
+;     AND #$FC             
+;     STA Temp + 1
+;     STA Temp2 + 1
+;     JSR DIVIDE_BY_32    ; Divide Tile Number by 32. 
+;     LDA Temp            ; This division gives us TileY. 
+;     STA Temp4           ; Store the result in Temp4
+;     LDA Temp2           ; Restore Tile Number from Temp2
+;     STA Temp            ; into Temp. Then subtract 32 * TileY 
+;     LDA Temp2 + 1       ; times to calculate TileX
+;     STA Temp + 1
+;     LDA Temp4 
+;     BEQ STORE_TILE_COL
+;     STA Temp3       ; TileY to Temp3 for Calculating TileX
+; SUBTRACT_TILE_ROW_LOOP:    
+;     JSR SUBTRACT_32
+;     DEC Temp3 
+;     BNE SUBTRACT_TILE_ROW_LOOP ; TileX = Temp
+; STORE_TILE_COL:
+;     LDA Temp 
+;     STA Temp4     
+;     RTS
+
+
+; TILE_TO_PPU:
+
+;     LDA #$09
+;     CMP NumCommands
+;     BCC TILE_TO_PPU ; make sure we aren't overloading the NMI
+;     JSR BUF_DIF
+;     CMP #$7D        ; make sure we have enough bytes free in the buffer
+;     BCS TILE_TO_PPU
     
-    ;PHA     ; A contains the tile 
-    ;JSR TILE_TO_PPU_ADDRESS 
-    LDA #$01
-    JSR WR_BUF
-    ;LDA #$0B
-    LDA PPUAddress + 1
-    JSR WR_BUF
-    ;LDA #$5A
-    LDA PPUAddress  
-    JSR WR_BUF
-    LDA #$05
-    ;PLA 
-    JSR WR_BUF
-    JSR CMD_SET
-    RTS
-
-
+;     ;PHA     ; A contains the tile 
+;     ;JSR TILE_TO_PPU_ADDRESS 
+;     LDA #$01
+;     JSR WR_BUF
+;     ;LDA #$0B
+;     LDA PPUAddress + 1
+;     JSR WR_BUF
+;     ;LDA #$5A
+;     LDA PPUAddress  
+;     JSR WR_BUF
+;     LDA #$05
+;     ;PLA 
+;     JSR WR_BUF
+;     JSR CMD_SET
+;     RTS
 
 ; POINT_TO_META:
 ;     TAY                     ; Transfer Actor Type to Y

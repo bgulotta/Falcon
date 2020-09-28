@@ -244,7 +244,7 @@ UPDATE_TILE_COORDINATES:
     LDY #ACTOR_DATA::XPos               
     LDA (ACTOR_PTR), Y
     STA Temp
-    LDY #ACTOR_DATA::XPos + 1      
+    LDY #ACTOR_DATA::XPos + 1               
     LDA (ACTOR_PTR), Y
     STA Temp + 1
 
@@ -252,6 +252,16 @@ UPDATE_TILE_COORDINATES:
     STA NumIterations
     JSR DIVIDE
 
+    LDY #ACTOR_DATA::XPos + 1               
+    LDA (ACTOR_PTR), Y
+    BEQ STORE_TILE_X 
+    STA Temp3
+SUBTRACT_SCREEN_LOOP:    
+    JSR SUBTRACT_32
+    DEC Temp3 
+    BNE SUBTRACT_SCREEN_LOOP
+
+STORE_TILE_X:
     LDA Temp 
     LDY #ACTOR_DATA::TileX             
     STA (ACTOR_PTR), Y
