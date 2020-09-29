@@ -9,8 +9,8 @@ LEVEL_PTR:             .RES 2
 SCREEN_PTR:            .RES 2
 META_TILESET_PTR:      .RES 2
 META_META_TILESET_PTR: .RES 2
-MMT_INDEX_PTR:         .RES 2
-META_META_TILE_PTR:    .RES 2
+META_META_TILE_INDEX_PTR: .RES 2
+META_TILE_INDEX_PTR:    .RES 2
 .ENDIF
 
 .SEGMENT "OAM"
@@ -47,7 +47,6 @@ NumIterations: .RES 1
 CamDestX:    .RES 2         ; Camera's X Destination
 CamDestY:    .RES 2         ; Camera's Y Destination
 PPUAddress:  .RES 2
-Nametable:   .RES 2         ; Hibyte Begin and End; (IE: 2023 and 2427) 
 ;---- Buffers ----;
 PPUMASKBUF:  .RES 1
 PPUCTRLBUF:  .RES 1
