@@ -45,7 +45,6 @@ SET_SCREEN_ZP:
     STA SCREEN_PTR + 1
 SET_SCREEN_ZP_EXIT:
     JSR META_META_TILE_INDEX_PTR_ZP
-    JSR RESET_PPUADDRESS
     RTS
 
 RESET_PPUADDRESS:
@@ -73,55 +72,31 @@ META_META_TILE_INDEX_PTR_ZP:
 META_META_TILE_INDEX_PTR_EXIT:
     RTS
 
-SCREEN_TO_PPU: 
-    LDA #$3B  ; 60 meta meta tiles make up a screen
-    STA Temp6 ; MetaMetaTile Index
-METAMETA_TILE_LOOP:
-    LDA Temp6 
-    CMP #$1E
-    BCC SELECT_METAMETA_TILE
-SELECT_MIRRORED_TILE:
-    SEC 
-    LDA Temp6 
-    SBC #$1E
-SELECT_METAMETA_TILE:
-    JSR META_META_TILE_TO_PPU
-    DEC Temp6
-    BNE METAMETA_TILE_LOOP
+FIRST_META_META_TILE:
+    LDA #$00  ; 60 meta meta tiles make up a screen
+    STA MetaMetaTileIndex ; MetaMetaTile Index
+    JSR RESET_PPUADDRESS
+    RTS 
+
+NEXT_META_META_TILE:
+    INC MetaMetaTileIndex
+    JSR META_META_TILE_INDEX_TO_PPUADDRESS
     RTS
 
-META_META_TILE_TO_PPU:
-    PHA
+PREV_META_META_TILE:
+    DEC MetaMetaTileIndex
     JSR META_META_TILE_INDEX_TO_PPUADDRESS
-    PLA 
-    TAY ; MetaMetaTile Index
-    LDA (META_META_TILE_INDEX_PTR), Y
-    STA Temp5 
-    TAY ; MetaMetaTileSet Pointer
-META_META_TILE_LOOP:
-    LDA (META_META_TILESET_PTR), Y
-    STA Temp4
-    TAY ; MetaTileSet Pointer
-META_TILE_LOOP:
-    LDA (META_TILESET_PTR), Y
-    ;JSR TILE_TO_PPU
-    INY 
-    TYA 
-    EOR Temp4 
-    AND #$04 
-    BEQ META_TILE_LOOP
-    ; PLA  
-    ; TAY 
-    ; INY 
-    ; TYA 
-    ; EOR Temp5 
-    ; AND #$04
-    ; BEQ META_META_TILE_LOOP
-    RTS
+    RTS 
+
+LAST_META_META_TILE:
+    LDA #$3B  ; 60 meta meta tiles make up a screen
+    STA MetaMetaTileIndex ; MetaMetaTile Index
+    JSR META_META_TILE_INDEX_TO_PPUADDRESS
+    RTS 
 
 META_META_TILE_INDEX_TO_PPUADDRESS:
     JSR RESET_PPUADDRESS
-    LDA Temp6
+    LDA MetaMetaTileIndex
     STA Temp 
     LDA #$00
     STA Temp + 1 
@@ -135,9 +110,64 @@ META_META_TILE_INDEX_TO_PPUADDRESS:
     STA PPUAddress + 1 
     RTS 
 
-TILE_TO_PPU:
+NEXT_PPUADDRESS:
+    CLC
+    LDA PPUAddress
+    ADC #$01
+    STA PPUAddress
+    LDA PPUAddress + 1
+    ADC #$00
+    STA PPUAddress + 1
+    RTS
 
-    PHA     ; A contains the tile 
+SCREEN_TO_PPU: 
+    JSR LAST_META_META_TILE
+    LDA MetaMetaTileIndex 
+METAMETA_TILE_LOOP:
+    CMP #$1E
+    BCC RENDER_META_META_TILE
+SELECT_MIRRORED_TILE:
+    SEC 
+    LDA MetaMetaTileIndex 
+    SBC #$1E
+RENDER_META_META_TILE:
+    JSR META_META_TILE_TO_PPU
+    JSR PREV_META_META_TILE
+    LDA MetaMetaTileIndex 
+    BPL METAMETA_TILE_LOOP
+    RTS
+
+META_META_TILE_TO_PPU:
+    TAY ; MetaMetaTileIndex
+    LDA (META_META_TILE_INDEX_PTR), Y
+    STA MetaMetaTileSetIndex
+    TAY
+    LDA #$00
+    STA Temp4
+META_META_TILE_LOOP:
+    LDA (META_META_TILESET_PTR), Y
+    TAY 
+META_TILE_LOOP:
+    LDA (META_TILESET_PTR), Y
+    STA Tile    
+    JSR TILE_TO_PPU
+    JSR NEXT_PPUADDRESS
+    INY 
+    LDA Temp4
+    CMP #$0F
+    BCS META_META_TILE_TO_PPU_EXIT
+    INC Temp4
+    EOR Temp4 
+    AND #$04 
+    BEQ META_TILE_LOOP
+    INC MetaMetaTileSetIndex
+    LDA MetaMetaTileSetIndex
+    TAY 
+    JMP META_META_TILE_LOOP
+META_META_TILE_TO_PPU_EXIT:
+    RTS
+
+TILE_TO_PPU:
  
     LDA #$09
     CMP NumCommands
@@ -152,7 +182,7 @@ TILE_TO_PPU:
     JSR WR_BUF
     LDA PPUAddress  
     JSR WR_BUF
-    PLA 
+    LDA Tile 
     JSR WR_BUF
     JSR CMD_SET
     RTS

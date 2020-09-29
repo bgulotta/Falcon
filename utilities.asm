@@ -182,6 +182,26 @@ MULTIPLY_BY_8:
     JSR MULTIPLY    
     RTS     
 
+ADD_16:
+    CLC
+    LDA Temp 
+    ADC #$10
+    STA Temp 
+    LDA Temp + 1
+    ADC #$00
+    STA Temp + 1        
+    RTS 
+
+SUBTRACT_16:
+    SEC
+    LDA Temp 
+    SBC #$10
+    STA Temp 
+    LDA Temp + 1
+    SBC #$00
+    STA Temp + 1        
+    RTS 
+
 SUBTRACT_32:
     SEC
     LDA Temp 
