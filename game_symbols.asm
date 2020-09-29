@@ -7,9 +7,10 @@ META_PTR:              .RES 2
 SPRITE_PTR:            .RES 2
 LEVEL_PTR:             .RES 2
 SCREEN_PTR:            .RES 2
-META_TILESET_PTR:      .RES 2
-META_META_TILESET_PTR: .RES 2
-META_META_TILE_INDEX_PTR: .RES 2 ; Points to the meta meta tiles for the currently selected screen
+META_TILESET_PTR:      .RES 2 ; A pointer to the level's meta tilesets
+META_META_TILESET_PTR: .RES 2 ; A pointer to the level's meta meta tilesets
+META_META_TILE_PTR:    .RES 2 ; Points to the meta meta tiles for the currently selected screen
+META_TILE_PTR:         .RES 2 ; Points to the currently selected Meta Tile within the selected META_META_TILE
 .ENDIF
 
 .SEGMENT "OAM"
