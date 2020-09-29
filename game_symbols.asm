@@ -10,7 +10,6 @@ SCREEN_PTR:            .RES 2
 META_TILESET_PTR:      .RES 2
 META_META_TILESET_PTR: .RES 2
 META_META_TILE_INDEX_PTR: .RES 2 ; Points to the meta meta tiles for the currently selected screen
-META_TILE_INDEX_PTR:    .RES 2
 .ENDIF
 
 .SEGMENT "OAM"
