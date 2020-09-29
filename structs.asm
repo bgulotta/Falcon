@@ -48,3 +48,10 @@
     MetaTileSet         .WORD
     Screens             .WORD
  .ENDSTRUCT
+
+  .STRUCT Screen
+    Index               .BYTE
+    PrevScreen          .WORD
+    NextScreen          .WORD
+    MetaMetaTiles       .WORD
+ .ENDSTRUCT
