@@ -55,3 +55,24 @@
     NextScreen          .WORD
     MetaMetaTiles       .WORD
  .ENDSTRUCT
+
+.STRUCT MetaMetaTile
+    Index                .BYTE
+    MetaMetaTilesetIndex .BYTE
+.ENDSTRUCT
+
+.STRUCT MetaTile
+    Index               .BYTE
+    MetaTilesetIndex    .BYTE 
+.ENDSTRUCT 
+
+.STRUCT Tile 
+    Index               .WORD 
+.ENDSTRUCT 
+
+.STRUCT PPU
+    BaseAddress         .WORD
+    MetaMetaTileAddress .WORD 
+    MetaTileAddress     .WORD 
+    TileAddress         .WORD 
+.ENDSTRUCT

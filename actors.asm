@@ -241,51 +241,14 @@ SET_ACTOR_INACTIVE:
 
 UPDATE_TILE_COORDINATES:
 
-    LDY #ACTOR_DATA::XPos               
-    LDA (ACTOR_PTR), Y
-    STA Temp
-    LDY #ACTOR_DATA::XPos + 1               
-    LDA (ACTOR_PTR), Y
-    STA Temp + 1
-
-    LDA #$03        ; Divide x coordinates by 8
-    STA NumIterations
-    JSR DIVIDE
-
-    LDY #ACTOR_DATA::XPos + 1               
-    LDA (ACTOR_PTR), Y
-    BEQ STORE_TILE_X 
-    STA Temp3
-SUBTRACT_SCREEN_LOOP:    
-    JSR SUBTRACT_32
-    DEC Temp3 
-    BNE SUBTRACT_SCREEN_LOOP
-
-STORE_TILE_X:
-    LDA Temp 
-    LDY #ACTOR_DATA::TileX             
-    STA (ACTOR_PTR), Y
-    LDA Temp + 1
-    LDY #ACTOR_DATA::TileX + 1             
-    STA (ACTOR_PTR), Y
-
-    LDY #ACTOR_DATA::YPos               
-    LDA (ACTOR_PTR), Y
-    STA Temp
-    LDY #ACTOR_DATA::YPos + 1      
-    LDA (ACTOR_PTR), Y
-    STA Temp + 1
-
-    LDA #$03        ; Divide x coordinates by 8
-    STA NumIterations
-    JSR DIVIDE
-
-    LDA Temp 
-    LDY #ACTOR_DATA::TileY             
-    STA (ACTOR_PTR), Y
-    LDA Temp + 1
-    LDY #ACTOR_DATA::TileY + 1             
-    STA (ACTOR_PTR), Y
+    CLC 
+    LDA ACTOR_PTR
+    ADC #ACTOR_DATA::XPos
+    STA COORDINATES_PTR
+    LDA ACTOR_PTR + 1
+    ADC #$00
+    STA COORDINATES_PTR + 1
+    JSR CALCULATE_TILE_COORDINATES
 
     RTS
 

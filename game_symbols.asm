@@ -9,8 +9,8 @@ LEVEL_PTR:             .RES 2
 SCREEN_PTR:            .RES 2
 META_TILESET_PTR:      .RES 2 ; A pointer to the level's meta tilesets
 META_META_TILESET_PTR: .RES 2 ; A pointer to the level's meta meta tilesets
-META_META_TILE_PTR:    .RES 2 ; Points to the meta meta tiles for the currently selected screen
-META_TILE_PTR:         .RES 2 ; Points to the currently selected Meta Tile within the selected META_META_TILE
+META_META_TILES_PTR:   .RES 2 ; Points to the meta meta tiles for the currently selected screen
+COORDINATES_PTR:       .RES 2 ; Will take a pointer to a position in world or tile coordinates
 .ENDIF
 
 .SEGMENT "OAM"
@@ -26,7 +26,7 @@ SCROLLFLAG:  .RES 1
 ;--- Controller IO ---;
 JOYPAD1:     .RES 1
 JOYPAD2:     .RES 1
-JOYPAD3:     .RES 1
+JOYPAD3:     .RES 1 
 JOYPAD4:     .RES 1
 ;--- Pointers ----;
 CMD_RPTR:    .RES 1
@@ -37,11 +37,6 @@ OamIndex:    .RES 1
 NumTiles:    .RES 1
 CamDestX:    .RES 2         ; Camera's X Destination
 CamDestY:    .RES 2         ; Camera's Y Destination
-; Background Vars ;
-MetaMetaTileIndex: .RES 1       ; 0 - 59
-MetaMetaTileSetIndex: .RES 1   
-Tile:               .RES 1     
-PPUAddress:  .RES 2
 ;--- Work Vars ---;
 Temp:        .RES 2
 Temp2:       .RES 2
@@ -77,3 +72,13 @@ Camera:
     .TAG Actor
 LastActor:
     .TAG Actor
+
+.SEGMENT "LEVEL"
+PPU:
+    .TAG PPU 
+
+MetaMetaTile:
+    .TAG MetaMetaTile
+
+MetaTile:
+    .TAG MetaTile

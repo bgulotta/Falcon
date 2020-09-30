@@ -91,6 +91,13 @@
         Direction = BITS::BIT_0    ; Is Actor facing left or right? 0 left 1 right
 .ENDSCOPE
 
+.SCOPE COORDINATES
+        XPos          = 0
+        YPos          = 2
+        TileX         = 4    ; TODO: Use second byte here for something
+        TileY         = 6    ; TODO: Use second byte here for something 
+.ENDSCOPE 
+
 ;---------------------------------------
 ; Level enums
 ; 
@@ -106,6 +113,21 @@
         Index               = 0
         PrevScreen          = 1
         NextScreen          = 3
-        MetaMetaTileIndex   = 5
+        MetaMetaTiles       = 5
 .ENDSCOPE
 
+.SCOPE META_META_TILE_DATA
+        Index                = 0
+        MetaMetaTilesetIndex = 1
+.ENDSCOPE
+
+;---------------------------------------
+; PPU enums
+; 
+;---------------------------------------
+.SCOPE PPU_DATA
+        BaseAddress         = 0
+        MetaMetaTileAddress = 2
+        MetaTileAddress     = 4
+        TileAddress         = 6   
+.ENDSCOPE
