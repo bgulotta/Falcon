@@ -160,3 +160,137 @@ SET_META_META_TILESET_INDEX_EXIT:
     STA MetaMetaTile + MetaMetaTile::MetaMetaTilesetIndex
     RTS 
     
+;--------------------------------------------------;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
+FIRST_META_TILE:
+    LDA #$00  ; 4 meta tiles make up a meta meta tile
+    JSR SELECT_META_TILE
+    RTS 
+
+;--------------------------------------------------;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
+NEXT_META_TILE:
+    INC MetaTile + MetaTile::Index
+    LDA MetaTile + MetaTile::Index
+    JSR SELECT_META_TILE
+    RTS
+
+;--------------------------------------------------;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
+PREV_META_TILE:
+    DEC MetaTile + MetaTile::Index
+    LDA MetaTile + MetaTile::Index
+    JSR SELECT_META_TILE
+    RTS 
+
+;--------------------------------------------------;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
+LAST_META_TILE:
+    LDA #$03  ; 4 meta tiles make up a meta meta tile
+    JSR SELECT_META_TILE
+    RTS 
+
+;--------------------------------------------------;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
+SELECT_META_TILE:
+    STA MetaTile + MetaMetaTile::Index
+SET_META_TILESET_INDEX:
+    CLC
+    ADC MetaMetaTile + MetaMetaTile::MetaMetaTilesetIndex
+    TAY 
+    LDA (META_META_TILESET_PTR), Y
+    TAY 
+    LDA (META_TILESET_PTR), Y
+    STA MetaTile + MetaTile::MetaTilesetIndex
+    RTS 
+
+;--------------------------------------------------;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
+FIRST_TILE:
+    LDA #$00  ; 4 tiles make up a meta tile
+    JSR SELECT_TILE
+    RTS 
+
+;--------------------------------------------------;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
+NEXT_TILE:
+    INC Tile + Tile::Index
+    LDA Tile + Tile::Index
+    JSR SELECT_TILE
+    RTS
+
+;--------------------------------------------------;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
+PREV_TILE:
+    DEC Tile + Tile::Index
+    LDA Tile + Tile::Index
+    JSR SELECT_TILE
+    RTS 
+
+;--------------------------------------------------;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
+LAST_TILE:
+    LDA #$03  ; 4 tiles make up a meta tile
+    JSR SELECT_TILE
+    RTS 
+
+;--------------------------------------------------;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
+SELECT_TILE:
+    STA Tile + Tile::Index
+    CLC
+    ADC MetaTile + MetaTile::MetaTilesetIndex
+    TAY 
+    LDA (META_TILESET_PTR), Y
+    STA Tile + Tile::Tile
+    RTS 

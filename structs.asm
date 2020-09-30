@@ -67,7 +67,8 @@
 .ENDSTRUCT 
 
 .STRUCT Tile 
-    Index               .WORD 
+    Index               .BYTE 
+    Tile                .BYTE
 .ENDSTRUCT 
 
 .STRUCT PPU

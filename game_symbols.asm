@@ -82,3 +82,6 @@ MetaMetaTile:
 
 MetaTile:
     .TAG MetaTile
+
+Tile:
+    .TAG Tile 

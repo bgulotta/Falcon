@@ -121,6 +121,16 @@
         MetaMetaTilesetIndex = 1
 .ENDSCOPE
 
+.SCOPE META_TILE_DATA
+        Index                = 0
+        MetaTilesetIndex     = 1
+.ENDSCOPE
+
+.SCOPE TILE_DATA
+        Index                = 0
+        Tile                 = 1
+.ENDSCOPE
+
 ;---------------------------------------
 ; PPU enums
 ; 
