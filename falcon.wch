@@ -1,5 +1,5 @@
 
-67
+71
 00000	0000	w	h	0	ACTOR_PTR
 00001	0002	w	h	0	META_PTR
 00002	0004	w	h	0	SPRITE_PTR
@@ -29,7 +29,7 @@
 00026	0315	w	u	0	Temp2
 00027	0317	w	u	0	Temp3
 00028	0319	w	u	0	Temp4
-00029	031B    b   u   0   NumCommands
+00030	031B	b	u	0	NumCommands
 00030	031C	b	u	0	NumIterations
 00031	031D	b	u	0	PPUMASKBUF
 00032	031E	b	u	0	PPUCTRLBUF
@@ -67,3 +67,7 @@
 00064	0706	w	h	0	PPU: TileAddress
 00065	0708	b	u	0	MetaMetaTile: Index
 00066	0709	b	u	0	MetaMetaTile: TileSet Index
+00067	070A	b	u	0	MetaTile: Index
+00068	070B	b	u	0	MetaTile: TileSet Index
+00069	070C	b	u	0	Tile: Index
+00070	070D	b	u	0	Tile: Tile

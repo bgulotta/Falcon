@@ -25,7 +25,7 @@ L1Screen5:
     .BYTE $04, .LOBYTE(L1Screen4), .HIBYTE(L1Screen4), .LOBYTE(L1Screen1), .HIBYTE(L1Screen1), .LOBYTE(L1Screen5MetaMeta), .HIBYTE(L1Screen5MetaMeta)
 
 L1Screen1MetaMeta:
-    .BYTE $04, $04, $04, $04, $08, $08, $00, $00, $00, $00
+    .BYTE $04, $00, $00, $00, $00, $00, $00, $00, $00, $00
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 L1Screen2MetaMeta:
