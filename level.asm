@@ -218,14 +218,13 @@ LAST_META_TILE:
 ;                                                  ;
 ;--------------------------------------------------;
 SELECT_META_TILE:
-    STA MetaTile + MetaMetaTile::Index
+    STA MetaTile + MetaTile::Index
 SET_META_TILESET_INDEX:
     CLC
     ADC MetaMetaTile + MetaMetaTile::MetaMetaTilesetIndex
     TAY 
     LDA (META_META_TILESET_PTR), Y
     TAY 
-    LDA (META_TILESET_PTR), Y
     STA MetaTile + MetaTile::MetaTilesetIndex
     RTS 
 

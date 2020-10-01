@@ -112,7 +112,7 @@ META_META_TILE_TO_PPUADDRESS:
 ;                                                  ;
 ;--------------------------------------------------;
 META_TILE_TO_PPUADDRESS:
-    LDA MetaMetaTile + MetaMetaTile::Index
+    LDA MetaTile + MetaTile::Index
     CMP #$03
     BCS BOTTOM_RIGHT_META_TILE
     CMP #$02
@@ -129,7 +129,7 @@ BOTTOM_LEFT_META_TILE:
     STA Temp 
     JMP SET_META_TILE_PPUADDRESS
 TOP_RIGHT_META_TILE:
-    LDA #$10
+    LDA #$02
     STA Temp 
     JMP SET_META_TILE_PPUADDRESS
  SET_META_TILE_PPUADDRESS:   
