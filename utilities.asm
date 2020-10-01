@@ -122,7 +122,7 @@ DIVIDE:
 DIVIDE_LOOP:
     LSR Temp + 1
     ROR Temp
-    DEC NumIterations
+    LSR NumIterations
     BNE DIVIDE_LOOP
     RTS
 
@@ -133,25 +133,25 @@ DIVIDE_BY_4:
     RTS 
 
 DIVIDE_BY_8:
-    LDA #$03        ; Divide by 8
+    LDA #$04        ; Divide by 8
     STA NumIterations
     JSR DIVIDE
     RTS 
 
 DIVIDE_BY_16:
-    LDA #$04        ; Divide by 32
+    LDA #$08        ; Divide by 32
     STA NumIterations
     JSR DIVIDE
     RTS 
 
 DIVIDE_BY_32:
-    LDA #$05        ; Divide by 32
+    LDA #$10        ; Divide by 32
     STA NumIterations
     JSR DIVIDE
     RTS 
 
 DIVIDE_BY_128:
-    LDA #$07        ; Divide by 128
+    LDA #$40        ; Divide by 128
     STA NumIterations
     JSR DIVIDE
     RTS 
@@ -160,24 +160,24 @@ MULTIPLY:
 MULTIPLY_LOOP:
     ASL Temp
     ROL Temp + 1
-    DEC NumIterations
+    LSR NumIterations
     BNE MULTIPLY_LOOP
     RTS
 
 MULTIPLY_BY_32:
-    LDA #$05        
+    LDA #$10        
     STA NumIterations
     JSR MULTIPLY    
     RTS 
 
 MULTIPLY_BY_16:
-    LDA #$04        
+    LDA #$08        
     STA NumIterations
     JSR MULTIPLY    
     RTS     
 
 MULTIPLY_BY_8:
-    LDA #$03        
+    LDA #$04        
     STA NumIterations
     JSR MULTIPLY    
     RTS     

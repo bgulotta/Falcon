@@ -116,21 +116,27 @@
         MetaMetaTiles       = 5
 .ENDSCOPE
 
-.SCOPE META_META_TILE_DATA
-        Index                = 0
-        MetaMetaTilesetIndex = 1
+.SCOPE META_META_TILE
+        TileData             = 0
+        MetaMetaTilesetIndex = 5
 .ENDSCOPE
 
-.SCOPE META_TILE_DATA
-        Index                = 0
-        MetaTilesetIndex     = 1
+.SCOPE META_TILE
+        TileData             = 0
+        MetaTilesetIndex     = 5
+.ENDSCOPE
+
+.SCOPE TILE
+        TileData             = 0
+        Tile                 = 5
 .ENDSCOPE
 
 .SCOPE TILE_DATA
         Index                = 0
-        Tile                 = 1
+        TileIndex            = 1
+        Row                  = 3
+        Column               = 4
 .ENDSCOPE
-
 ;---------------------------------------
 ; PPU enums
 ; 

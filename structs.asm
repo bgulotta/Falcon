@@ -56,18 +56,29 @@
     MetaMetaTiles       .WORD
  .ENDSTRUCT
 
+.STRUCT TileCoordinates
+    Row                  .BYTE
+    Col                  .BYTE
+.ENDSTRUCT
+
+.STRUCT TileData 
+    Index               .BYTE  ; Index within the parent tile 
+    TileIndex           .WORD  ; Index of the tile on screen
+    Coordinates         .TAG TileCoordinates
+.ENDSTRUCT 
+
 .STRUCT MetaMetaTile
-    Index                .BYTE
+    TileData             .TAG TileData
     MetaMetaTilesetIndex .BYTE
 .ENDSTRUCT
 
 .STRUCT MetaTile
-    Index               .BYTE
+    TileData            .TAG TileData
     MetaTilesetIndex    .BYTE 
 .ENDSTRUCT 
 
 .STRUCT Tile 
-    Index               .BYTE 
+    TileData            .TAG TileData
     Tile                .BYTE
 .ENDSTRUCT 
 
