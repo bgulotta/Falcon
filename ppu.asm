@@ -82,67 +82,6 @@ CALCULATE_BASE_PPUADDRESS_EXIT:
     STA PPU + PPU::BaseAddress + 1
     RTS
 
-;--------------------------------------------------;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;--------------------------------------------------;
-META_META_TILE_TO_PPUADDRESS:
-    ; LDA MetaMetaTile + MetaMetaTile::Index
-    ; STA Temp 
-    ; LDA #$00
-    ; STA Temp + 1 
-    ; JSR MULTIPLY_BY_16
-    ; CLC 
-    ; LDA PPU + PPU::BaseAddress
-    ; ADC Temp 
-    ; STA PPU + PPU::MetaMetaTileAddress
-    ; LDA PPU + PPU::BaseAddress + 1
-    ; ADC Temp + 1
-    ; STA PPU + PPU::MetaMetaTileAddress + 1
-    RTS 
-
-;--------------------------------------------------;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;--------------------------------------------------;
-META_TILE_TO_PPUADDRESS:
-;     LDA MetaTile + MetaTile::Index
-;     CMP #$03
-;     BCS BOTTOM_RIGHT_META_TILE
-;     CMP #$02
-;     BCS BOTTOM_LEFT_META_TILE
-;     CMP #$01
-;     BCS TOP_RIGHT_META_TILE
-;     JMP SET_META_TILE_PPUADDRESS
-; BOTTOM_RIGHT_META_TILE:
-;     LDA #$42
-;     STA Temp 
-;     JMP SET_META_TILE_PPUADDRESS
-; BOTTOM_LEFT_META_TILE:
-;     LDA #$40
-;     STA Temp 
-;     JMP SET_META_TILE_PPUADDRESS
-; TOP_RIGHT_META_TILE:
-;     LDA #$02
-;     STA Temp 
-;     JMP SET_META_TILE_PPUADDRESS
-;  SET_META_TILE_PPUADDRESS:   
-;     LDA #$00
-;     STA Temp + 1 
-;     CLC 
-;     LDA PPU + PPU::MetaMetaTileAddress
-;     ADC Temp 
-;     STA PPU + PPU::MetaTileAddress
-;     LDA PPU + PPU::MetaMetaTileAddress + 1
-;     ADC Temp + 1
-;     STA PPU + PPU::MetaTileAddress + 1
-    RTS 
 
 ;--------------------------------------------------;
 ;                                                  ;
@@ -152,36 +91,13 @@ META_TILE_TO_PPUADDRESS:
 ;                                                  ;
 ;--------------------------------------------------;
 TILE_TO_PPUADDRESS:
-;     LDA Tile + Tile::Index
-;     CMP #$03
-;     BCS BOTTOM_RIGHT_TILE
-;     CMP #$02
-;     BCS BOTTOM_LEFT_TILE
-;     CMP #$01
-;     BCS TOP_RIGHT_TILE
-;     JMP SET_TILE_PPUADDRESS
-; BOTTOM_RIGHT_TILE:
-;     LDA #$22
-;     STA Temp 
-;     JMP SET_TILE_PPUADDRESS
-; BOTTOM_LEFT_TILE:
-;     LDA #$20
-;     STA Temp 
-;     JMP SET_TILE_PPUADDRESS
-; TOP_RIGHT_TILE:
-;     LDA #$01
-;     STA Temp 
-;     JMP SET_TILE_PPUADDRESS
-;  SET_TILE_PPUADDRESS:   
-;     LDA #$00
-;     STA Temp + 1 
-;     CLC 
-;     LDA PPU + PPU::MetaTileAddress
-;     ADC Temp 
-;     STA PPU + PPU::TileAddress
-;     LDA PPU + PPU::MetaTileAddress + 1
-;     ADC Temp + 1
-;     STA PPU + PPU::TileAddress + 1
+    CLC 
+    LDA PPU + PPU::BaseAddress
+    ADC Tile + TILE::TileIndex     
+    STA PPU + PPU::TileAddress
+    LDA PPU + PPU::BaseAddress + 1
+    ADC Tile + TILE::TileIndex + 1
+    STA PPU + PPU::TileAddress + 1
     RTS 
 
 ;--------------------------------------------------;
@@ -192,12 +108,12 @@ TILE_TO_PPUADDRESS:
 ;                                                  ;
 ;--------------------------------------------------;
 SCREEN_TO_PPU: 
-;     JSR LAST_META_META_TILE
-; RENDER_META_META_TILE:
-;     JSR META_META_TILE_TO_PPU
-;     JSR PREV_META_META_TILE
-;     ; LDA MetaMetaTile + MetaMetaTile::Index 
-;     BPL RENDER_META_META_TILE
+    JSR LAST_META_META_TILE
+RENDER_META_META_TILE:
+    JSR META_META_TILE_TO_PPU
+    JSR PREV_META_META_TILE
+    LDA MetaMetaTile + MetaTile::Index 
+    BPL RENDER_META_META_TILE
     RTS
 
 ;--------------------------------------------------;
@@ -208,13 +124,12 @@ SCREEN_TO_PPU:
 ;                                                  ;
 ;--------------------------------------------------;
 META_META_TILE_TO_PPU:
-;     JSR META_META_TILE_TO_PPUADDRESS
-;     JSR LAST_META_TILE
-; RENDER_META_TILE:
-;     JSR META_TILE_TO_PPU
-;     JSR PREV_META_TILE
-;     LDA MetaTile + MetaTile::Index 
-;     BPL RENDER_META_TILE
+    JSR LAST_META_TILE
+RENDER_META_TILE:
+    JSR META_TILE_TO_PPU
+    JSR PREV_META_TILE
+    LDA MetaTile + MetaTile::Index 
+    BPL RENDER_META_TILE
     RTS 
 
 ;--------------------------------------------------;
@@ -225,13 +140,12 @@ META_META_TILE_TO_PPU:
 ;                                                  ;
 ;--------------------------------------------------;
 META_TILE_TO_PPU:
-;     JSR META_TILE_TO_PPUADDRESS
-;     JSR LAST_TILE
-; RENDER_TILE:
-;     JSR TILE_TO_PPU
-;     JSR PREV_TILE
-;     LDA Tile + Tile::Index 
-;     BPL RENDER_TILE
+    JSR LAST_TILE
+RENDER_TILE:
+    JSR TILE_TO_PPU
+    JSR PREV_TILE
+    LDA Tile + Tile::Index 
+    BPL RENDER_TILE
     RTS 
 
 ;--------------------------------------------------;
@@ -242,23 +156,23 @@ META_TILE_TO_PPU:
 ;                                                  ;
 ;--------------------------------------------------;
 TILE_TO_PPU:
-    ; LDA #$09
-    ; CMP NumCommands
-    ; BCC TILE_TO_PPU ; make sure we aren't overloading the NMI
-    ; JSR BUF_DIF
-    ; CMP #$7D        ; make sure we have enough bytes free in the buffer
-    ; BCS TILE_TO_PPU
+    LDA #$09
+    CMP NumCommands
+    BCC TILE_TO_PPU ; make sure we aren't overloading the NMI
+    JSR BUF_DIF
+    CMP #$7D        ; make sure we have enough bytes free in the buffer
+    BCS TILE_TO_PPU
 
-    ; JSR TILE_TO_PPUADDRESS
+    JSR TILE_TO_PPUADDRESS
 
-    ; LDA #$01
-    ; JSR WR_BUF
-    ; LDA PPU + PPU::TileAddress + 1
-    ; JSR WR_BUF
-    ; LDA PPU + PPU::TileAddress
-    ; JSR WR_BUF
-    ; LDA Tile + TILE_DATA::Tile
-    ; JSR WR_BUF
-    ; JSR CMD_SET
+    LDA #$01
+    JSR WR_BUF
+    LDA PPU + PPU::TileAddress + 1
+    JSR WR_BUF
+    LDA PPU + PPU::TileAddress
+    JSR WR_BUF
+    LDA Tile + TILE::Tile
+    JSR WR_BUF
+    JSR CMD_SET
 
     RTS

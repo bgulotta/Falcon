@@ -108,8 +108,8 @@ FIRST_META_META_TILE:
 ;                                                  ;
 ;--------------------------------------------------;
 NEXT_META_META_TILE:
-    INC MetaMetaTile + MetaMetaTile::Index
-    LDA MetaMetaTile + MetaMetaTile::Index
+    INC MetaMetaTile + MetaTile::Index
+    LDA MetaMetaTile + MetaTile::Index
     JSR SELECT_META_META_TILE
     RTS
 
@@ -121,8 +121,8 @@ NEXT_META_META_TILE:
 ;                                                  ;
 ;--------------------------------------------------;
 PREV_META_META_TILE:
-    DEC MetaMetaTile + MetaMetaTile::Index
-    LDA MetaMetaTile + MetaMetaTile::Index
+    DEC MetaMetaTile + MetaTile::Index
+    LDA MetaMetaTile + MetaTile::Index
     JSR SELECT_META_META_TILE
     RTS 
 
@@ -146,25 +146,25 @@ LAST_META_META_TILE:
 ;                                                  ;
 ;--------------------------------------------------;
 SELECT_META_META_TILE:
-    STA MetaMetaTile + MetaMetaTile::Index   
-    STA MetaMetaTile + MetaMetaTile::TileData
+    STA MetaMetaTile + MetaTile::Index   
+    STA MetaMetaTile + MetaTile::TileData
 SET_META_META_TILESET_INDEX:
     CMP #$1C
     BCC SET_META_META_TILESET_INDEX_EXIT
 SELECT_MIRRORED_TILE:
     SEC 
     LDA #$37 
-    SBC MetaMetaTile + MetaMetaTile::Index
+    SBC MetaMetaTile + MetaTile::Index
 SET_META_META_TILESET_INDEX_EXIT:
     TAY ; MetaMetaTileIndex
     LDA (META_META_TILES_PTR), Y
-    STA MetaMetaTile + MetaMetaTile::MetaMetaTilesetIndex
+    STA MetaMetaTile + MetaTile::TilesetIndex
 SET_META_META_TILE_DATA:
     LDA #$08
     STA Temp2 
-    LDA .LOBYTE(MetaMetaTile + MetaMetaTile::TileData)
+    LDA #.LOBYTE(MetaMetaTile)
     STA TILE_PTR
-    LDA .HIBYTE(MetaMetaTile + MetaMetaTile::TileData)
+    LDA #.HIBYTE(MetaMetaTile)
     STA TILE_PTR + 1
     JSR SET_TILE_COORDINATES
     RTS 
@@ -245,24 +245,23 @@ SELECT_META_TILE:
     STA MetaTile + MetaTile::Index
 SET_META_TILESET_INDEX:
     CLC
-    ADC MetaMetaTile + MetaMetaTile::MetaMetaTilesetIndex
+    ADC MetaMetaTile + MetaTile::TilesetIndex
     TAY 
     LDA (META_META_TILESET_PTR), Y
     TAY 
-    STA MetaTile + MetaTile::MetaTilesetIndex
-SELECT_META_TILE_EXIT:
-    LDA .LOBYTE(MetaMetaTile + MetaMetaTile::TileData)
+    STA MetaTile + MetaTile::TilesetIndex
+SET_META_TILE_TILE_DATA:
+    LDA #.LOBYTE(MetaMetaTile)
     STA PARENT_TILE_PTR
-    LDA .HIBYTE(MetaMetaTile + MetaMetaTile::TileData)
+    LDA #.HIBYTE(MetaMetaTile)
     STA PARENT_TILE_PTR + 1
-    LDA .LOBYTE(MetaTile + MetaTile::TileData)
+    LDA #.LOBYTE(MetaTile)
     STA TILE_PTR
-    STA CHILD_TILE_PTR
-    LDA .HIBYTE(MetaTile + MetaTile::TileData)
+    LDA #.HIBYTE(MetaTile)
     STA TILE_PTR + 1
-    STA CHILD_TILE_PTR + 1
     LDA #$10
     JSR SET_TILE_DATA
+SELECT_META_TILE_EXIT:
     RTS 
 
 ;--------------------------------------------------;
@@ -325,16 +324,27 @@ LAST_TILE:
 SELECT_TILE:
     STA Tile + Tile::Index
     CLC
-    ADC MetaTile + MetaTile::MetaTilesetIndex
+    ADC MetaTile + MetaTile::TilesetIndex
     TAY 
     LDA (META_TILESET_PTR), Y
     STA Tile + Tile::Tile
+SET_TILE_TILE_DATA:
+    LDA #.LOBYTE(MetaTile)
+    STA PARENT_TILE_PTR
+    LDA #.HIBYTE(MetaTile)
+    STA PARENT_TILE_PTR + 1
+    LDA #.LOBYTE(Tile)
+    STA TILE_PTR
+    LDA #.HIBYTE(Tile)
+    STA TILE_PTR + 1
+    LDA #$20
+    JSR SET_TILE_DATA
     RTS 
 
 ;--------------------------------------------------;
 ;                                                  ;
 ;  This subroutine will take a tile MetaMetaTile,  ;
-;  MetaTile, or Tile with a given index and        ;
+;  MetaTile, or Tile with a given TileIndex and    ;
 ;  calculate the tile's row and col index.         ;
 ;  Inputs: NumCols = Temp2, TILE_PTR               ; 
 ;                                                  ;
@@ -344,11 +354,11 @@ SELECT_TILE:
 ;--------------------------------------------------;
 SET_TILE_COORDINATES:
 CALCULATE_TILE_ROW:
-    LDY #TILE_DATA::TileIndex
-    STA (TILE_PTR), Y
+    LDY #TILE::TileIndex
+    LDA (TILE_PTR), Y
     STA Temp
-    LDY #TILE_DATA::TileIndex + 1
-    STA (TILE_PTR), Y
+    LDY #TILE::TileIndex + 1
+    LDA (TILE_PTR), Y
     STA Temp + 1
     LDA Temp2 
     LSR A 
@@ -356,7 +366,7 @@ CALCULATE_TILE_ROW:
     STA NumIterations
     JSR DIVIDE
     LDA Temp
-    LDY #TILE_DATA::Row
+    LDY #TILE::Row
     STA (TILE_PTR), Y
 CALCULATE_TILE_COL:
     STA Temp
@@ -366,10 +376,10 @@ CALCULATE_TILE_COL:
     STA NumIterations 
     JSR MULTIPLY 
     SEC 
-    LDY #TILE_DATA::TileIndex
-    STA (TILE_PTR), Y
+    LDY #TILE::TileIndex
+    LDA (TILE_PTR), Y
     SBC Temp
-    LDY #TILE_DATA::Column
+    LDY #TILE::Column
     STA (TILE_PTR), Y
     RTS 
 
@@ -381,22 +391,75 @@ CALCULATE_TILE_COL:
 ;  Inputs: NumCols = Temp2, PARENT_TILE_PTR        ; 
 ;          CHILD_TILE_PTR                          ;
 ;  Formulas:                                       ;
-;   TileIndex = NumCols*(Column + Row)             ;
+;   Child::TileIndex =                             ;
+;     2*(NumCols*Parent::Row + Parent::Column)     ;
 ;                                                  ;
 ;--------------------------------------------------;
 SET_TILE_INDEX:
-    CLC 
-    LDY #TILE_DATA::Column
+SET_TILE_INDEX_FIRST_TILE:
+    LDY #TILE::Row
     LDA (PARENT_TILE_PTR), Y
-    LDY #TILE_DATA::Row
-    ADC (PARENT_TILE_PTR), Y
     STA Temp 
     LDA #$00
     STA Temp + 1
     LDA Temp2 
+    PHA 
     LSR A 
     STA NumIterations 
+    JSR MULTIPLY        ; Temp = NumCols*Parent::Row
+    PLA 
+    STA Temp2
+    CLC
+    LDA Temp 
+    LDY #TILE::Column
+    ADC (PARENT_TILE_PTR), Y
+    STA Temp 
+    LDA Temp + 1
+    ADC #$00
+    STA Temp + 1        ; Temp = NumCols*Parent::Row + Parent::Column 
+    LDA #$01
+    STA NumIterations 
     JSR MULTIPLY
-    LDY #TILE_DATA::TileIndex
-    LDA (CHILD_TILE_PTR), Y
+    LDY #TILE::Index
+    LDA (TILE_PTR), Y
+    BEQ SET_TILE_INDEX_EXIT
+    CMP #$03
+    BCS SET_TILE_INDEX_BOTTOM_RIGHT
+    CMP #$02
+    BCS SET_TILE_INDEX_BOTTOM_LEFT
+SET_TILE_INDEX_TOP_RIGHT:
+    CLC 
+    LDA Temp 
+    ADC #$01
+    STA Temp 
+    LDA Temp + 1 
+    ADC #$00 
+    STA Temp + 1
+    JMP SET_TILE_INDEX_EXIT
+SET_TILE_INDEX_BOTTOM_RIGHT:
+    CLC 
+    LDA Temp2 
+    ADC Temp
+    ADC #$01 
+    STA Temp 
+    LDA #$00 
+    ADC Temp + 1 
+    STA Temp + 1
+    JMP SET_TILE_INDEX_EXIT
+SET_TILE_INDEX_BOTTOM_LEFT:
+    CLC 
+    LDA Temp2 
+    ADC Temp 
+    STA Temp 
+    LDA #$00 
+    ADC Temp + 1 
+    STA Temp + 1
+    JMP SET_TILE_INDEX_EXIT
+SET_TILE_INDEX_EXIT:
+    LDA Temp 
+    LDY #TILE::TileIndex
+    STA (TILE_PTR), Y
+    LDA Temp + 1
+    LDY #TILE::TileIndex + 1
+    STA (TILE_PTR), Y
     RTS 

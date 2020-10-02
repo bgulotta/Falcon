@@ -116,18 +116,9 @@
         MetaMetaTiles       = 5
 .ENDSCOPE
 
-.SCOPE META_META_TILE
-        Index                = 0
-        MetaMetaTilesetIndex = 1
-        TileData             = 2
-        TileIndex            = 2
-        Row                  = 4
-        Column               = 5      
-.ENDSCOPE
-
 .SCOPE META_TILE
         Index                = 0
-        MetaTilesetIndex     = 1
+        TilesetIndex         = 1
         TileData             = 2
         TileIndex            = 2
         Row                  = 4
@@ -154,7 +145,5 @@
 ;---------------------------------------
 .SCOPE PPU_DATA
         BaseAddress         = 0
-        MetaMetaTileAddress = 2
-        MetaTileAddress     = 4
-        TileAddress         = 6   
+        TileAddress         = 2   
 .ENDSCOPE

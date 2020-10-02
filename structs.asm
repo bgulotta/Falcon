@@ -66,17 +66,11 @@
     Coordinates         .TAG TileCoordinates
 .ENDSTRUCT 
 
-.STRUCT MetaMetaTile
+.STRUCT MetaTile
     Index                .BYTE
-    MetaMetaTilesetIndex .BYTE
+    TilesetIndex         .BYTE
     TileData             .TAG TileData
 .ENDSTRUCT
-
-.STRUCT MetaTile
-    Index               .BYTE
-    MetaTilesetIndex    .BYTE 
-    TileData            .TAG TileData
-.ENDSTRUCT 
 
 .STRUCT Tile 
     Index               .BYTE
@@ -86,7 +80,5 @@
 
 .STRUCT PPU
     BaseAddress         .WORD
-    MetaMetaTileAddress .WORD 
-    MetaTileAddress     .WORD 
     TileAddress         .WORD 
 .ENDSTRUCT
