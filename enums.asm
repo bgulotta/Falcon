@@ -67,13 +67,11 @@
         MetaData      = 1
         XPos          = 3
         YPos          = 5
-        TileX         = 7    ; TODO: Use second byte here for something
-        TileY         = 9    ; TODO: Use second byte here for something 
-        Movement      = 11
-        MovementPrev  = 12
-        Acceleration  = 13
-        Attributes    = 15
-        NextActor     = 16
+        Movement      = 7
+        MovementPrev  = 8
+        Acceleration  = 9
+        Attributes    = 11
+        NextActor     = 12
 .ENDSCOPE
 
 .SCOPE META_DATA
@@ -93,9 +91,7 @@
 
 .SCOPE COORDINATES
         XPos          = 0
-        YPos          = 2
-        TileX         = 4    ; TODO: Use second byte here for something
-        TileY         = 6    ; TODO: Use second byte here for something 
+        YPos          = 2 
 .ENDSCOPE 
 
 ;---------------------------------------
@@ -134,11 +130,6 @@
         Column               = 5
 .ENDSCOPE
 
-.SCOPE TILE_DATA
-        TileIndex            = 0
-        Row                  = 2
-        Column               = 3
-.ENDSCOPE
 ;---------------------------------------
 ; PPU enums
 ; 

@@ -111,6 +111,7 @@ NEXT_META_META_TILE:
     INC MetaMetaTile + MetaTile::Index
     LDA MetaMetaTile + MetaTile::Index
     JSR SELECT_META_META_TILE
+NEXT_META_META_TILE_EXIT:
     RTS
 
 ;--------------------------------------------------;
@@ -123,7 +124,9 @@ NEXT_META_META_TILE:
 PREV_META_META_TILE:
     DEC MetaMetaTile + MetaTile::Index
     LDA MetaMetaTile + MetaTile::Index
+    BMI PREV_META_META_TILE_EXIT
     JSR SELECT_META_META_TILE
+PREV_META_META_TILE_EXIT:
     RTS 
 
 ;--------------------------------------------------;
@@ -170,21 +173,6 @@ SET_META_META_TILE_DATA:
     RTS 
 
 ;--------------------------------------------------;
-;    This subroutine will set the TileIndex        ;
-;    and TileCoordinates for the selected tile or  ;
-;    meta tile                                     ;
-;--------------------------------------------------;
-SET_TILE_DATA:
-    STA Temp2 
-    PHA 
-    JSR SET_TILE_INDEX
-    PLA
-    STA Temp2
-    JSR SET_TILE_COORDINATES
-SET_TILE_DATA_EXIT:
-    RTS
-
-;--------------------------------------------------;
 ;  This subroutine will select the first meta      ;
 ;  tile for the currently selected meta meta tile. ;
 ;                                                  ;
@@ -219,7 +207,9 @@ NEXT_META_TILE:
 PREV_META_TILE:
     DEC MetaTile + MetaTile::Index
     LDA MetaTile + MetaTile::Index
+    BMI PREV_META_TILE_EXIT
     JSR SELECT_META_TILE
+PREV_META_TILE_EXIT:
     RTS 
 
 ;--------------------------------------------------;
@@ -299,7 +289,9 @@ NEXT_TILE:
 PREV_TILE:
     DEC Tile + Tile::Index
     LDA Tile + Tile::Index
+    BMI PREV_TILE_EXIT
     JSR SELECT_TILE
+PREV_TILE_EXIT:
     RTS 
 
 ;--------------------------------------------------;
@@ -341,6 +333,21 @@ SET_TILE_TILE_DATA:
     JSR SET_TILE_DATA
     RTS 
 
+;--------------------------------------------------;
+;    This subroutine will set the TileIndex        ;
+;    and TileCoordinates for the selected tile or  ;
+;    meta tile                                     ;
+;--------------------------------------------------;
+SET_TILE_DATA:
+    STA Temp2 
+    PHA 
+    JSR SET_TILE_INDEX
+    PLA
+    STA Temp2
+    JSR SET_TILE_COORDINATES
+SET_TILE_DATA_EXIT:
+    RTS
+    
 ;--------------------------------------------------;
 ;                                                  ;
 ;  This subroutine will take a tile MetaMetaTile,  ;

@@ -17,25 +17,20 @@
     Previous   .BYTE
 .ENDSTRUCT 
 
-.STRUCT Position
-    XPos          .WORD       
-    YPos          .WORD  
-.ENDSTRUCT 
-
 .STRUCT Coordinates
-    World      .TAG Position  
-    Tile       .TAG Position 
+    XPos       .WORD  
+    YPos       .WORD 
 .ENDSTRUCT
 
 .STRUCT ViewPort
-    Begin .TAG Position
-    End   .TAG Position
+    Begin .TAG Coordinates
+    End   .TAG Coordinates
 .ENDSTRUCT
 
 .STRUCT Actor
     Index               .BYTE ; The index of this actor
     MetaData            .WORD ; Pointer to this Actor's static meta data     
-    Coordinates         .TAG  Coordinates ; Actor's world and tile coordinates
+    WorldCoordinates    .TAG  Coordinates ; Actor's coordinates in the world
     Movement            .TAG  Movement ; Actor's movement actions
     Acceleration        .WORD ; Players current acceleration
     Attributes          .BYTE ; Player attributes (Active, Initialized, Health .ETC)
