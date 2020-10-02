@@ -108,8 +108,8 @@ FIRST_META_META_TILE:
 ;                                                  ;
 ;--------------------------------------------------;
 NEXT_META_META_TILE:
-    INC MetaMetaTile + MetaMetaTile::TileData
-    LDA MetaMetaTile + MetaMetaTile::TileData
+    INC MetaMetaTile + MetaMetaTile::Index
+    LDA MetaMetaTile + MetaMetaTile::Index
     JSR SELECT_META_META_TILE
     RTS
 
@@ -121,8 +121,8 @@ NEXT_META_META_TILE:
 ;                                                  ;
 ;--------------------------------------------------;
 PREV_META_META_TILE:
-    DEC MetaMetaTile + MetaMetaTile::TileData
-    LDA MetaMetaTile + MetaMetaTile::TileData
+    DEC MetaMetaTile + MetaMetaTile::Index
+    LDA MetaMetaTile + MetaMetaTile::Index
     JSR SELECT_META_META_TILE
     RTS 
 
@@ -146,6 +146,7 @@ LAST_META_META_TILE:
 ;                                                  ;
 ;--------------------------------------------------;
 SELECT_META_META_TILE:
+    STA MetaMetaTile + MetaMetaTile::Index   
     STA MetaMetaTile + MetaMetaTile::TileData
 SET_META_META_TILESET_INDEX:
     CMP #$1C
@@ -153,20 +154,35 @@ SET_META_META_TILESET_INDEX:
 SELECT_MIRRORED_TILE:
     SEC 
     LDA #$37 
-    SBC MetaMetaTile + MetaMetaTile::TileData
+    SBC MetaMetaTile + MetaMetaTile::Index
 SET_META_META_TILESET_INDEX_EXIT:
     TAY ; MetaMetaTileIndex
     LDA (META_META_TILES_PTR), Y
     STA MetaMetaTile + MetaMetaTile::MetaMetaTilesetIndex
-SET_META_META_TILE_COORDINATES:
+SET_META_META_TILE_DATA:
     LDA #$08
     STA Temp2 
     LDA .LOBYTE(MetaMetaTile + MetaMetaTile::TileData)
-    STA PARENT_TILE_PTR
+    STA TILE_PTR
     LDA .HIBYTE(MetaMetaTile + MetaMetaTile::TileData)
-    STA PARENT_TILE_PTR + 1
+    STA TILE_PTR + 1
     JSR SET_TILE_COORDINATES
     RTS 
+
+;--------------------------------------------------;
+;    This subroutine will set the TileIndex        ;
+;    and TileCoordinates for the selected tile or  ;
+;    meta tile                                     ;
+;--------------------------------------------------;
+SET_TILE_DATA:
+    STA Temp2 
+    PHA 
+    JSR SET_TILE_INDEX
+    PLA
+    STA Temp2
+    JSR SET_TILE_COORDINATES
+SET_TILE_DATA_EXIT:
+    RTS
 
 ;--------------------------------------------------;
 ;  This subroutine will select the first meta      ;
@@ -188,8 +204,8 @@ FIRST_META_TILE:
 ;                                                  ;
 ;--------------------------------------------------;
 NEXT_META_TILE:
-    INC MetaTile + MetaTile::TileData
-    LDA MetaTile + MetaTile::TileData
+    INC MetaTile + MetaTile::Index
+    LDA MetaTile + MetaTile::Index
     JSR SELECT_META_TILE
     RTS
 
@@ -201,8 +217,8 @@ NEXT_META_TILE:
 ;                                                  ;
 ;--------------------------------------------------;
 PREV_META_TILE:
-    DEC MetaTile + MetaTile::TileData
-    LDA MetaTile + MetaTile::TileData
+    DEC MetaTile + MetaTile::Index
+    LDA MetaTile + MetaTile::Index
     JSR SELECT_META_TILE
     RTS 
 
@@ -226,7 +242,7 @@ LAST_META_TILE:
 ;                                                  ;
 ;--------------------------------------------------;
 SELECT_META_TILE:
-    STA MetaTile + MetaTile::TileData
+    STA MetaTile + MetaTile::Index
 SET_META_TILESET_INDEX:
     CLC
     ADC MetaMetaTile + MetaMetaTile::MetaMetaTilesetIndex
@@ -234,19 +250,19 @@ SET_META_TILESET_INDEX:
     LDA (META_META_TILESET_PTR), Y
     TAY 
     STA MetaTile + MetaTile::MetaTilesetIndex
-
-    ;LDA #$10
-    ;STA Temp2 
-    ; LDA .LOBYTE(MetaMetaTile + MetaMetaTile::TileData)
-    ; STA TILE_DATA_PTR
-    ; LDA .HIBYTE(MetaMetaTile + MetaMetaTile::TileData)
-    ; ; STA TILE_DATA_PTR + 1
-    ; LDA .LOBYTE(MetaTile + MetaTile::TileData)
-    ; STA TILE_DATA_PTR2
-    ; LDA .HIBYTE(MetaTile + MetaTile::TileData)
-    ; STA TILE_DATA_PTR2 + 1
-    ; JSR SET_TILE_INDEX
-
+SELECT_META_TILE_EXIT:
+    LDA .LOBYTE(MetaMetaTile + MetaMetaTile::TileData)
+    STA PARENT_TILE_PTR
+    LDA .HIBYTE(MetaMetaTile + MetaMetaTile::TileData)
+    STA PARENT_TILE_PTR + 1
+    LDA .LOBYTE(MetaTile + MetaTile::TileData)
+    STA TILE_PTR
+    STA CHILD_TILE_PTR
+    LDA .HIBYTE(MetaTile + MetaTile::TileData)
+    STA TILE_PTR + 1
+    STA CHILD_TILE_PTR + 1
+    LDA #$10
+    JSR SET_TILE_DATA
     RTS 
 
 ;--------------------------------------------------;
@@ -269,8 +285,8 @@ FIRST_TILE:
 ;                                                  ;
 ;--------------------------------------------------;
 NEXT_TILE:
-    INC Tile + Tile::TileData
-    LDA Tile + Tile::TileData
+    INC Tile + Tile::Index
+    LDA Tile + Tile::Index
     JSR SELECT_TILE
     RTS
 
@@ -282,8 +298,8 @@ NEXT_TILE:
 ;                                                  ;
 ;--------------------------------------------------;
 PREV_TILE:
-    DEC Tile + Tile::TileData
-    LDA Tile + Tile::TileData
+    DEC Tile + Tile::Index
+    LDA Tile + Tile::Index
     JSR SELECT_TILE
     RTS 
 
@@ -307,7 +323,7 @@ LAST_TILE:
 ;                                                  ;
 ;--------------------------------------------------;
 SELECT_TILE:
-    STA Tile + Tile::TileData
+    STA Tile + Tile::Index
     CLC
     ADC MetaTile + MetaTile::MetaTilesetIndex
     TAY 

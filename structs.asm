@@ -62,24 +62,26 @@
 .ENDSTRUCT
 
 .STRUCT TileData 
-    Index               .BYTE  ; Index within the parent tile 
-    TileIndex           .WORD  ; Index of the tile on screen
+    TileIndex           .WORD 
     Coordinates         .TAG TileCoordinates
 .ENDSTRUCT 
 
 .STRUCT MetaMetaTile
-    TileData             .TAG TileData
+    Index                .BYTE
     MetaMetaTilesetIndex .BYTE
+    TileData             .TAG TileData
 .ENDSTRUCT
 
 .STRUCT MetaTile
-    TileData            .TAG TileData
+    Index               .BYTE
     MetaTilesetIndex    .BYTE 
+    TileData            .TAG TileData
 .ENDSTRUCT 
 
 .STRUCT Tile 
-    TileData            .TAG TileData
+    Index               .BYTE
     Tile                .BYTE
+    TileData            .TAG TileData
 .ENDSTRUCT 
 
 .STRUCT PPU
