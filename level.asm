@@ -46,7 +46,6 @@ SET_SCREEN_FIRST:
     LDA (LEVEL_PTR), Y
     STA SCREEN_PTR + 1
 SET_SCREEN_FIRST_EXIT:
-    JSR CALCULATE_BASE_PPUADDRESS
     JSR SET_META_META_TILES_PTR
     RTS
 
@@ -60,7 +59,6 @@ SET_SCREEN_NEXT:
     PLA 
     STA SCREEN_PTR
 SET_SCREEN_NEXT_EXIT:
-    JSR CALCULATE_BASE_PPUADDRESS
     JSR SET_META_META_TILES_PTR    
     RTS
 
@@ -74,7 +72,6 @@ SET_SCREEN_PREV:
     PLA 
     STA SCREEN_PTR
 SET_SCREEN_PREV_EXIT:
-    JSR CALCULATE_BASE_PPUADDRESS
     JSR SET_META_META_TILES_PTR    
     RTS
 
@@ -95,8 +92,10 @@ META_META_TILES_PTR_EXIT:
 ;                                                  ;
 ;                                                  ;
 ;--------------------------------------------------;
-FIRST_META_META_TILE:
-    LDA #$00  ; 60 meta meta tiles make up a screen
+LAST_META_META_TILE_IN_COL:
+    CLC 
+    ADC #$30
+    STA MetaMetaTile + MetaTile::Index 
     JSR SELECT_META_META_TILE
     RTS 
 
@@ -107,38 +106,14 @@ FIRST_META_META_TILE:
 ;                                                  ;
 ;                                                  ;
 ;--------------------------------------------------;
-NEXT_META_META_TILE:
-    INC MetaMetaTile + MetaTile::Index
+PREV_META_META_TILE_ROW_IN_COL:
+    SEC 
     LDA MetaMetaTile + MetaTile::Index
+    SBC #$08    
+    BMI PREV_META_META_TILE_ROW_IN_COL_EXIT
+    STA MetaMetaTile + MetaTile::Index
     JSR SELECT_META_META_TILE
-NEXT_META_META_TILE_EXIT:
-    RTS
-
-;--------------------------------------------------;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;--------------------------------------------------;
-PREV_META_META_TILE:
-    DEC MetaMetaTile + MetaTile::Index
-    LDA MetaMetaTile + MetaTile::Index
-    BMI PREV_META_META_TILE_EXIT
-    JSR SELECT_META_META_TILE
-PREV_META_META_TILE_EXIT:
-    RTS 
-
-;--------------------------------------------------;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;--------------------------------------------------;
-LAST_META_META_TILE:
-    LDA #$37  ; 56 meta meta tiles make up a screen (2 rows of tiles will be dedicated to a score/hud area)
-    JSR SELECT_META_META_TILE
+PREV_META_META_TILE_ROW_IN_COL_EXIT:
     RTS 
 
 ;--------------------------------------------------;

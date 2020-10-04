@@ -107,13 +107,30 @@ TILE_TO_PPUADDRESS:
 ;                                                  ;
 ;                                                  ;
 ;--------------------------------------------------;
-SCREEN_TO_PPU: 
-    JSR LAST_META_META_TILE
-RENDER_META_META_TILE:
-    JSR META_META_TILE_TO_PPU
-    JSR PREV_META_META_TILE
-    LDA MetaMetaTile + MetaTile::Index 
-    BPL RENDER_META_META_TILE
+SCREEN_TO_PPU:
+    JSR CALCULATE_BASE_PPUADDRESS
+    LDA #$07
+RENDER_META_META_TILE_LOOP:
+    JSR META_META_TILE_COLUMN_TO_PPU
+    DEC MetaMetaTile + MetaTile::Index
+    LDA MetaMetaTile + MetaTile::Index
+    BPL RENDER_META_META_TILE_LOOP
+    RTS
+
+;--------------------------------------------------;
+;  Column Index to render 0-7 in A                 ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
+META_META_TILE_COLUMN_TO_PPU: 
+    JSR LAST_META_META_TILE_IN_COL
+RENDER_META_META_TILE_COL:
+    JSR META_META_TILE_TO_PPU  
+    JSR PREV_META_META_TILE_ROW_IN_COL
+    BPL RENDER_META_META_TILE_COL
+META_META_TILE_COLUMN_TO_PPU_EXIT:
     RTS
 
 ;--------------------------------------------------;

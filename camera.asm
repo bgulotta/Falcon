@@ -39,7 +39,7 @@ UPDATE_CAMERA_EXIT:
     RTS
 
 UPDATE_VIEWPORT:
-    BEQ UPDATE_VIEWPORT_EXIT 
+    BEQ UPDATE_VIEWPORT_EXIT   ; If the camera isn't moving then the viewport is where it needs to be
     JSR SET_VIEWPORT_BEGIN
     JSR SET_VIEWPORT_END
 SET_SCROLL_MSB:
