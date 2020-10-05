@@ -239,19 +239,6 @@ SET_ACTOR_INACTIVE:
     STA (ACTOR_PTR), Y
     RTS
 
-; UPDATE_TILE_COORDINATES:
-
-;     CLC 
-;     LDA ACTOR_PTR
-;     ADC #ACTOR_DATA::XPos
-;     STA COORDINATES_PTR
-;     LDA ACTOR_PTR + 1
-;     ADC #$00
-;     STA COORDINATES_PTR + 1
-;     JSR WORLD_TO_TILE_COORDINATES
-    
-;     RTS
-
 UPDATE_ACTOR_DIRECTION:
     AND #JOYPAD::Left | JOYPAD::Right  ; If we are not moving left or right just exit
     BNE UPDATE_DIRECTION
