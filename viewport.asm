@@ -9,7 +9,7 @@ UPDATE_VIEWPORT_EXIT:
     RTS
 
 UPDATE_SCROLL:
-    LDA Camera + ACTOR_DATA::XPos + 1
+    LDA ViewPort + ViewPort::Begin + 1
     AND #$01  
     BEQ BIT0_OFF
 BIT0_ON:
