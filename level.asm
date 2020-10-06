@@ -18,8 +18,6 @@ LEVEL_INIT_EXIT:
     JSR SET_TILESET_ZP
     JSR SET_SCREEN_FIRST
     JSR SCREEN_TO_PPU
-    ;JSR SET_SCREEN_NEXT
-    ;JSR SCREEN_TO_PPU
     RTS
 
 SET_TILESET_ZP:
@@ -445,3 +443,38 @@ SET_TILE_INDEX_EXIT:
     LDY #TILE::TileIndex + 1
     STA (TILE_PTR), Y
     RTS 
+
+;--------------------------------------------------;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
+; UPDATE_LEVEL_SCROLL:
+;     LDY #COORDINATES::XPos
+;     LDA (COORDINATES_PTR), Y
+;     STA Temp
+;     LDA #$00
+;     STA Temp + 1
+;     LDA #$10            ; Divide X LSB by 32 to get MetaMetaTile column to render
+;     STA NumIterations
+;     JSR DIVIDE
+;     LDY #COORDINATES::XPos + 1
+;     LDA (COORDINATES_PTR), Y
+;     LDY #SCREEN_DATA::Index 
+;     CMP (SCREEN_PTR), Y 
+;     BCC UPDATE_LEVEL_SCROLL_PREV_SCREEN
+;     BEQ UPDATE_LEVEL_SCROLL_SAME_SCREEN
+; UPDATE_LEVEL_SCROLL_NEXT_SCREEN:
+;     JSR SET_SCREEN_NEXT
+;     JMP RENDER_COLUMN_TO_PPU
+; UPDATE_LEVEL_SCROLL_PREV_SCREEN:
+;     JSR SET_SCREEN_PREV
+; UPDATE_LEVEL_SCROLL_SAME_SCREEN:
+; RENDER_COLUMN_TO_PPU:
+;     JSR CALCULATE_BASE_PPUADDRESS
+;     LDA Temp
+;     JSR META_META_TILE_COLUMN_TO_PPU
+; UPDATE_LEVEL_SCROLL_EXIT:
+;     RTS

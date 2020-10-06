@@ -116,7 +116,7 @@ RENDER_META_META_TILE_LOOP:
     LDA MetaMetaTile + MetaTile::Index
     BPL RENDER_META_META_TILE_LOOP
     RTS
-
+    
 ;--------------------------------------------------;
 ;  Column Index to render 0-7 in A                 ;
 ;                                                  ;
@@ -173,6 +173,7 @@ RENDER_TILE:
 ;                                                  ;
 ;--------------------------------------------------;
 TILE_TO_PPU:
+
     LDA #$09
     CMP NumCommands
     BCC TILE_TO_PPU ; make sure we aren't overloading the NMI
@@ -191,4 +192,5 @@ TILE_TO_PPU:
     LDA Tile + TILE::Tile
     JSR WR_BUF
     JSR CMD_SET
+
     RTS

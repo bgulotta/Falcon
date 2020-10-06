@@ -1,10 +1,8 @@
 UPDATE_VIEWPORT:
     BEQ UPDATE_VIEWPORT_EXIT   ; If the camera isn't moving then the viewport is where it needs to be
-    JSR SAVE_VIEWPORT_POSITION
     JSR SET_VIEWPORT_BEGIN
     JSR SET_VIEWPORT_END
     JSR UPDATE_SCROLL
-    JSR UPDATE_LEVEL
 UPDATE_VIEWPORT_EXIT:
     RTS
 
@@ -21,23 +19,6 @@ BIT0_OFF:
 UPDATE_SCROLL_EXIT:
     STA PPUCTRLBUF
     JSR SCROLLFLAG_SET    
-    RTS
-
-UPDATE_LEVEL:
-    ; TODO: Update screen and render next column of level 
-    ; if we have scrolled more than 32 pixels 
-
-    RTS 
-
-SAVE_VIEWPORT_POSITION:
-    LDA ViewPort + ViewPort::Begin
-    STA Temp 
-    LDA ViewPort + ViewPort::Begin + 1
-    STA Temp + 1 
-    LDA ViewPort + ViewPort::End
-    STA Temp2 
-    LDA ViewPort + ViewPort::End + 1
-    STA Temp2 + 1        
     RTS
 
 SET_VIEWPORT_BEGIN:

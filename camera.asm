@@ -38,6 +38,31 @@ UPDATE_CAMERA_EXIT:
     JSR UPDATE_VIEWPORT
     RTS
 
+; UPDATE_LEVEL:
+;     LDA Temp 
+;     EOR ViewPort + ViewPort::Begin
+;     AND #$20
+;     BEQ UPDATE_LEVEL_EXIT
+; UPDATE_LEVEL_DATA:
+;     LDA Camera + Actor::Attributes
+;     AND #JOYPAD::Right
+;     BEQ UPDATE_LEVEL_DATA_LEFT
+; UPDATE_LEVEL_DATA_RIGHT:
+;     LDA #.LOBYTE(ViewPort + ViewPort::End)
+;     STA COORDINATES_PTR
+;     LDA #.HIBYTE(ViewPort + ViewPort::End)
+;     STA COORDINATES_PTR + 1
+;     JSR UPDATE_LEVEL_SCROLL
+;     JMP UPDATE_LEVEL_EXIT
+; UPDATE_LEVEL_DATA_LEFT:
+;     LDA #.LOBYTE(ViewPort + ViewPort::Begin)
+;     STA COORDINATES_PTR
+;     LDA #.HIBYTE(ViewPort + ViewPort::Begin)
+;     STA COORDINATES_PTR + 1
+;     JSR UPDATE_LEVEL_SCROLL
+; UPDATE_LEVEL_EXIT: 
+;     RTS 
+
 ;---------------------------------------------
 ; This subroutine will take a player's current
 ; movement and set the camera's destination
