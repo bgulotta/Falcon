@@ -107,6 +107,40 @@ TILE_TO_PPUADDRESS:
 ;                                                  ;
 ;                                                  ;
 ;--------------------------------------------------;
+META_META_COLUMN_STARTADDRESS:
+    LDA MetaMetaTile + MetaTile::Index
+    STA Temp 
+    LDA #$00
+    STA Temp + 1 
+    LDA #$02 
+    STA NumIterations
+    JSR MULTIPLY
+    CLC 
+    LDA PPU + PPU::BaseAddress
+    ADC Temp      
+    STA PPU + PPU::TileAddress
+    LDA PPU + PPU::BaseAddress + 1
+    ADC Temp + 1
+    STA PPU + PPU::TileAddress + 1
+    RTS 
+
+META_META_COLUMN_NEXTADDRESS:
+    CLC 
+    LDA PPU + PPU::TileAddress
+    ADC #$01
+    STA PPU + PPU::TileAddress
+    LDA PPU + PPU::TileAddress + 1
+    ADC #$00
+    STA PPU + PPU::TileAddress + 1
+    RTS 
+
+;--------------------------------------------------;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
 SCREEN_TO_PPU:
     JSR CALCULATE_BASE_PPUADDRESS
     LDA #$07
@@ -124,14 +158,56 @@ RENDER_META_META_TILE_LOOP:
 ;                                                  ;
 ;                                                  ;
 ;--------------------------------------------------;
-META_META_TILE_COLUMN_TO_PPU: 
+META_META_TILE_COLUMN_TO_PPU:
     JSR LAST_META_META_TILE_IN_COL
+    JSR RESET_TILE_BUF_PTRS
 RENDER_META_META_TILE_COL:
     JSR META_META_TILE_TO_PPU  
     JSR PREV_META_META_TILE_ROW_IN_COL
     BPL RENDER_META_META_TILE_COL
 META_META_TILE_COLUMN_TO_PPU_EXIT:
+    JSR TILEBUF_TO_PPU
     RTS
+
+;--------------------------------------------------;
+;                                                  ;
+; Tile Buffer 0-3 to send to the PPU               ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
+TILEBUF_TO_PPU:
+    JSR META_META_COLUMN_STARTADDRESS
+    LDY #$00 
+TILEBUFF_TO_PPU_NEXT_CMD:
+    LDA NumCommands
+    BNE TILEBUFF_TO_PPU_NEXT_CMD
+    LDA #$1C
+    JSR WR_BUF
+    LDA PPU + PPU::TileAddress + 1
+    JSR WR_BUF
+    LDA PPU + PPU::TileAddress
+    JSR WR_BUF
+TILEBUF_TO_PPU_LOOP:
+    LDA TILEBUF, Y
+    JSR WR_BUF
+    INY 
+    CPY #$1C
+    BEQ SEND_TILE_BUF_TO_PPU
+    CPY #$38
+    BEQ SEND_TILE_BUF_TO_PPU
+    CPY #$54
+    BEQ SEND_TILE_BUF_TO_PPU
+    CPY #$70 
+    BCS TILEBUFF_TO_PPU_EXIT
+    JMP TILEBUF_TO_PPU_LOOP    
+SEND_TILE_BUF_TO_PPU:
+    JSR CMD_SET
+    JSR META_META_COLUMN_NEXTADDRESS
+    JMP TILEBUFF_TO_PPU_NEXT_CMD
+TILEBUFF_TO_PPU_EXIT:
+    JSR CMD_SET
+    RTS 
 
 ;--------------------------------------------------;
 ;                                                  ;
@@ -158,8 +234,11 @@ RENDER_META_TILE:
 ;--------------------------------------------------;
 META_TILE_TO_PPU:
     JSR LAST_TILE
+    JSR META_TILE_MOD2
 RENDER_TILE:
-    JSR TILE_TO_PPU
+    JSR TILE_MOD2
+    JSR SET_TILE_BUF_PTR
+    JSR WR_TILE_BUF
     JSR PREV_TILE
     LDA Tile + Tile::Index 
     BPL RENDER_TILE
@@ -172,25 +251,74 @@ RENDER_TILE:
 ;                                                  ;
 ;                                                  ;
 ;--------------------------------------------------;
-TILE_TO_PPU:
-
-    LDA #$09
-    CMP NumCommands
-    BCC TILE_TO_PPU ; make sure we aren't overloading the NMI
-    JSR BUF_DIF
-    CMP #$7D        ; make sure we have enough bytes free in the buffer
-    BCS TILE_TO_PPU
-
-    JSR TILE_TO_PPUADDRESS
-
+META_TILE_MOD2:
+    LDA MetaTile + MetaTile::Index
+    STA Temp 
+    LDA #$02 
+    STA Temp + 1 
+    JSR MOD
+    STA Temp            
     LDA #$01
-    JSR WR_BUF
-    LDA PPU + PPU::TileAddress + 1
-    JSR WR_BUF
-    LDA PPU + PPU::TileAddress
-    JSR WR_BUF
-    LDA Tile + TILE::Tile
-    JSR WR_BUF
-    JSR CMD_SET
+    STA NumIterations   
+    JSR MULTIPLY   
+    LDA Temp
+    STA Temp3 
+    RTS 
 
-    RTS
+;--------------------------------------------------;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
+TILE_MOD2:
+    LDA Tile + Tile::Index
+    STA Temp 
+    LDA #$02 
+    STA Temp + 1 
+    JSR MOD
+    STA Temp3 + 1
+    RTS 
+
+;--------------------------------------------------;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
+SET_TILE_BUF_PTR:
+    CLC 
+    LDA Temp3
+    ADC Temp3 + 1
+    CMP #$03
+    BCS SET_TILE_PTR_FOURTH_BUCKET
+    CMP #$02
+    BCS SET_TILE_PTR_THIRD_BUCKET
+    CMP #$01
+    BCS SET_TILE_PTR_SECOND_BUCKET
+SET_TILE_PTR_FIRST_BUCKET:
+    LDA #.LOBYTE(TILE_PTR_0)
+    STA TILEBUF_PTR
+    LDA #.HIBYTE(TILE_PTR_0)
+    STA TILEBUF_PTR + 1
+    RTS 
+SET_TILE_PTR_SECOND_BUCKET:
+    LDA #.LOBYTE(TILE_PTR_1)
+    STA TILEBUF_PTR
+    LDA #.HIBYTE(TILE_PTR_1)
+    STA TILEBUF_PTR + 1
+    RTS 
+SET_TILE_PTR_THIRD_BUCKET:
+    LDA #.LOBYTE(TILE_PTR_2)
+    STA TILEBUF_PTR
+    LDA #.HIBYTE(TILE_PTR_2)
+    STA TILEBUF_PTR + 1
+    RTS 
+SET_TILE_PTR_FOURTH_BUCKET:
+    LDA #.LOBYTE(TILE_PTR_3)
+    STA TILEBUF_PTR
+    LDA #.HIBYTE(TILE_PTR_3)
+    STA TILEBUF_PTR + 1
+    RTS 

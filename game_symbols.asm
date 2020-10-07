@@ -13,6 +13,7 @@ META_META_TILES_PTR:   .RES 2 ; Points to the meta meta tiles for the currently 
 COORDINATES_PTR:       .RES 2 ; Will take a pointer to a position in world or tile coordinates 
 PARENT_TILE_PTR:       .RES 2
 TILE_PTR:              .RES 2
+TILEBUF_PTR:           .RES 2
 .ENDIF
 
 .SEGMENT "OAM"
@@ -21,10 +22,8 @@ OAM: .RES 256
 .SEGMENT "RAM"
 ;----- Flags --------;
 NMI_DONE:    .RES 1
-PPUMASKFLAG: .RES 1
-PPUCTRLFLAG: .RES 1
+PPUREGFLAG: .RES 1
 OAMFLAG:     .RES 1
-SCROLLFLAG:  .RES 1
 ;--- Controller IO ---;
 JOYPAD1:     .RES 1
 JOYPAD2:     .RES 1
@@ -33,6 +32,10 @@ JOYPAD4:     .RES 1
 ;--- Pointers ----;
 CMD_RPTR:    .RES 1
 CMD_WPTR:    .RES 1
+TILE_PTR_0:  .RES 1
+TILE_PTR_1:  .RES 1
+TILE_PTR_2:  .RES 1
+TILE_PTR_3:  .RES 1
 JmpPtr:      .RES 2
 ;-- Sprite Vars --;
 OamIndex:    .RES 1
@@ -49,7 +52,8 @@ NumIterations: .RES 1
 ;---- Buffers ----;
 PPUMASKBUF:  .RES 1
 PPUCTRLBUF:  .RES 1
-CMDBUF:      .RES 128
+CMDBUF:      .RES 256
+TILEBUF:  .RES 112 
 
 .SEGMENT "VIEWPORT"
 ViewPort: .TAG ViewPort

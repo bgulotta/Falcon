@@ -115,3 +115,12 @@ MULTIPLY_LOOP:
     LSR NumIterations
     BNE MULTIPLY_LOOP
     RTS
+
+MOD:
+    LDA Temp 
+    SEC
+MOD_LOOP:
+    SBC Temp + 1
+    BCS MOD_LOOP
+    ADC Temp + 1 
+    RTS

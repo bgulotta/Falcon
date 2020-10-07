@@ -312,13 +312,13 @@ SET_TILE_TILE_DATA:
 ;    meta tile                                     ;
 ;--------------------------------------------------;
 SET_TILE_DATA:
-    STA Temp2 
-    PHA 
-    JSR SET_TILE_INDEX
-    PLA
-    STA Temp2
-    JSR SET_TILE_COORDINATES
-SET_TILE_DATA_EXIT:
+;     STA Temp2 
+;     PHA 
+;     JSR SET_TILE_INDEX
+;     PLA
+;     STA Temp2
+;     JSR SET_TILE_COORDINATES
+; SET_TILE_DATA_EXIT:
     RTS
     
 ;--------------------------------------------------;

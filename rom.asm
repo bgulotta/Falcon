@@ -71,6 +71,7 @@ LOOP_PALETTE_DATA:
     
     LDA #(PPUMASK::SHOW_BG | PPUMASK::SHOW_SPR | PPUMASK::SHOW_BG_8 | PPUMASK::SHOW_SPR_8) ; SUBSEQUENT WRITES TO PPUMASK WILL BE BUFFERED AND TAKE PLACE IN NMI
     STA PPUMASK
+    STA PPUMASKBUF
 
     CLI             ; RESPOND TO INTERRUPTS
 
@@ -85,9 +86,12 @@ LOOP_PALETTE_DATA:
 ; Main Game Loop
 ;---------------------------------------
 GAME_LOOP:
+    JSR PPUREG_SET
+    JSR OAM_SET
     JSR NMI_WAIT
     JSR READ_JOYPADS
     JSR UPDATE_ACTORS
+    JSR UPDATE_VIEWPORT
     JMP GAME_LOOP
 
 ;---------------------------------------
@@ -113,7 +117,6 @@ UPDATE_ACTOR_NEXT:
     LDA (ACTOR_PTR), Y
     BNE UPDATE_ACTORS_LOOP
 UPDATE_ACTORS_EXIT:
-    JSR OAM_SET
     RTS
 
 ;---------------------------------------
@@ -146,35 +149,14 @@ OAM_SET:
 CMD_SET:
     INC NumCommands
     RTS
-
-;---------------------------------------
-; Subroutine sets a flag to let the NMI
-; handler know that PPUMASK needs to 
-; be refreshed
-;---------------------------------------
-PPUMASK_SET:
-    LDA #BITS::BIT_7
-    STA PPUMASKFLAG
-    RTS
-
 ;---------------------------------------
 ; Subroutine sets a flag to let the NMI
 ; handler know that PPUCTRL needs to 
 ; be refreshed
 ;---------------------------------------
-PPUCTRL_SET:
+PPUREG_SET:
     LDA #BITS::BIT_7
-    STA PPUCTRLFLAG
-    RTS
-
-;---------------------------------------
-; Subroutine sets a flag to let the NMI
-; handler know that PPUSCROLL needs to 
-; be refreshed
-;---------------------------------------
-SCROLLFLAG_SET:
-    LDA #BITS::BIT_7
-    STA SCROLLFLAG
+    STA PPUREGFLAG
     RTS
 
 .SEGMENT "RODATA"
