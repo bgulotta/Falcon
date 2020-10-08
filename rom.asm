@@ -75,6 +75,8 @@ LOOP_PALETTE_DATA:
 
     CLI             ; RESPOND TO INTERRUPTS
 
+    JSR SET_NMI_FLAGS
+
     LDA #$00
     JSR LEVEL_INIT
     JSR ACTORS_INIT
@@ -86,8 +88,7 @@ LOOP_PALETTE_DATA:
 ; Main Game Loop
 ;---------------------------------------
 GAME_LOOP:
-    JSR PPUREG_SET
-    JSR OAM_SET
+    JSR SET_NMI_FLAGS
     JSR NMI_WAIT
     JSR READ_JOYPADS
     JSR UPDATE_ACTORS
@@ -136,29 +137,13 @@ NMI_WAIT_LOOP:
 ; handler know that OAM Data needs to 
 ; be refreshed
 ;---------------------------------------
-OAM_SET:
+SET_NMI_FLAGS:
     LDA #BITS::BIT_7
     STA OAMFLAG
-    RTS
-
-;---------------------------------------
-; Subroutine sets a flag to let the NMI
-; handler know that PPUData needs to 
-; be refreshed
-;---------------------------------------
-CMD_SET:
-    INC NumCommands
-    RTS
-;---------------------------------------
-; Subroutine sets a flag to let the NMI
-; handler know that PPUCTRL needs to 
-; be refreshed
-;---------------------------------------
-PPUREG_SET:
-    LDA #BITS::BIT_7
     STA PPUREGFLAG
     RTS
-
+    
+;---------------------------------------
 .SEGMENT "RODATA"
 PALETTE: 
     .BYTE $22, $29, $1A, $0F, $22, $36, $17, $0F, $22, $30, $21, $0F, $22, $27, $17, $0F ; BACKGROUND

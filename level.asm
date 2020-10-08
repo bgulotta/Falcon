@@ -135,14 +135,14 @@ SET_META_META_TILESET_INDEX_EXIT:
     TAY ; MetaMetaTileIndex
     LDA (META_META_TILES_PTR), Y
     STA MetaMetaTile + MetaTile::TilesetIndex
-SET_META_META_TILE_DATA:
-    LDA #$08
-    STA Temp2 
-    LDA #.LOBYTE(MetaMetaTile)
-    STA TILE_PTR
-    LDA #.HIBYTE(MetaMetaTile)
-    STA TILE_PTR + 1
-    JSR SET_TILE_COORDINATES
+; SET_META_META_TILE_DATA:
+;     LDA #$08
+;     STA Temp2 
+;     LDA #.LOBYTE(MetaMetaTile)
+;     STA TILE_PTR
+;     LDA #.HIBYTE(MetaMetaTile)
+;     STA TILE_PTR + 1
+;     JSR SET_TILE_COORDINATES
     RTS 
 
 ;--------------------------------------------------;
@@ -213,17 +213,17 @@ SET_META_TILESET_INDEX:
     LDA (META_META_TILESET_PTR), Y
     TAY 
     STA MetaTile + MetaTile::TilesetIndex
-SET_META_TILE_TILE_DATA:
-    LDA #.LOBYTE(MetaMetaTile)
-    STA PARENT_TILE_PTR
-    LDA #.HIBYTE(MetaMetaTile)
-    STA PARENT_TILE_PTR + 1
-    LDA #.LOBYTE(MetaTile)
-    STA TILE_PTR
-    LDA #.HIBYTE(MetaTile)
-    STA TILE_PTR + 1
-    LDA #$10
-    JSR SET_TILE_DATA
+; SET_META_TILE_TILE_DATA:
+;     LDA #.LOBYTE(MetaMetaTile)
+;     STA PARENT_TILE_PTR
+;     LDA #.HIBYTE(MetaMetaTile)
+;     STA PARENT_TILE_PTR + 1
+;     LDA #.LOBYTE(MetaTile)
+;     STA TILE_PTR
+;     LDA #.HIBYTE(MetaTile)
+;     STA TILE_PTR + 1
+;     LDA #$10
+;     JSR SET_TILE_DATA
 SELECT_META_TILE_EXIT:
     RTS 
 
@@ -293,17 +293,17 @@ SELECT_TILE:
     TAY 
     LDA (META_TILESET_PTR), Y
     STA Tile + Tile::Tile
-SET_TILE_TILE_DATA:
-    LDA #.LOBYTE(MetaTile)
-    STA PARENT_TILE_PTR
-    LDA #.HIBYTE(MetaTile)
-    STA PARENT_TILE_PTR + 1
-    LDA #.LOBYTE(Tile)
-    STA TILE_PTR
-    LDA #.HIBYTE(Tile)
-    STA TILE_PTR + 1
-    LDA #$20
-    JSR SET_TILE_DATA
+; SET_TILE_TILE_DATA:
+;     LDA #.LOBYTE(MetaTile)
+;     STA PARENT_TILE_PTR
+;     LDA #.HIBYTE(MetaTile)
+;     STA PARENT_TILE_PTR + 1
+;     LDA #.LOBYTE(Tile)
+;     STA TILE_PTR
+;     LDA #.HIBYTE(Tile)
+;     STA TILE_PTR + 1
+;     LDA #$20
+;     JSR SET_TILE_DATA
     RTS 
 
 ;--------------------------------------------------;
@@ -473,8 +473,8 @@ UPDATE_LEVEL_SCROLL_PREV_SCREEN:
     JSR SET_SCREEN_PREV
 UPDATE_LEVEL_SCROLL_SAME_SCREEN:
 RENDER_COLUMN_TO_PPU:
-    JSR CALCULATE_BASE_PPUADDRESS
     LDA Temp
-    JSR META_META_TILE_COLUMN_TO_PPU
+    JSR DECODE_META_META_TILE_COL
+    JSR TILEBUF_TO_PPU
 UPDATE_LEVEL_SCROLL_EXIT:
     RTS

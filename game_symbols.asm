@@ -24,6 +24,7 @@ OAM: .RES 256
 NMI_DONE:    .RES 1
 PPUREGFLAG: .RES 1
 OAMFLAG:     .RES 1
+DECODEDFLAG: .RES 1
 ;--- Controller IO ---;
 JOYPAD1:     .RES 1
 JOYPAD2:     .RES 1

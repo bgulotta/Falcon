@@ -108,6 +108,7 @@ TILE_TO_PPUADDRESS:
 ;                                                  ;
 ;--------------------------------------------------;
 META_META_COLUMN_STARTADDRESS:
+    JSR CALCULATE_BASE_PPUADDRESS
     LDA MetaMetaTile + MetaTile::Index
     STA Temp 
     LDA #$00
@@ -142,87 +143,50 @@ META_META_COLUMN_NEXTADDRESS:
 ;                                                  ;
 ;--------------------------------------------------;
 SCREEN_TO_PPU:
-    JSR CALCULATE_BASE_PPUADDRESS
-    LDA #$07
-RENDER_META_META_TILE_LOOP:
-    JSR META_META_TILE_COLUMN_TO_PPU
+    ;JSR CALCULATE_BASE_PPUADDRESS
+    LDA #$07    
+RENDER_META_META_TILE_COL_LOOP:
+    JSR DECODE_META_META_TILE_COL
+    JSR TILEBUF_TO_PPU
     DEC MetaMetaTile + MetaTile::Index
     LDA MetaMetaTile + MetaTile::Index
-    BPL RENDER_META_META_TILE_LOOP
+    BPL RENDER_META_META_TILE_COL_LOOP
     RTS
     
 ;--------------------------------------------------;
-;  Column Index to render 0-7 in A                 ;
-;                                                  ;
+;  Current screen column 0-7 to decode into        ;
+;  TileBuf                                         ;
 ;                                                  ;
 ;                                                  ;
 ;                                                  ;
 ;--------------------------------------------------;
-META_META_TILE_COLUMN_TO_PPU:
+DECODE_META_META_TILE_COL:
+    ASL DECODEDFLAG
     JSR LAST_META_META_TILE_IN_COL
     JSR RESET_TILE_BUF_PTRS
-RENDER_META_META_TILE_COL:
-    JSR META_META_TILE_TO_PPU  
+DECODE_META_META_TILE_LOOP:
+    JSR DECODE_META_META_TILE  
     JSR PREV_META_META_TILE_ROW_IN_COL
-    BPL RENDER_META_META_TILE_COL
-META_META_TILE_COLUMN_TO_PPU_EXIT:
-    JSR TILEBUF_TO_PPU
+    BPL DECODE_META_META_TILE_LOOP
+DECODE_META_META_TILE_COL_EXIT:
+    LDA #BITS::BIT_7
+    STA DECODEDFLAG
     RTS
 
 ;--------------------------------------------------;
 ;                                                  ;
-; Tile Buffer 0-3 to send to the PPU               ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;--------------------------------------------------;
-TILEBUF_TO_PPU:
-    JSR META_META_COLUMN_STARTADDRESS
-    LDY #$00 
-TILEBUFF_TO_PPU_NEXT_CMD:
-    LDA NumCommands
-    BNE TILEBUFF_TO_PPU_NEXT_CMD
-    LDA #$1C
-    JSR WR_BUF
-    LDA PPU + PPU::TileAddress + 1
-    JSR WR_BUF
-    LDA PPU + PPU::TileAddress
-    JSR WR_BUF
-TILEBUF_TO_PPU_LOOP:
-    LDA TILEBUF, Y
-    JSR WR_BUF
-    INY 
-    CPY #$1C
-    BEQ SEND_TILE_BUF_TO_PPU
-    CPY #$38
-    BEQ SEND_TILE_BUF_TO_PPU
-    CPY #$54
-    BEQ SEND_TILE_BUF_TO_PPU
-    CPY #$70 
-    BCS TILEBUFF_TO_PPU_EXIT
-    JMP TILEBUF_TO_PPU_LOOP    
-SEND_TILE_BUF_TO_PPU:
-    JSR CMD_SET
-    JSR META_META_COLUMN_NEXTADDRESS
-    JMP TILEBUFF_TO_PPU_NEXT_CMD
-TILEBUFF_TO_PPU_EXIT:
-    JSR CMD_SET
-    RTS 
-
-;--------------------------------------------------;
-;                                                  ;
 ;                                                  ;
 ;                                                  ;
 ;                                                  ;
 ;                                                  ;
 ;--------------------------------------------------;
-META_META_TILE_TO_PPU:
+DECODE_META_META_TILE:
     JSR LAST_META_TILE
-RENDER_META_TILE:
-    JSR META_TILE_TO_PPU
+DECODE_META_TILE_LOOP:
+    JSR DECODE_META_TILE
     JSR PREV_META_TILE
     LDA MetaTile + MetaTile::Index 
-    BPL RENDER_META_TILE
+    BPL DECODE_META_TILE_LOOP
     RTS 
 
 ;--------------------------------------------------;
@@ -232,16 +196,16 @@ RENDER_META_TILE:
 ;                                                  ;
 ;                                                  ;
 ;--------------------------------------------------;
-META_TILE_TO_PPU:
+DECODE_META_TILE:
     JSR LAST_TILE
     JSR META_TILE_MOD2
-RENDER_TILE:
+DECODE_TILE_LOOP:
     JSR TILE_MOD2
     JSR SET_TILE_BUF_PTR
     JSR WR_TILE_BUF
     JSR PREV_TILE
     LDA Tile + Tile::Index 
-    BPL RENDER_TILE
+    BPL DECODE_TILE_LOOP
     RTS 
 
 ;--------------------------------------------------;
@@ -321,4 +285,46 @@ SET_TILE_PTR_FOURTH_BUCKET:
     STA TILEBUF_PTR
     LDA #.HIBYTE(TILE_PTR_3)
     STA TILEBUF_PTR + 1
+    RTS 
+
+
+;--------------------------------------------------;
+;                                                  ;
+; Tile Buffer 0-3 to send to the PPU               ;
+;                                                  ;
+;                                                  ;
+;                                                  ;
+;--------------------------------------------------;
+TILEBUF_TO_PPU:
+    JSR META_META_COLUMN_STARTADDRESS
+    LDY #$00 
+TILEBUFF_TO_PPU_NEXT_CMD:
+    JSR BUF_DIF
+    CMP #$E0 
+    BCS TILEBUFF_TO_PPU_NEXT_CMD
+    LDA #$1C
+    JSR WR_BUF
+    LDA PPU + PPU::TileAddress + 1
+    JSR WR_BUF
+    LDA PPU + PPU::TileAddress
+    JSR WR_BUF
+TILEBUF_TO_PPU_LOOP:
+    LDA TILEBUF, Y
+    JSR WR_BUF
+    INY 
+    CPY #$1C
+    BEQ SEND_TILE_BUF_TO_PPU
+    CPY #$38
+    BEQ SEND_TILE_BUF_TO_PPU
+    CPY #$54
+    BEQ SEND_TILE_BUF_TO_PPU
+    CPY #$70 
+    BCS TILEBUF_TO_PPU_EXIT
+    JMP TILEBUF_TO_PPU_LOOP    
+SEND_TILE_BUF_TO_PPU:
+    INC NumCommands
+    JSR META_META_COLUMN_NEXTADDRESS
+    JMP TILEBUFF_TO_PPU_NEXT_CMD
+TILEBUF_TO_PPU_EXIT:
+    INC NumCommands
     RTS 
