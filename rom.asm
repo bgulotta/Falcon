@@ -92,7 +92,6 @@ GAME_LOOP:
     JSR NMI_WAIT
     JSR READ_JOYPADS
     JSR UPDATE_ACTORS
-    JSR UPDATE_VIEWPORT
     JMP GAME_LOOP
 
 ;---------------------------------------

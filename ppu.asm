@@ -143,7 +143,6 @@ META_META_COLUMN_NEXTADDRESS:
 ;                                                  ;
 ;--------------------------------------------------;
 SCREEN_TO_PPU:
-    ;JSR CALCULATE_BASE_PPUADDRESS
     LDA #$07    
 RENDER_META_META_TILE_COL_LOOP:
     JSR DECODE_META_META_TILE_COL
@@ -161,10 +160,11 @@ RENDER_META_META_TILE_COL_LOOP:
 ;                                                  ;
 ;--------------------------------------------------;
 DECODE_META_META_TILE_COL:
-    ASL DECODEDFLAG
     JSR LAST_META_META_TILE_IN_COL
     JSR RESET_TILE_BUF_PTRS
-DECODE_META_META_TILE_LOOP:
+    LDA #$00
+    STA DECODEDFLAG
+ DECODE_META_META_TILE_LOOP:
     JSR DECODE_META_META_TILE  
     JSR PREV_META_META_TILE_ROW_IN_COL
     BPL DECODE_META_META_TILE_LOOP
@@ -296,6 +296,9 @@ SET_TILE_PTR_FOURTH_BUCKET:
 ;                                                  ;
 ;--------------------------------------------------;
 TILEBUF_TO_PPU:
+    LDA DECODEDFLAG
+    ORA #BITS::BIT_6
+    STA DECODEDFLAG
     JSR META_META_COLUMN_STARTADDRESS
     LDY #$00 
 TILEBUFF_TO_PPU_NEXT_CMD:
