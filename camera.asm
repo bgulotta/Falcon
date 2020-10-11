@@ -5,23 +5,19 @@
 ; camera to it's destination 
 ;---------------------------------------------
 UPDATE_CAMERA:
-    LDY #ACTOR_DATA::XPos       ; Grab the camera's 
-    LDA (ACTOR_PTR), Y          ; current x position
+    LDA Camera + ACTOR_DATA::XPos ; current x position
     STA Temp4
     CMP CamDestX                ; and see if it is 
     BNE MOVE_CAMERA
-    LDY #ACTOR_DATA::XPos + 1   ; of it's intended dest
-    LDA (ACTOR_PTR), Y          ; then move the camera
+    LDA Camera + ACTOR_DATA::XPos + 1
     CMP CamDestX + 1            ; left or right accordingly
     BNE MOVE_CAMERA
     JMP CAMERA_AT_DESTINATION
 MOVE_CAMERA:
     SEC
-    LDY #ACTOR_DATA::XPos       ; Grab the camera's 
-    LDA (ACTOR_PTR), Y          ; current x position
+    LDA Camera + ACTOR_DATA::XPos ; current x position
     SBC CamDestX                ; and see if it is 
-    LDY #ACTOR_DATA::XPos + 1   ; of it's intended dest
-    LDA (ACTOR_PTR), Y          ; then move the camera
+    LDA Camera + ACTOR_DATA::XPos + 1
     SBC CamDestX + 1            ; left or right accordingly
     BCC MOVE_CAMERA_RIGHT
 MOVE_CAMERA_LEFT:       
@@ -33,8 +29,7 @@ MOVE_CAMERA_RIGHT:
 CAMERA_AT_DESTINATION:
     LDA #$00
 UPDATE_CAMERA_EXIT:
-    LDY #ACTOR_DATA::Movement    
-    STA (ACTOR_PTR), Y
+    STA Camera + ACTOR_DATA::Movement
     JSR UPDATE_ACTOR_DIRECTION
     JSR UPDATE_WORLD_COORDINATES
     JSR UPDATE_VIEWPORT
@@ -50,13 +45,11 @@ UPDATE_CAMERA_EXIT:
 ;                                                  ;
 ;--------------------------------------------------;
 DECODE_LEVEL_DATA:
-    LDY #ACTOR_DATA::XPos       ; Grab the camera's 
-    EOR (ACTOR_PTR), Y          ; current x position
-    AND #$20
+    LDA Camera + ACTOR_DATA::XPos 
+    AND #$07
     BEQ DECODE_LEVEL_DATA_EXIT
 UPDATE_LEVEL_DATA:
-    LDY #ACTOR_DATA::Attributes       ; Grab the camera's 
-    LDA (ACTOR_PTR), Y          ; current x position
+    LDA Camera + ACTOR_DATA::Attributes 
     AND #JOYPAD::Right
     BEQ DECODE_LEVEL_DATA_LEFT
 DECODE_LEVEL_DATA_RIGHT:

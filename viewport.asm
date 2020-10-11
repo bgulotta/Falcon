@@ -1,16 +1,10 @@
 UPDATE_VIEWPORT:
     LDA Camera + ACTOR_DATA::Movement
     BEQ UPDATE_VIEWPORT_EXIT   ; If the camera isn't moving then the viewport is where it needs to be
-    JSR SAVE_VIEWPORT_POSITION
     JSR SET_VIEWPORT_BEGIN
     JSR SET_VIEWPORT_END
     JSR UPDATE_SCROLL
 UPDATE_VIEWPORT_EXIT:
-    RTS
-
-SAVE_VIEWPORT_POSITION:
-    LDA ViewPort + ViewPort::Begin
-    STA Temp
     RTS
 
 UPDATE_SCROLL:
