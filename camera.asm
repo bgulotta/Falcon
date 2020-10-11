@@ -50,13 +50,9 @@ UPDATE_CAMERA_EXIT:
 ;                                                  ;
 ;--------------------------------------------------;
 DECODE_LEVEL_DATA:
-    LDA DECODEDFLAG 
-    CMP #$80 
-    BEQ DECODE_LEVEL_DATA_EXIT ; Has a tile been decoded, but not rendered?
-    LDA Temp4 
     LDY #ACTOR_DATA::XPos       ; Grab the camera's 
     EOR (ACTOR_PTR), Y          ; current x position
-    AND #$08
+    AND #$20
     BEQ DECODE_LEVEL_DATA_EXIT
 UPDATE_LEVEL_DATA:
     LDY #ACTOR_DATA::Attributes       ; Grab the camera's 
@@ -69,7 +65,7 @@ DECODE_LEVEL_DATA_RIGHT:
     LDA #.HIBYTE(ViewPort + ViewPort::End)
     STA COORDINATES_PTR + 1
     JSR DECODE_LEVEL_DATA_NEXT
-    JMP DECODE_LEVEL_DATA_EXIT
+    RTS
 DECODE_LEVEL_DATA_LEFT:
     LDA #.LOBYTE(ViewPort + ViewPort::Begin)
     STA COORDINATES_PTR
@@ -88,9 +84,6 @@ DECODE_LEVEL_DATA_NEXT:
     LDA #$10            ; Divide X LSB by 32 to get MetaMetaTile column to render
     STA NumIterations
     JSR DIVIDE
-    LDA DECODEDFLAG
-    CMP #$C0            ; Has a tile been decoded and rendered? 
-    BNE DECODE_LEVEL_SELECT_SCREEN
     LDA Temp 
     CMP MetaMetaTile + MetaTile::Index
     BEQ DECODE_LEVEL_DATA_NEXT_EXIT

@@ -58,9 +58,23 @@ SET_VIEWPORT_BEGIN_EXIT:
     RTS
 
 SET_VIEWPORT_END:
-    CLC 
-    LDA ViewPort + ViewPort::Begin
-    ADC #$FF
+    LDY #LEVEL_DATA::NumScreens
+    LDA (LEVEL_PTR), Y
+    TAY
+    DEY
+    CPY ViewPort + ViewPort::Begin + 1
+    BEQ SET_VIEWPORT_FINISH_LEVEL_END
+    CLC
+    LDA ViewPort + ViewPort::Begin    
+    STA ViewPort + ViewPort::End 
+    LDA ViewPort + ViewPort::Begin + 1
+    ADC #$01
+    STA ViewPort + ViewPort::End + 1
+    JMP SET_VIEWPORT_END_EXIT
+SET_VIEWPORT_FINISH_LEVEL_END:
+    CLC
+    LDA ViewPort + ViewPort::Begin  
+    ADC #$FF  
     STA ViewPort + ViewPort::End 
     LDA ViewPort + ViewPort::Begin + 1
     ADC #$00

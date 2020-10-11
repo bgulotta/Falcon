@@ -434,7 +434,6 @@ SET_TILE_INDEX_BOTTOM_LEFT:
     LDA #$00 
     ADC Temp + 1 
     STA Temp + 1
-    JMP SET_TILE_INDEX_EXIT
 SET_TILE_INDEX_EXIT:
     LDA Temp 
     LDY #TILE::TileIndex
