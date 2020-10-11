@@ -47,14 +47,14 @@ L1Screen5MetaMeta: ; 0-29; 30 - 59: (60 - X)
 
 ; Level 32 x 32 MetaMetaTileSet ; Left Top/Right Top/Left Bottom/Right Bottom
 L1MetaMetaTileSet:
-    .BYTE $00, $00, $00, $00
-    .BYTE $04, $04, $04, $04
-    .BYTE $08, $00, $00, $08
-    .BYTE $08, $00, $00, $08
+    .BYTE $00, $01, $00, $00
+    .BYTE $00, $01, $00, $00
+    .BYTE $00, $01, $00, $00
+    .BYTE $00, $01, $00, $00
 
 ; Level 16x16 MetaTileSet ; Left Top/Right Top/Left Bottom/Right Bottom
 L1MetaTileSet:
-    .BYTE $00, $00, $00, $00 
-    .BYTE $05, $05, $05, $05
-    .BYTE $00, $05, $05, $00
-    .BYTE $08, $00, $00, $08
+    .BYTE $00, $05, $00, $00 
+    .BYTE $00, $05, $00, $00
+    .BYTE $00, $05, $00, $00
+    .BYTE $00, $05, $00, $00

@@ -21,40 +21,40 @@ OAM: .RES 256
 
 .SEGMENT "RAM"
 ;----- Flags --------;
-NMI_DONE:    .RES 1
-PPUREGFLAG: .RES 1
-OAMFLAG:     .RES 1
-DECODEDFLAG: .RES 1
+NMI_DONE:      .RES 1
+PPUREGFLAG:    .RES 1
+OAMFLAG:       .RES 1
+DECODEDFLAG:   .RES 1
 ;--- Controller IO ---;
-JOYPAD1:     .RES 1
-JOYPAD2:     .RES 1
-JOYPAD3:     .RES 1 
-JOYPAD4:     .RES 1
+JOYPAD1:       .RES 1
+JOYPAD2:       .RES 1
+JOYPAD3:       .RES 1 
+JOYPAD4:       .RES 1
 ;--- Pointers ----;
-CMD_RPTR:    .RES 1
-CMD_WPTR:    .RES 1
-TILE_PTR_0:  .RES 1
-TILE_PTR_1:  .RES 1
-TILE_PTR_2:  .RES 1
-TILE_PTR_3:  .RES 1
-JmpPtr:      .RES 2
+CMD_RPTR:      .RES 1
+CMD_WPTR:      .RES 1
+TILE_PTR_0:    .RES 1
+TILE_PTR_1:    .RES 1
+TILE_PTR_2:    .RES 1
+TILE_PTR_3:    .RES 1
+JmpPtr:        .RES 2
 ;-- Sprite Vars --;
-OamIndex:    .RES 1
-NumTiles:    .RES 1
-CamDestX:    .RES 2         ; Camera's X Destination
-CamDestY:    .RES 2         ; Camera's Y Destination
+OamIndex:      .RES 1
+NumTiles:      .RES 1
+CamDestX:      .RES 2         ; Camera's X Destination
+CamDestY:      .RES 2         ; Camera's Y Destination
 ;--- Work Vars ---;
-Temp:        .RES 2
-Temp2:       .RES 2
-Temp3:       .RES 2
-Temp4:       .RES 2
-NumCommands: .RES 1
+Temp:          .RES 2
+Temp2:         .RES 2
+Temp3:         .RES 2
+Temp4:         .RES 2
+NumCommands:   .RES 1
 NumIterations: .RES 1
 ;---- Buffers ----;
-PPUMASKBUF:  .RES 1
-PPUCTRLBUF:  .RES 1
-CMDBUF:      .RES 256
-TILEBUF:  .RES 112 
+PPUMASKBUF:    .RES 1
+PPUCTRLBUF:    .RES 1
+CMDBUF:        .RES 256
+TILEBUF:       .RES 112 
 
 .SEGMENT "VIEWPORT"
 ViewPort: .TAG ViewPort

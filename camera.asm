@@ -45,6 +45,9 @@ UPDATE_CAMERA_EXIT:
 ;                                                  ;
 ;--------------------------------------------------;
 DECODE_LEVEL_DATA:
+; TODO: IF WE ARE STILL SCROLLING IN THE SAME DIRECTION
+; AND HAVE ALREADY DECODED THE COLUMN THEN DON'T 
+; TRY AND DECODE THE SAME COLUMN AGAIN.
     LDA Camera + ACTOR_DATA::XPos 
     AND #$07
     BEQ DECODE_LEVEL_DATA_EXIT
