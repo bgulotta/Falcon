@@ -54,7 +54,7 @@ LOOP_PALETTE_DATA:
     JSR LEVEL_INIT
     JSR ACTORS_INIT
 
-    ACTOR_INIT  $01, $00, $00, $00
+    ACTOR_INIT  $01, $00, $20, $00
     ACTOR_INIT  $00, $01, $00, $00
     
 ;---------------------------------------

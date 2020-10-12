@@ -10,7 +10,6 @@ SCREEN_PTR:            .RES 2
 META_TILESET_PTR:      .RES 2 ; A pointer to the level's meta tilesets
 META_META_TILESET_PTR: .RES 2 ; A pointer to the level's meta meta tilesets
 META_META_TILES_PTR:   .RES 2 ; Points to the meta meta tiles for the currently selected screen
-COORDINATES_PTR:       .RES 2 ; Will take a pointer to a position in world or tile coordinates 
 PARENT_TILE_PTR:       .RES 2
 TILE_PTR:              .RES 2
 TILEBUF_PTR:           .RES 2
