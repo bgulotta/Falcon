@@ -10,7 +10,8 @@ SCREEN_PTR:            .RES 2
 META_TILESET_PTR:      .RES 2 ; A pointer to the level's meta tilesets
 META_META_TILESET_PTR: .RES 2 ; A pointer to the level's meta meta tilesets
 META_META_TILES_PTR:   .RES 2 ; Points to the meta meta tiles for the currently selected screen
-PARENT_TILE_PTR:       .RES 2
+META_META_TILE_PTR:    .RES 2
+META_TILE_PTR:         .RES 2
 TILE_PTR:              .RES 2
 TILEBUF_PTR:           .RES 2
 .ENDIF
@@ -27,8 +28,6 @@ DECODEDFLAG:   .RES 1
 ;--- Controller IO ---;
 JOYPAD1:       .RES 1
 JOYPAD2:       .RES 1
-JOYPAD3:       .RES 1 
-JOYPAD4:       .RES 1
 ;--- Pointers ----;
 CMD_RPTR:      .RES 1
 CMD_WPTR:      .RES 1
@@ -68,21 +67,13 @@ Camera:
     .TAG Actor
     .TAG Actor
     .TAG Actor
-    .TAG Actor
-    .TAG Actor
-    .TAG Actor
-    .TAG Actor
-    .TAG Actor
-    .TAG Actor
-    .TAG Actor
-    .TAG Actor
 LastActor:
     .TAG Actor
 
 .SEGMENT "LEVEL"
 PPU:
     .TAG PPU 
-
+    
 MetaMetaTile:
     .TAG MetaTile
 

@@ -9,59 +9,6 @@
 
 ;--------------------------------------------------;
 ;                                                  ;
-;   This subtroutine will take a pointer to        ;
-;   world coordinates and convert them             ;
-;   to tile coordinates.                           ;
-;                                                  ;
-;--------------------------------------------------;
-WORLD_TO_TILE_COORDINATES:
-; CALCULATE_TILE_X:
-;     LDY #COORDINATES::XPos
-;     LDA (COORDINATES_PTR), Y
-;     STA Temp
-;     LDY #COORDINATES::XPos + 1
-;     LDA (COORDINATES_PTR), Y
-;     STA Temp + 1
-;     LDA #$03        ; Divide x coordinates by 8
-;     STA NumIterations
-;     JSR DIVIDE
-;     LDY #COORDINATES::XPos + 1
-;     LDA (COORDINATES_PTR), Y
-;     BEQ STORE_TILE_X 
-;     STA Temp3
-; SUBTRACT_SCREEN_LOOP:    
-;     JSR SUBTRACT_32
-;     DEC Temp3 
-;     BNE SUBTRACT_SCREEN_LOOP
-; STORE_TILE_X:
-;     LDA Temp 
-;     LDY #COORDINATES::TileX
-;     STA (COORDINATES_PTR), Y
-;     LDA Temp + 1
-;     LDY #COORDINATES::TileX + 1
-;     STA (COORDINATES_PTR), Y
-; CALCULATE_TILE_Y:
-;     LDY #COORDINATES::YPos
-;     LDA (COORDINATES_PTR), Y
-;     STA Temp
-;     LDY #COORDINATES::YPos + 1
-;     LDA (COORDINATES_PTR), Y
-;     STA Temp + 1
-;     LDA #$03        ; Divide x coordinates by 8
-;     STA NumIterations
-;     JSR DIVIDE
-; STORE_TILE_Y:
-;     LDA Temp 
-;     LDY #COORDINATES::TileY
-;     STA (COORDINATES_PTR), Y
-;     LDA Temp + 1
-;     LDY #COORDINATES::TileY + 1
-;     STA (COORDINATES_PTR), Y
-    RTS
-
-
-;--------------------------------------------------;
-;                                                  ;
 ;                                                  ;
 ;                                                  ;
 ;                                                  ;
@@ -82,24 +29,6 @@ CALCULATE_BASE_PPUADDRESS_EXIT:
     STA PPU + PPU::BaseAddress + 1
     RTS
 
-
-;--------------------------------------------------;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;--------------------------------------------------;
-TILE_TO_PPUADDRESS:
-    CLC 
-    LDA PPU + PPU::BaseAddress
-    ADC Tile + TILE::TileIndex     
-    STA PPU + PPU::TileAddress
-    LDA PPU + PPU::BaseAddress + 1
-    ADC Tile + TILE::TileIndex + 1
-    STA PPU + PPU::TileAddress + 1
-    RTS 
-
 ;--------------------------------------------------;
 ;                                                  ;
 ;                                                  ;
@@ -108,31 +37,21 @@ TILE_TO_PPUADDRESS:
 ;                                                  ;
 ;--------------------------------------------------;
 META_META_COLUMN_STARTADDRESS:
-    JSR CALCULATE_BASE_PPUADDRESS
-    LDA MetaMetaTile + MetaTile::Index
-    STA Temp 
-    LDA #$00
-    STA Temp + 1 
-    LDA #$02 
-    STA NumIterations
-    JSR MULTIPLY
-    CLC 
+    CLC
     LDA PPU + PPU::BaseAddress
-    ADC Temp      
+    LDX MetaMetaTile + MetaTile::Index
+    ADC MULT4, X      
     STA PPU + PPU::TileAddress
     LDA PPU + PPU::BaseAddress + 1
-    ADC Temp + 1
     STA PPU + PPU::TileAddress + 1
     RTS 
 
-META_META_COLUMN_NEXTADDRESS:
+NEXT_TILE_ADDRESS:
     CLC 
-    LDA PPU + PPU::TileAddress
-    ADC #$01
-    STA PPU + PPU::TileAddress
-    LDA PPU + PPU::TileAddress + 1
-    ADC #$00
-    STA PPU + PPU::TileAddress + 1
+    INC PPU + PPU::TileAddress
+    BCC NEXT_TILE_ADDRESS_EXIT
+    INC PPU + PPU::TileAddress + 1
+NEXT_TILE_ADDRESS_EXIT:
     RTS 
 
 ;--------------------------------------------------;
@@ -199,51 +118,19 @@ DECODE_META_TILE_LOOP:
 ;--------------------------------------------------;
 DECODE_META_TILE:
     JSR LAST_TILE
-    JSR META_TILE_MOD2
+    LDY MetaTile + MetaTile::Index
+    LDX MOD2, Y 
+    LDY MULT2, X 
+    STY Temp3
 DECODE_TILE_LOOP:
-    JSR TILE_MOD2
+    LDA Tile + Tile::Index 
+    TAY
+    LDX MOD2, Y
+    STX Temp3 + 1 
     JSR SET_TILE_BUF_PTR
     JSR WR_TILE_BUF
     JSR PREV_TILE
-    LDA Tile + Tile::Index 
     BPL DECODE_TILE_LOOP
-    RTS 
-
-;--------------------------------------------------;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;--------------------------------------------------;
-META_TILE_MOD2:
-    LDA MetaTile + MetaTile::Index
-    STA Temp 
-    LDA #$02 
-    STA Temp + 1 
-    JSR MOD
-    STA Temp            
-    LDA #$01
-    STA NumIterations   
-    JSR MULTIPLY   
-    LDA Temp
-    STA Temp3 
-    RTS 
-
-;--------------------------------------------------;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;--------------------------------------------------;
-TILE_MOD2:
-    LDA Tile + Tile::Index
-    STA Temp 
-    LDA #$02 
-    STA Temp + 1 
-    JSR MOD
-    STA Temp3 + 1
     RTS 
 
 ;--------------------------------------------------;
@@ -296,7 +183,7 @@ SET_TILE_PTR_FOURTH_BUCKET:
 ;                                                  ;
 ;                                                  ;
 ;--------------------------------------------------;
-TILEBUF_TO_PPU:
+ TILEBUF_TO_PPU:
     LDA DECODEDFLAG
     ORA #BITS::BIT_6
     STA DECODEDFLAG
@@ -327,7 +214,7 @@ TILEBUF_TO_PPU_LOOP:
     JMP TILEBUF_TO_PPU_LOOP    
 SEND_TILE_BUF_TO_PPU:
     INC NumCommands
-    JSR META_META_COLUMN_NEXTADDRESS
+    JSR NEXT_TILE_ADDRESS
     JMP TILEBUFF_TO_PPU_NEXT_CMD
 TILEBUF_TO_PPU_EXIT:
     INC NumCommands

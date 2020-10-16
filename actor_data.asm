@@ -1,5 +1,5 @@
 .SEGMENT "RODATA"
-ActorCount = $10
+ActorCount = $08
 
 Meta:
     ; Type, Attributes, Velocity, Tiles, Update Routine

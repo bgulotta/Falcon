@@ -44,6 +44,7 @@ SET_SCREEN_FIRST:
     LDA (LEVEL_PTR), Y
     STA SCREEN_PTR + 1
 SET_SCREEN_FIRST_EXIT:
+    JSR CALCULATE_BASE_PPUADDRESS
     JSR SET_META_META_TILES_PTR
     RTS
 
@@ -57,6 +58,7 @@ SET_SCREEN_NEXT:
     PLA 
     STA SCREEN_PTR
 SET_SCREEN_NEXT_EXIT:
+    JSR CALCULATE_BASE_PPUADDRESS
     JSR SET_META_META_TILES_PTR    
     RTS
 
@@ -70,6 +72,7 @@ SET_SCREEN_PREV:
     PLA 
     STA SCREEN_PTR
 SET_SCREEN_PREV_EXIT:
+    JSR CALCULATE_BASE_PPUADDRESS
     JSR SET_META_META_TILES_PTR    
     RTS
 
@@ -375,71 +378,71 @@ CALCULATE_TILE_COL:
 ;     2*(NumCols*Parent::Row + Parent::Column)     ;
 ;                                                  ;
 ;--------------------------------------------------;
-SET_TILE_INDEX:
-SET_TILE_INDEX_FIRST_TILE:
-    LDY #TILE::Row
-    LDA (PARENT_TILE_PTR), Y
-    STA Temp 
-    LDA #$00
-    STA Temp + 1
-    LDA Temp2 
-    PHA 
-    LSR A 
-    STA NumIterations 
-    JSR MULTIPLY        ; Temp = NumCols*Parent::Row
-    PLA 
-    STA Temp2
-    CLC
-    LDA Temp 
-    LDY #TILE::Column
-    ADC (PARENT_TILE_PTR), Y
-    STA Temp 
-    LDA Temp + 1
-    ADC #$00
-    STA Temp + 1        ; Temp = NumCols*Parent::Row + Parent::Column 
-    LDA #$01
-    STA NumIterations 
-    JSR MULTIPLY
-    LDY #TILE::Index
-    LDA (TILE_PTR), Y
-    BEQ SET_TILE_INDEX_EXIT
-    CMP #$03
-    BCS SET_TILE_INDEX_BOTTOM_RIGHT
-    CMP #$02
-    BCS SET_TILE_INDEX_BOTTOM_LEFT
-SET_TILE_INDEX_TOP_RIGHT:
-    CLC 
-    LDA Temp 
-    ADC #$01
-    STA Temp 
-    LDA Temp + 1 
-    ADC #$00 
-    STA Temp + 1
-    JMP SET_TILE_INDEX_EXIT
-SET_TILE_INDEX_BOTTOM_RIGHT:
-    CLC 
-    LDA Temp2 
-    ADC Temp
-    ADC #$01 
-    STA Temp 
-    LDA #$00 
-    ADC Temp + 1 
-    STA Temp + 1
-    JMP SET_TILE_INDEX_EXIT
-SET_TILE_INDEX_BOTTOM_LEFT:
-    CLC 
-    LDA Temp2 
-    ADC Temp 
-    STA Temp 
-    LDA #$00 
-    ADC Temp + 1 
-    STA Temp + 1
-SET_TILE_INDEX_EXIT:
-    LDA Temp 
-    LDY #TILE::TileIndex
-    STA (TILE_PTR), Y
-    LDA Temp + 1
-    LDY #TILE::TileIndex + 1
-    STA (TILE_PTR), Y
-    RTS 
+; SET_TILE_INDEX:
+; SET_TILE_INDEX_FIRST_TILE:
+;     LDY #TILE::Row
+;     LDA (PARENT_TILE_PTR), Y
+;     STA Temp 
+;     LDA #$00
+;     STA Temp + 1
+;     LDA Temp2 
+;     PHA 
+;     LSR A 
+;     STA NumIterations 
+;     JSR MULTIPLY        ; Temp = NumCols*Parent::Row
+;     PLA 
+;     STA Temp2
+;     CLC
+;     LDA Temp 
+;     LDY #TILE::Column
+;     ADC (PARENT_TILE_PTR), Y
+;     STA Temp 
+;     LDA Temp + 1
+;     ADC #$00
+;     STA Temp + 1        ; Temp = NumCols*Parent::Row + Parent::Column 
+;     LDA #$01
+;     STA NumIterations 
+;     JSR MULTIPLY
+;     LDY #TILE::Index
+;     LDA (TILE_PTR), Y
+;     BEQ SET_TILE_INDEX_EXIT
+;     CMP #$03
+;     BCS SET_TILE_INDEX_BOTTOM_RIGHT
+;     CMP #$02
+;     BCS SET_TILE_INDEX_BOTTOM_LEFT
+; SET_TILE_INDEX_TOP_RIGHT:
+;     CLC 
+;     LDA Temp 
+;     ADC #$01
+;     STA Temp 
+;     LDA Temp + 1 
+;     ADC #$00 
+;     STA Temp + 1
+;     JMP SET_TILE_INDEX_EXIT
+; SET_TILE_INDEX_BOTTOM_RIGHT:
+;     CLC 
+;     LDA Temp2 
+;     ADC Temp
+;     ADC #$01 
+;     STA Temp 
+;     LDA #$00 
+;     ADC Temp + 1 
+;     STA Temp + 1
+;     JMP SET_TILE_INDEX_EXIT
+; SET_TILE_INDEX_BOTTOM_LEFT:
+;     CLC 
+;     LDA Temp2 
+;     ADC Temp 
+;     STA Temp 
+;     LDA #$00 
+;     ADC Temp + 1 
+;     STA Temp + 1
+; SET_TILE_INDEX_EXIT:
+;     LDA Temp 
+;     LDY #TILE::TileIndex
+;     STA (TILE_PTR), Y
+;     LDA Temp + 1
+;     LDY #TILE::TileIndex + 1
+;     STA (TILE_PTR), Y
+;     RTS 
     
