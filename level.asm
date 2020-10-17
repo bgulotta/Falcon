@@ -138,6 +138,7 @@ SET_META_META_TILESET_INDEX_EXIT:
     TAY ; MetaMetaTileIndex
     LDA (META_META_TILES_PTR), Y
     STA MetaMetaTile + MetaTile::TilesetIndex
+    JSR SET_META_META_TILE_PTR
 ; SET_META_META_TILE_DATA:
 ;     LDA #$08
 ;     STA Temp2 
@@ -146,6 +147,16 @@ SET_META_META_TILESET_INDEX_EXIT:
 ;     LDA #.HIBYTE(MetaMetaTile)
 ;     STA TILE_PTR + 1
 ;     JSR SET_TILE_COORDINATES
+    RTS 
+
+SET_META_META_TILE_PTR:
+    CLC 
+    LDA META_META_TILESET_PTR
+    ADC MetaMetaTile + MetaTile::TilesetIndex
+    STA META_META_TILE_PTR 
+    LDA META_META_TILESET_PTR + 1
+    ADC #$00
+    STA META_META_TILE_PTR + 1 
     RTS 
 
 ;--------------------------------------------------;
