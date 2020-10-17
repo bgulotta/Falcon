@@ -71,6 +71,9 @@ LastActor:
     .TAG Actor
 
 .SEGMENT "LEVEL"
+Level:  .BYTE $00 
+Screen: .BYTE $00
+
 PPU:
     .TAG PPU 
     

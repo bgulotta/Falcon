@@ -1,23 +1,27 @@
 
 LEVEL_INIT:
-    TAX
-    LDA #.LOBYTE(Levels)    ; Store level 
-    STA LEVEL_PTR           ; in zero page
-    LDA #.HIBYTE(Levels)
-    STA LEVEL_PTR + 1
-LEVEL_INIT_LOOP:
-    DEX
-    BMI LEVEL_INIT_EXIT
-    CLC
-    LDA LEVEL_PTR           ; Incrementing the ACTOR_PTR by
-    ADC #.SIZEOF(Level)     ; the size of the Actor object
-    LDA LEVEL_PTR + 1
-    ADC #$00
-    JMP LEVEL_INIT_LOOP
-LEVEL_INIT_EXIT:
-    JSR SET_TILESET_ZP
-    JSR SET_SCREEN_FIRST
-    JSR SCREEN_TO_PPU
+    STA Level
+    LDA #$00 
+    STA Screen
+
+;     TAX
+;     LDA #.LOBYTE(Levels)    ; Store level 
+;     STA LEVEL_PTR           ; in zero page
+;     LDA #.HIBYTE(Levels)
+;     STA LEVEL_PTR + 1
+; LEVEL_INIT_LOOP:
+;     DEX
+;     BMI LEVEL_INIT_EXIT
+;     CLC
+;     LDA LEVEL_PTR           ; Incrementing the ACTOR_PTR by
+;     ADC #.SIZEOF(Level)     ; the size of the Actor object
+;     LDA LEVEL_PTR + 1
+;     ADC #$00
+;     JMP LEVEL_INIT_LOOP
+; LEVEL_INIT_EXIT:
+;     JSR SET_TILESET_ZP
+;     JSR SET_SCREEN_FIRST
+;     JSR SCREEN_TO_PPU
     RTS
 
 SET_TILESET_ZP:
@@ -314,7 +318,7 @@ SELECT_TILE:
 ;    and TileCoordinates for the selected tile or  ;
 ;    meta tile                                     ;
 ;--------------------------------------------------;
-SET_TILE_DATA:
+;SET_TILE_DATA:
 ;     STA Temp2 
 ;     PHA 
 ;     JSR SET_TILE_INDEX
@@ -322,7 +326,7 @@ SET_TILE_DATA:
 ;     STA Temp2
 ;     JSR SET_TILE_COORDINATES
 ; SET_TILE_DATA_EXIT:
-    RTS
+;    RTS
     
 ;--------------------------------------------------;
 ;                                                  ;
@@ -335,36 +339,36 @@ SET_TILE_DATA:
 ;   Y=Row=TileIndex/NumCols                        ;
 ;   X=Col=TileIndex - NumCols*Y                    ;
 ;--------------------------------------------------;
-SET_TILE_COORDINATES:
-CALCULATE_TILE_ROW:
-    LDY #TILE::TileIndex
-    LDA (TILE_PTR), Y
-    STA Temp
-    LDY #TILE::TileIndex + 1
-    LDA (TILE_PTR), Y
-    STA Temp + 1
-    LDA Temp2 
-    LSR A 
-    PHA 
-    STA NumIterations
-    JSR DIVIDE
-    LDA Temp
-    LDY #TILE::Row
-    STA (TILE_PTR), Y
-CALCULATE_TILE_COL:
-    STA Temp
-    LDA #$00
-    STA Temp + 1
-    PLA 
-    STA NumIterations 
-    JSR MULTIPLY 
-    SEC 
-    LDY #TILE::TileIndex
-    LDA (TILE_PTR), Y
-    SBC Temp
-    LDY #TILE::Column
-    STA (TILE_PTR), Y
-    RTS 
+; SET_TILE_COORDINATES:
+; CALCULATE_TILE_ROW:
+;     LDY #TILE::TileIndex
+;     LDA (TILE_PTR), Y
+;     STA Temp
+;     LDY #TILE::TileIndex + 1
+;     LDA (TILE_PTR), Y
+;     STA Temp + 1
+;     LDA Temp2 
+;     LSR A 
+;     PHA 
+;     STA NumIterations
+;     JSR DIVIDE
+;     LDA Temp
+;     LDY #TILE::Row
+;     STA (TILE_PTR), Y
+; CALCULATE_TILE_COL:
+;     STA Temp
+;     LDA #$00
+;     STA Temp + 1
+;     PLA 
+;     STA NumIterations 
+;     JSR MULTIPLY 
+;     SEC 
+;     LDY #TILE::TileIndex
+;     LDA (TILE_PTR), Y
+;     SBC Temp
+;     LDY #TILE::Column
+;     STA (TILE_PTR), Y
+;     RTS 
 
 ;--------------------------------------------------;
 ;                                                  ;
