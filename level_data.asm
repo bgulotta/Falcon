@@ -25,11 +25,11 @@ L1Screen5:
     .BYTE $04, .LOBYTE(L1Screen4), .HIBYTE(L1Screen4), .LOBYTE(L1Screen1), .HIBYTE(L1Screen1), .LOBYTE(L1Screen5MetaMeta), .HIBYTE(L1Screen5MetaMeta)
 
 L1Screen1MetaMeta:
-    .BYTE $01, $01, $01, $01, $01, $01, $01, $01, $01, $01
-    .BYTE $01, $01, $01, $01, $01, $01, $00, $00, $00, $00
+    .BYTE $04, $04, $04, $04, $04, $04, $04, $04, $04, $04
+    .BYTE $04, $04, $04, $04, $04, $04, $00, $00, $00, $00
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00
 L1Screen2MetaMeta:
-    .BYTE $01, $01, $01, $01, $00, $00, $00, $00, $00, $00
+    .BYTE $04, $04, $04, $04, $00, $00, $00, $00, $00, $00
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00
 L1Screen3MetaMeta:
@@ -37,7 +37,7 @@ L1Screen3MetaMeta:
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00
 L1Screen4MetaMeta:
-    .BYTE $01, $00, $00, $00, $00, $00, $00, $00, $00, $00
+    .BYTE $04, $00, $00, $00, $00, $00, $00, $00, $00, $00
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00
 L1Screen5MetaMeta: ; 0-29; 30 - 59: (60 - X)
@@ -47,14 +47,14 @@ L1Screen5MetaMeta: ; 0-29; 30 - 59: (60 - X)
 
 ; Level 32 x 32 MetaMetaTileSet ; Left Top/Right Top/Left Bottom/Right Bottom
 L1MetaMetaTileSet:
-    .BYTE $00, $01, $02
-    .BYTE $00, $01, $00
-    .BYTE $00, $01, $00
-    .BYTE $00, $01, $02
+    .BYTE $00, $00, $00, $00
+    .BYTE $04, $04, $04, $04
+    .BYTE $08, $00, $00, $08
+    .BYTE $08, $00, $00, $08
 
 ; Level 16x16 MetaTileSet ; Left Top/Right Top/Left Bottom/Right Bottom
 L1MetaTileSet:
-    .BYTE $00, $05, $00, $08 
+    .BYTE $00, $00, $00, $00 
+    .BYTE $05, $05, $05, $05
     .BYTE $00, $05, $05, $00
-    .BYTE $00, $05, $05, $00
-    .BYTE $00, $05, $00, $08
+    .BYTE $08, $00, $00, $08
