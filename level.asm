@@ -1,46 +1,24 @@
 
 LEVEL_INIT:
     STA Level
-    LDA #$00 
-    STA Screen
-
-;     TAX
-;     LDA #.LOBYTE(Levels)    ; Store level 
-;     STA LEVEL_PTR           ; in zero page
-;     LDA #.HIBYTE(Levels)
-;     STA LEVEL_PTR + 1
-; LEVEL_INIT_LOOP:
-;     DEX
-;     BMI LEVEL_INIT_EXIT
-;     CLC
-;     LDA LEVEL_PTR           ; Incrementing the ACTOR_PTR by
-;     ADC #.SIZEOF(Level)     ; the size of the Actor object
-;     LDA LEVEL_PTR + 1
-;     ADC #$00
-;     JMP LEVEL_INIT_LOOP
-; LEVEL_INIT_EXIT:
-;     JSR SET_TILESET_ZP
-;     JSR SET_SCREEN_FIRST
+    TAX 
+    LDA MetaMetaTileSetLo, X 
+    STA META_META_TILESET_PTR
+    LDA MetaMetaTileSetHi, X 
+    STA META_META_TILESET_PTR + 1
+    LDA MetaTileSetLo, X 
+    STA META_TILESET_PTR
+    LDA MetaTileSetHi, X 
+    STA META_TILESET_PTR + 1
+LEVEL_INIT_EXIT:
+    JSR SET_SCREEN_FIRST
 ;     JSR SCREEN_TO_PPU
     RTS
 
-SET_TILESET_ZP:
-    LDY #LEVEL_DATA::MetaTileSet
-    LDA (LEVEL_PTR), Y
-    STA META_TILESET_PTR
-    LDY #LEVEL_DATA::MetaTileSet + 1
-    LDA (LEVEL_PTR), Y
-    STA META_TILESET_PTR + 1
-    LDY #LEVEL_DATA::MetaMetaTileSet
-    LDA (LEVEL_PTR), Y
-    STA META_META_TILESET_PTR
-    LDY #LEVEL_DATA::MetaMetaTileSet + 1
-    LDA (LEVEL_PTR), Y
-    STA META_META_TILESET_PTR + 1
-SET_TILESET_ZP_EXIT:
-    RTS
-
 SET_SCREEN_FIRST:
+    LDA #$00 
+    STA Screen
+
     LDY #LEVEL_DATA::Screens
     LDA (LEVEL_PTR), Y
     STA SCREEN_PTR
