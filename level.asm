@@ -11,7 +11,7 @@ LEVEL_INIT:
     LDA MetaTileSetHi, X 
     STA META_TILESET_PTR + 1
     LDA #$00 
-    STA Screen
+    STA Screen        
     JSR CALCULATE_BASE_PPUADDRESS
     JSR SET_META_META_TILES_PTR
     JSR SCREEN_TO_PPU
@@ -19,12 +19,14 @@ LEVEL_INIT:
 
 SET_SCREEN_PREV:
     DEC Screen
+    LDA #$00
     JSR CALCULATE_BASE_PPUADDRESS
     JSR SET_META_META_TILES_PTR
     RTS 
 
 SET_SCREEN_NEXT:
     INC Screen
+    LDA #$00
     JSR CALCULATE_BASE_PPUADDRESS
     JSR SET_META_META_TILES_PTR
     RTS 
@@ -97,31 +99,6 @@ SET_META_META_TILESET_INDEX_EXIT:
     RTS 
 
 ;--------------------------------------------------;
-;  This subroutine will select the first meta      ;
-;  tile for the currently selected meta meta tile. ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;--------------------------------------------------;
-FIRST_META_TILE: 
-    LDA #$00  ; 4 meta tiles make up a meta meta tile
-    JSR SELECT_META_TILE
-    RTS 
-
-;--------------------------------------------------;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;--------------------------------------------------;
-NEXT_META_TILE:
-    INC MetaTile + MetaTile::Index
-    LDA MetaTile + MetaTile::Index
-    JSR SELECT_META_TILE
-    RTS
-
-;--------------------------------------------------;
 ;                                                  ;
 ;                                                  ;
 ;                                                  ;
@@ -166,31 +143,6 @@ SET_META_TILESET_INDEX:
     STA MetaTile + MetaTile::TilesetIndex
 SELECT_META_TILE_EXIT:
     RTS 
-
-;--------------------------------------------------;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;--------------------------------------------------;
-FIRST_TILE:
-    LDA #$00  ; 4 tiles make up a meta tile
-    JSR SELECT_TILE
-    RTS 
-
-;--------------------------------------------------;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;--------------------------------------------------;
-NEXT_TILE:
-    INC Tile + Tile::Index
-    LDA Tile + Tile::Index
-    JSR SELECT_TILE
-    RTS
 
 ;--------------------------------------------------;
 ;                                                  ;

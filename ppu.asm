@@ -15,7 +15,8 @@
 ;                                                  ;
 ;--------------------------------------------------;
 CALCULATE_BASE_PPUADDRESS:
-    LDA #$00
+    TAX
+    LDA PPUBASELO, X
     STA PPU + PPU::BaseAddress
     LDY Screen
     LDX MOD2, Y

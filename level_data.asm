@@ -1,6 +1,4 @@
 .SEGMENT "RODATA"
-NumLevels = $01
-
 MetaMetaTileSetLo: 
     .BYTE .LOBYTE(L0MetaMetaTileSet)
 MetaMetaTileSetHi: 
@@ -63,8 +61,8 @@ L0Screen12MetaMeta:
 L0Screen13MetaMeta:
 L0Screen14MetaMeta:
 L0Screen15MetaMeta:
-    .BYTE $04, $04, $04, $04, $04, $04, $04, $04, $04, $04
-    .BYTE $04, $04, $04, $04, $04, $04, $00, $00, $00, $00
+    .BYTE $04, $04, $04, $04, $04, $04, $04, $04, $00, $00
+    .BYTE $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     .BYTE $00, $00, $00, $00, $00, $00, $00, $00
 
 ; Level 32 x 32 MetaMetaTileSet ; Left Top/Right Top/Left Bottom/Right Bottom
