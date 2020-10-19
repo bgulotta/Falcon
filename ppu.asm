@@ -118,59 +118,21 @@ DECODE_META_TILE:
     LDY MULT2, X 
     STY Temp3
 DECODE_TILE_LOOP:
-    LDA Tile + Tile::Index 
-    TAY
+    LDY Tile + Tile::Index 
     LDX MOD2, Y
-    STX Temp3 + 1 
-    JSR SET_TILE_BUF_PTR
-    JSR WR_TILE_BUF
-    JSR PREV_TILE
-    BPL DECODE_TILE_LOOP
-    RTS 
-
-;--------------------------------------------------;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;                                                  ;
-;--------------------------------------------------;
-SET_TILE_BUF_PTR:
+    STX Temp3 + 1
     CLC 
     LDA Temp3
     ADC Temp3 + 1
-    CMP #$03
-    BCS SET_TILE_PTR_FOURTH_BUCKET
-    CMP #$02
-    BCS SET_TILE_PTR_THIRD_BUCKET
-    CMP #$01
-    BCS SET_TILE_PTR_SECOND_BUCKET
-SET_TILE_PTR_FIRST_BUCKET:
-    LDA #.LOBYTE(TILE_PTR_0)
-    STA TILEBUF_PTR
-    LDA #.HIBYTE(TILE_PTR_0)
-    STA TILEBUF_PTR + 1
+    TAX     
+    LDY TILEBUF_INX, X
+    LDA Tile + TILE::Tile     
+    STA TILEBUF, Y 
+    INC TILEBUF_INX, X
+    JSR PREV_TILE
+    BPL DECODE_TILE_LOOP
     RTS 
-SET_TILE_PTR_SECOND_BUCKET:
-    LDA #.LOBYTE(TILE_PTR_1)
-    STA TILEBUF_PTR
-    LDA #.HIBYTE(TILE_PTR_1)
-    STA TILEBUF_PTR + 1
-    RTS 
-SET_TILE_PTR_THIRD_BUCKET:
-    LDA #.LOBYTE(TILE_PTR_2)
-    STA TILEBUF_PTR
-    LDA #.HIBYTE(TILE_PTR_2)
-    STA TILEBUF_PTR + 1
-    RTS 
-SET_TILE_PTR_FOURTH_BUCKET:
-    LDA #.LOBYTE(TILE_PTR_3)
-    STA TILEBUF_PTR
-    LDA #.HIBYTE(TILE_PTR_3)
-    STA TILEBUF_PTR + 1
-    RTS 
-
-
+    
 ;--------------------------------------------------;
 ;                                                  ;
 ; Tile Buffer 0-3 to send to the PPU               ;

@@ -11,7 +11,7 @@ META_META_TILES_PTR:   .RES 2 ; Points to the meta meta tiles for the currently 
 META_META_TILE_PTR:    .RES 2
 META_TILE_PTR:         .RES 2
 TILE_PTR:              .RES 2
-TILEBUF_PTR:           .RES 2
+TILEBUF_INX:           .RES 4
 .ENDIF
 
 .SEGMENT "OAM"
@@ -29,10 +29,6 @@ JOYPAD2:       .RES 1
 ;--- Pointers ----;
 CMD_RPTR:      .RES 1
 CMD_WPTR:      .RES 1
-TILE_PTR_0:    .RES 1
-TILE_PTR_1:    .RES 1
-TILE_PTR_2:    .RES 1
-TILE_PTR_3:    .RES 1
 JmpPtr:        .RES 2
 ;-- Sprite Vars --;
 OamIndex:      .RES 1
