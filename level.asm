@@ -10,60 +10,34 @@ LEVEL_INIT:
     STA META_TILESET_PTR
     LDA MetaTileSetHi, X 
     STA META_TILESET_PTR + 1
-LEVEL_INIT_EXIT:
-    JSR SET_SCREEN_FIRST
-;     JSR SCREEN_TO_PPU
-    RTS
-
-SET_SCREEN_FIRST:
     LDA #$00 
     STA Screen
-
-    LDY #LEVEL_DATA::Screens
-    LDA (LEVEL_PTR), Y
-    STA SCREEN_PTR
-    LDY #LEVEL_DATA::Screens + 1
-    LDA (LEVEL_PTR), Y
-    STA SCREEN_PTR + 1
-SET_SCREEN_FIRST_EXIT:
     JSR CALCULATE_BASE_PPUADDRESS
     JSR SET_META_META_TILES_PTR
-    RTS
-
-SET_SCREEN_NEXT:
-    LDY #SCREEN_DATA::NextScreen
-    LDA (SCREEN_PTR), Y
-    PHA
-    LDY #SCREEN_DATA::NextScreen + 1
-    LDA (SCREEN_PTR), Y
-    STA SCREEN_PTR + 1
-    PLA 
-    STA SCREEN_PTR
-SET_SCREEN_NEXT_EXIT:
-    JSR CALCULATE_BASE_PPUADDRESS
-    JSR SET_META_META_TILES_PTR    
+    JSR SCREEN_TO_PPU
     RTS
 
 SET_SCREEN_PREV:
-    LDY #SCREEN_DATA::PrevScreen
-    LDA (SCREEN_PTR), Y
-    PHA
-    LDY #SCREEN_DATA::PrevScreen + 1
-    LDA (SCREEN_PTR), Y
-    STA SCREEN_PTR + 1
-    PLA 
-    STA SCREEN_PTR
-SET_SCREEN_PREV_EXIT:
+    DEC Screen
     JSR CALCULATE_BASE_PPUADDRESS
-    JSR SET_META_META_TILES_PTR    
-    RTS
+    JSR SET_META_META_TILES_PTR
+    RTS 
 
-SET_META_META_TILES_PTR:
-    LDY #SCREEN_DATA::MetaMetaTiles
-    LDA (SCREEN_PTR), Y
+SET_SCREEN_NEXT:
+    INC Screen
+    JSR CALCULATE_BASE_PPUADDRESS
+    JSR SET_META_META_TILES_PTR
+    RTS 
+
+SET_META_META_TILES_PTR:    
+    CLC
+    LDA Level
+    LDX Screen
+    ADC MULT16, X 
+    TAX
+    LDA MetaMetaTilesetIndexLo, X
     STA META_META_TILES_PTR
-    LDY #SCREEN_DATA::MetaMetaTiles + 1
-    LDA (SCREEN_PTR), Y
+    LDA MetaMetaTilesetIndexHi, X
     STA META_META_TILES_PTR + 1
 META_META_TILES_PTR_EXIT:
     RTS
@@ -120,14 +94,6 @@ SET_META_META_TILESET_INDEX_EXIT:
     TAY ; MetaMetaTileIndex
     LDA (META_META_TILES_PTR), Y
     STA MetaMetaTile + MetaTile::TilesetIndex
-; SET_META_META_TILE_DATA:
-;     LDA #$08
-;     STA Temp2 
-;     LDA #.LOBYTE(MetaMetaTile)
-;     STA TILE_PTR
-;     LDA #.HIBYTE(MetaMetaTile)
-;     STA TILE_PTR + 1
-;     JSR SET_TILE_COORDINATES
     RTS 
 
 ;--------------------------------------------------;
@@ -198,17 +164,6 @@ SET_META_TILESET_INDEX:
     LDA (META_META_TILESET_PTR), Y
     TAY 
     STA MetaTile + MetaTile::TilesetIndex
-; SET_META_TILE_TILE_DATA:
-;     LDA #.LOBYTE(MetaMetaTile)
-;     STA PARENT_TILE_PTR
-;     LDA #.HIBYTE(MetaMetaTile)
-;     STA PARENT_TILE_PTR + 1
-;     LDA #.LOBYTE(MetaTile)
-;     STA TILE_PTR
-;     LDA #.HIBYTE(MetaTile)
-;     STA TILE_PTR + 1
-;     LDA #$10
-;     JSR SET_TILE_DATA
 SELECT_META_TILE_EXIT:
     RTS 
 
@@ -278,17 +233,6 @@ SELECT_TILE:
     TAY 
     LDA (META_TILESET_PTR), Y
     STA Tile + Tile::Tile
-; SET_TILE_TILE_DATA:
-;     LDA #.LOBYTE(MetaTile)
-;     STA PARENT_TILE_PTR
-;     LDA #.HIBYTE(MetaTile)
-;     STA PARENT_TILE_PTR + 1
-;     LDA #.LOBYTE(Tile)
-;     STA TILE_PTR
-;     LDA #.HIBYTE(Tile)
-;     STA TILE_PTR + 1
-;     LDA #$20
-;     JSR SET_TILE_DATA
     RTS 
 
 ;--------------------------------------------------;

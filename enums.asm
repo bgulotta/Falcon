@@ -98,20 +98,6 @@
 ; Level enums
 ; 
 ;---------------------------------------
-.SCOPE LEVEL_DATA
-        NumScreens        = 0
-        MetaMetaTileSet   = 1
-        MetaTileSet       = 3
-        Screens           = 5
-.ENDSCOPE
-
-.SCOPE SCREEN_DATA
-        Index               = 0
-        PrevScreen          = 1
-        NextScreen          = 3
-        MetaMetaTiles       = 5
-.ENDSCOPE
-
 .SCOPE META_TILE
         Index                = 0
         TilesetIndex         = 1

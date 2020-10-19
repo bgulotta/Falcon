@@ -22,11 +22,8 @@ UPDATE_SCROLL_EXIT:
     RTS
 
 SET_VIEWPORT_BEGIN:
-    LDY #LEVEL_DATA::NumScreens
-    LDA (LEVEL_PTR), Y
-    TAY
-    DEY
-    CPY ViewPort + ViewPort::Begin + 1
+    LDA #$0F
+    CMP ViewPort + ViewPort::Begin + 1
     BEQ SET_VIEWPORT_FINISH_LEVEL_BEGIN
 CALCULATE_VIEWPORT_BEGIN:
     SEC 
@@ -52,11 +49,8 @@ SET_VIEWPORT_BEGIN_EXIT:
     RTS
 
 SET_VIEWPORT_END:
-    LDY #LEVEL_DATA::NumScreens
-    LDA (LEVEL_PTR), Y
-    TAY
-    DEY
-    CPY ViewPort + ViewPort::Begin + 1
+    LDA #$0F
+    CMP ViewPort + ViewPort::Begin + 1
     BEQ SET_VIEWPORT_FINISH_LEVEL_END
     CLC
     LDA ViewPort + ViewPort::Begin    

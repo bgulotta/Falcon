@@ -1,80 +1,78 @@
 
-78
+76
 00000	0000	w	h	0	ACTOR_PTR
 00001	0002	w	h	0	META_PTR
 00002	0004	w	h	0	SPRITE_PTR
-00003	0006	w	h	0	LEVEL_PTR
-00004	0008	w	h	0	SCREEN_PTR
-00005	000A	w	h	0	META_TILESET_PTR
-00006	000C	w	h	0	META_META_TILESET_PTR
-00007	000E	w	h	0	META_META_TILES_PTR
-00008	0010	w	h	0	META_META_TILE_PTR
-00009	0012	w	h	0	META_TILE_PTR
-00010	0014	w	h	0	TILE_PTR
-00011	0016	w	h	0	TILEBUF_PTR
-00012	0300	b	u	0	NMI_DONE
-00013	0301	b	u	0	PPUREGFLAG
-00014	0302	b	u	0	OAMFLAG
-00015	0303	b	u	0	DECODEDFLAG
-00016	0304	b	u	0	JOYPAD1
-00017	0305	b	u	0	JOYPAD2
-00018	0306	b	u	0	CMD_RPTR
-00019	0307	b	u	0	CMD_WPTR
-00020	0308	b	u	0	TILE_PTR_0
-00021	0309	b	u	0	TILE_PTR_1
-00022	030A	b	u	0	TILE_PTR_2
-00023	030B	b	u	0	TILE_PTR_3
-00024	030C	w	h	0	JmpPtr
-00025	030E	b	u	0	OamIndex
-00026	030F   	b	u	0	NumTiles
-00027	0310	w	u	0	CamDestX
-00028	0312	w	u	0	CamDestY
-00029	0314	w	u	0	Temp
-00030	0316	w	u	0	Temp2
-00031	0318	w	u	0	Temp3
-00032	031A	w	u	0	Temp4
-00033	031C	b	u	0	NumCommands
-00034	031D	b	u	0	NumIterations
-00035	031E	b	u	0	PPUMASKBUF
-00036	031F	b	u	0	PPUCTRLBUF
-00037	04F8	w	u	0	ViewPort Begin X
-00038	04FA	w	u	0	ViewPort Begin Y
-00039	04FC	w	u	0	ViewPort End X
-00040	04FE	w	u	0	ViewPort End Y
-00041	0500	b	u	0	A0: Index
-00042	0501	w	h	0	A0: Meta Data Pointer
-00043	0503	w	u	0	A0: World XPos
-00044	0505	w	u	0	A0: World YPos
-00045	0507	b	u	0	A0: Movement
-00046	0508	b	u	0	A0: Prev Movement
-00047	0509	b	u	0	A0: Acceleration Frac
-00048	050A	b	u	0	A0: Acceleration
-00049	050B	b	u	0	A0: Attributes
-00050	050C	w	h	0	A0: Next Actor
-00051	050E	b	u	0	A1: Index
-00052	050F	w	h	0	A1: Meta Data Pointer
-00053	0511	w	u	0	A1: World XPos
-00054	0513	w	u	0	A1: World YPos
-00055	0515	b	u	0	A1: Movement
-00056	0516	b	u	0	A1: Prev Movement
-00057	0517	b	u	0	A1: Acceleration Frac
-00058	0518	b	u	0	A1: Acceleration
-00059	0519	b	u	0	A1: Attributes
-00060	051A	w	h	0	A1: Next Actor
-00061	0700	w	h	0	PPU: BaseAddress
-00062	0702	w	h	0	PPU: TileAddress
-00063	0704	b	u	0	MetaMetaTile: Index
-00064	0705	b	u	0	MetaMetaTile: TileSet Index
-00065	0706	w	u	0	MetaMetaTile: Tile Index
-00066	0708	b	u	0	MetaMetaTile: Row
-00067	0709	b	u	0	MetaMetaTile: Column
-00068	070A	b	u	0	MetaTile: Index
-00069	070B	b	u	0	MetaTile: TileSet Index
-00070	070C	w	u	0	MetaTile: Tile Index
-00071	070E	b	u	0	MetaTile: Row
-00072	070F	b	u	0	MetaTile: Column
-00073	0710	b	u	0	Tile: Index
-00074	0711	b	u	0	Tile: Tile
-00075	0712	w	u	0	Tile: Tile Index
-00076	0714	b	u	0	Tile: Row
-00077	0715	b	u	0	Tile: Column
+00003	0006	w	h	0	META_TILESET_PTR
+00004	0008	w	h	0	META_META_TILESET_PTR
+00005	000A	w	h	0	META_META_TILES_PTR
+00006	000C	w	h	0	META_META_TILE_PTR
+00007	000E	w	h	0	META_TILE_PTR
+00008	0010	w	h	0	TILE_PTR
+00009	0012	w	h	0	TILEBUF_PTR
+00010	0300	b	u	0	NMI_DONE
+00011	0301	b	u	0	PPUREGFLAG
+00012	0302	b	u	0	OAMFLAG
+00013	0303	b	u	0	DECODEDFLAG
+00014	0304	b	u	0	JOYPAD1
+00015	0305	b	u	0	JOYPAD2
+00016	0306	b	u	0	CMD_RPTR
+00017	0307	b	u	0	CMD_WPTR
+00018	0308	b	u	0	TILE_PTR_0
+00019	0309	b	u	0	TILE_PTR_1
+00020	030A	b	u	0	TILE_PTR_2
+00021	030B	b	u	0	TILE_PTR_3
+00022	030C	w	h	0	JmpPtr
+00023	030E	b	u	0	OamIndex
+00024	030F   	b	u	0	NumTiles
+00025	0310	w	u	0	CamDestX
+00026	0312	w	u	0	CamDestY
+00027	0314	w	u	0	Temp
+00028	0316	w	u	0	Temp2
+00029	0318	w	u	0	Temp3
+00030	031A	w	u	0	Temp4
+00031	031C	b	u	0	NumCommands
+00032	031D	b	u	0	NumIterations
+00033	031E	b	u	0	PPUMASKBUF
+00034	031F	b	u	0	PPUCTRLBUF
+00035	04F8	w	u	0	ViewPort Begin X
+00036	04FA	w	u	0	ViewPort Begin Y
+00037	04FC	w	u	0	ViewPort End X
+00038	04FE	w	u	0	ViewPort End Y
+00039	0500	b	u	0	A0: Index
+00040	0501	w	h	0	A0: Meta Data Pointer
+00041	0503	w	u	0	A0: World XPos
+00042	0505	w	u	0	A0: World YPos
+00043	0507	b	u	0	A0: Movement
+00044	0508	b	u	0	A0: Prev Movement
+00045	0509	b	u	0	A0: Acceleration Frac
+00046	050A	b	u	0	A0: Acceleration
+00047	050B	b	u	0	A0: Attributes
+00048	050C	w	h	0	A0: Next Actor
+00049	050E	b	u	0	A1: Index
+00050	050F	w	h	0	A1: Meta Data Pointer
+00051	0511	w	u	0	A1: World XPos
+00052	0513	w	u	0	A1: World YPos
+00053	0515	b	u	0	A1: Movement
+00054	0516	b	u	0	A1: Prev Movement
+00055	0517	b	u	0	A1: Acceleration Frac
+00056	0518	b	u	0	A1: Acceleration
+00057	0519	b	u	0	A1: Attributes
+00058	051A	w	h	0	A1: Next Actor
+00059	0700	w	h	0	PPU: BaseAddress
+00060	0702	w	h	0	PPU: TileAddress
+00061	0704	b	u	0	MetaMetaTile: Index
+00062	0705	b	u	0	MetaMetaTile: TileSet Index
+00063	0706	w	u	0	MetaMetaTile: Tile Index
+00064	0708	b	u	0	MetaMetaTile: Row
+00065	0709	b	u	0	MetaMetaTile: Column
+00066	070A	b	u	0	MetaTile: Index
+00067	070B	b	u	0	MetaTile: TileSet Index
+00068	070C	w	u	0	MetaTile: Tile Index
+00069	070E	b	u	0	MetaTile: Row
+00070	070F	b	u	0	MetaTile: Column
+00071	0710	b	u	0	Tile: Index
+00072	0711	b	u	0	Tile: Tile
+00073	0712	w	u	0	Tile: Tile Index
+00074	0714	b	u	0	Tile: Row
+00075	0715	b	u	0	Tile: Column

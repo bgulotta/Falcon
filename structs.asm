@@ -37,20 +37,6 @@
     NextActor           .WORD ; Pointer to the next actor
  .ENDSTRUCT
 
- .STRUCT Level
-    NumScreens          .BYTE
-    MetaMetaTileSet     .WORD
-    MetaTileSet         .WORD
-    Screens             .WORD
- .ENDSTRUCT
-
-  .STRUCT Screen
-    Index               .BYTE
-    PrevScreen          .WORD
-    NextScreen          .WORD
-    MetaMetaTiles       .WORD
- .ENDSTRUCT
-
 .STRUCT TileCoordinates
     Row                  .BYTE
     Col                  .BYTE
