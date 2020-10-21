@@ -88,7 +88,7 @@ RENDER_LEVEL_DATA:
     BIT DECODEDFLAG 
     BPL RENDER_LEVEL_DATA_EXIT ; Has a tile been decoded?
     BVS RENDER_LEVEL_DATA_EXIT ; Has a tile already been rendered?
-    JSR TILEBUF_TO_PPU
+    JSR LEVELBUF_TO_PPU
 RENDER_LEVEL_DATA_EXIT:
     RTS
 ;---------------------------------------------

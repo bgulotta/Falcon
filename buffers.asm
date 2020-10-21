@@ -21,10 +21,10 @@ BUF_DIF:
 RESET_TILE_BUF_PTRS:
     LDA #$00
     STA TILEBUF_INX
-    LDA #$1C
+    LDA #$1D
     STA TILEBUF_INX + 1
-    LDA #$38
+    LDA #$3A
     STA TILEBUF_INX + 2
-    LDA #$54
+    LDA #$57
     STA TILEBUF_INX + 3
     RTS 

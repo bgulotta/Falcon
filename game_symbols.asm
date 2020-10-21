@@ -46,7 +46,7 @@ NumIterations: .RES 1
 PPUMASKBUF:    .RES 1
 PPUCTRLBUF:    .RES 1
 CMDBUF:        .RES 256
-TILEBUF:       .RES 112 
+TILEBUF:       .RES 116 
 
 .SEGMENT "VIEWPORT"
 ViewPort: .TAG ViewPort

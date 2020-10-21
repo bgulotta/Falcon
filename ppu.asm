@@ -49,6 +49,10 @@ NEXT_TILE_ADDRESS:
 NEXT_TILE_ADDRESS_EXIT:
     RTS 
 
+HUD_TO_PPU:
+
+    RTS 
+
 ;--------------------------------------------------;
 ;                                                  ;
 ;                                                  ;
@@ -60,7 +64,7 @@ SCREEN_TO_PPU:
     LDA #$07    
 RENDER_META_META_TILE_COL_LOOP:
     JSR DECODE_META_META_TILE_COL
-    JSR TILEBUF_TO_PPU
+    JSR LEVELBUF_TO_PPU
     DEC MetaMetaTile + MetaTile::Index
     LDA MetaMetaTile + MetaTile::Index
     BPL RENDER_META_META_TILE_COL_LOOP
@@ -126,13 +130,17 @@ DECODE_TILE_LOOP:
     ADC Temp3 + 1
     TAX     
     LDY TILEBUF_INX, X
-    LDA Tile + TILE::Tile     
+    LDA Tile + Tile::Tile     
     STA TILEBUF, Y 
     INC TILEBUF_INX, X
     JSR PREV_TILE
     BPL DECODE_TILE_LOOP
     RTS 
-    
+
+HUDBUF_TO_PPU:
+
+    RTS 
+
 ;--------------------------------------------------;
 ;                                                  ;
 ; Tile Buffer 0-3 to send to the PPU               ;
@@ -140,39 +148,42 @@ DECODE_TILE_LOOP:
 ;                                                  ;
 ;                                                  ;
 ;--------------------------------------------------;
- TILEBUF_TO_PPU:
+ LEVELBUF_TO_PPU:
     LDA DECODEDFLAG
     ORA #BITS::BIT_6
     STA DECODEDFLAG
     JSR META_META_COLUMN_STARTADDRESS
     LDY #$00 
-TILEBUFF_TO_PPU_NEXT_CMD:
+LEVELBUF_TO_PPU_NEXT_CMD:
     JSR BUF_DIF
-    CMP #$E0 
-    BCS TILEBUFF_TO_PPU_NEXT_CMD
-    LDA #$1C
+    CMP #$E3 
+    BCS LEVELBUF_TO_PPU_NEXT_CMD
+    LDA #$1D
     JSR WR_BUF
     LDA PPU + PPU::TileAddress + 1
     JSR WR_BUF
     LDA PPU + PPU::TileAddress
     JSR WR_BUF
-TILEBUF_TO_PPU_LOOP:
+    LDA PPUCTRLBUF
+    ORA #PPUCTRL::VRAM_INC
+    JSR WR_BUF 
+LEVELBUF_TO_PPU_LOOP:
     LDA TILEBUF, Y
     JSR WR_BUF
     INY 
-    CPY #$1C
-    BEQ SEND_TILE_BUF_TO_PPU
-    CPY #$38
-    BEQ SEND_TILE_BUF_TO_PPU
-    CPY #$54
-    BEQ SEND_TILE_BUF_TO_PPU
-    CPY #$70 
-    BCS TILEBUF_TO_PPU_EXIT
-    JMP TILEBUF_TO_PPU_LOOP    
-SEND_TILE_BUF_TO_PPU:
+    CPY #$1D
+    BEQ SEND_LEVELBUF_TO_PPU
+    CPY #$3A
+    BEQ SEND_LEVELBUF_TO_PPU
+    CPY #$57
+    BEQ SEND_LEVELBUF_TO_PPU
+    CPY #$74 
+    BCS LEVELBUF_TO_PPU_EXIT
+    JMP LEVELBUF_TO_PPU_LOOP    
+SEND_LEVELBUF_TO_PPU:
     INC NumCommands
     JSR NEXT_TILE_ADDRESS
-    JMP TILEBUFF_TO_PPU_NEXT_CMD
-TILEBUF_TO_PPU_EXIT:
+    JMP LEVELBUF_TO_PPU_NEXT_CMD
+LEVELBUF_TO_PPU_EXIT:
     INC NumCommands
     RTS 
