@@ -48,7 +48,6 @@ META_META_COLUMN_STARTADDRESS:
 ;     INC PPU + PPU::TileAddress + 1
 ; NEXT_COL_ADDRESS_EXIT:
 ;     RTS 
-ß
 HUD_TO_PPU:
 
     RTS 
@@ -138,7 +137,6 @@ DECODE_TILE_LOOP:
     RTS 
 
 HUDBUF_TO_PPU:
-
     RTS 
 
 ;--------------------------------------------------;
