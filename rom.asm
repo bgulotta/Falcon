@@ -12,6 +12,7 @@
 .INCLUDE "INTERRUPTS.ASM"
 .INCLUDE "LEVEL_DATA.ASM"
 .INCLUDE "ACTOR_DATA.ASM"
+.INCLUDE "HUD.ASM"
 .INCLUDE "LEVEL.ASM"
 .INCLUDE "ACTORS.ASM"
 .INCLUDE "PLAYER.ASM"
@@ -49,6 +50,8 @@ LOOP_PALETTE_DATA:
     CLI             ; RESPOND TO INTERRUPTS
 
     JSR SET_NMI_FLAGS
+    JSR SPRITE0_INIT
+    JSR HUD_INIT
 
     LDA #$00
     JSR LEVEL_INIT
@@ -62,11 +65,22 @@ LOOP_PALETTE_DATA:
 ;---------------------------------------
 GAME_LOOP:
     JSR SET_NMI_FLAGS
-    JSR NMI_WAIT
+    JSR NMI_WAIT  
     JSR READ_JOYPADS
     JSR UPDATE_ACTORS
     JMP GAME_LOOP
 
+SPRITE0_INIT:
+    LDA #$0B
+    STA OAM
+    LDA #$2C
+    STA OAM + 1
+    LDA #$02
+    STA OAM + 2
+    LDA #$10
+    STA OAM + 3
+    RTS
+    
 ;---------------------------------------
 ;
 ; This routine will loop through the actor
@@ -74,7 +88,7 @@ GAME_LOOP:
 ;
 ;---------------------------------------
 UPDATE_ACTORS:  
-    LDA #$00
+    LDA #$04
     STA OamIndex
     JSR FIRST_ACTOR
 UPDATE_ACTORS_LOOP:
@@ -133,9 +147,10 @@ PPUBASELO:
     .BYTE $40, $00
 PPUBASEHI:
     .BYTE $20, $24
-DEFAULTHUD:
-    .BYTE $00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, $00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00
-    .BYTE $00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, $00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00
+
+HUD_PLAYER1:     .asciiz "p1"
+HUD_PLAYER2:     .asciiz "p2"
+HUD_PRESS_START: .asciiz "press start"
 
 .SEGMENT "TILES"
 .INCBIN "CHR.DAT"

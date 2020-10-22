@@ -1,0 +1,4 @@
+{
+    "input": "rom.asm",
+    "params": "-t nes"
+}

@@ -113,7 +113,7 @@ L0Screen15MetaMeta:
 ; Level 32 x 32 MetaMetaTileSet ; Left Top/Right Top/Left Bottom/Right Bottom
 L0MetaMetaTileSet:
     .BYTE $00, $00, $00, $00
-    .BYTE $04, $04, $04, $04
+    .BYTE $04, $04, $00, $00
     .BYTE $08, $00, $00, $08
     .BYTE $08, $00, $00, $08
 
